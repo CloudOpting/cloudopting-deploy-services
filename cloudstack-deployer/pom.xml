@@ -11,5 +11,15 @@
 
     <artifactId>cloudstack-deployer</artifactId>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.jclouds</groupId>
+            <artifactId>jclouds-all</artifactId>
+        </dependency>
+    </dependencies>
 
 </project>
