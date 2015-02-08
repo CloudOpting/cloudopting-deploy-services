@@ -14,6 +14,7 @@
         <module>common-deployer</module>
         <module>config-deployer</module>
         <module>database-deployer</module>
+        <module>cloudopting-manager</module>
     </modules>
 
     <parent>
