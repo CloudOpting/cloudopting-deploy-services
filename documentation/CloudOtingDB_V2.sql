@@ -48,7 +48,8 @@ create table APPLICATION_MEDIA
 create table AUTHORITIES
 (
    USERNAME             varchar(50),
-   AUTHORITY            varchar(50)
+   AUTHORITY            varchar(50),
+   primary key (AUTHORITY)
 );
 
 /*==============================================================*/
