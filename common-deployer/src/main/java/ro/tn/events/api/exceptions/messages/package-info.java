@@ -1,0 +1,1 @@
+package ro.tn.events.api.exceptions.messages;
