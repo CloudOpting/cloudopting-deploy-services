@@ -370,19 +370,20 @@ alter table t_user_authority
 
 INSERT INTO t_authority(
             name)
-    VALUES (ROLE_ADMIN);
+    VALUES ('ROLE_ADMIN');
 	
 INSERT INTO t_authority(
             name)
-    VALUES (ROLE_USER);
+    VALUES ('ROLE_USER');
 	
 INSERT INTO t_user(
             id, login, password, first_name, last_name, email, activated, 
             lang_key, activation_key, created_by, created_date, last_modified_by, 
             last_modified_date)
-    VALUES (1, "admin", "$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC", "Admin", "Administrator", "admin@admin.com", TRUE, 
-            "en", "55555", "admin", "2015-02-15 00:00:00", "admin", 
-            "2015-02-15 00:00:00");
+    VALUES (1, 'admin', '$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC', 'Admin', 'Administrator', 'admin@admin.com', TRUE, 
+            'en', '55555', 'admin', '2015-02-15 00:00:00', 'admin', 
+            '2015-02-15 00:00:00');
+            
 INSERT INTO t_user_authority(
             user_id, authority_name)
-    VALUES (3, "ROLE_ADMIN");
+    VALUES (1, 'ROLE_ADMIN');
