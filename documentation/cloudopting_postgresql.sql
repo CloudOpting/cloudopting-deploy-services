@@ -2,7 +2,15 @@
 /* DBMS name:      PostgreSQL 8                                 */
 /* Created on:     15/02/2015 18:18:00                          */
 /*==============================================================*/
-
+/*database cloudopting is needed by the application
+if another database is available then the application.yml should be configured so*/
+CREATE DATABASE cloudopting
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'English_United States.1252'
+       LC_CTYPE = 'English_United States.1252'
+       CONNECTION LIMIT = -1;
 
 drop index application_media_application_i;
 
