@@ -2,7 +2,15 @@
 /* DBMS name:      PostgreSQL 8                                 */
 /* Created on:     15/02/2015 18:18:00                          */
 /*==============================================================*/
-
+/*database cloudopting is needed by the application
+if another database is available then the application.yml should be configured so*/
+CREATE DATABASE cloudopting
+  WITH OWNER = postgres
+       ENCODING = 'UTF8'
+       TABLESPACE = pg_default
+       LC_COLLATE = 'English_United States.1252'
+       LC_CTYPE = 'English_United States.1252'
+       CONNECTION LIMIT = -1;
 
 drop index application_media_application_i;
 
@@ -47,6 +55,8 @@ drop index idx_user_email;
 drop table t_user;
 
 drop table t_user_authority;
+
+drop table settings;
 
 drop sequence application_media_media_id_seq;
 
@@ -370,19 +380,40 @@ alter table t_user_authority
 
 INSERT INTO t_authority(
             name)
-    VALUES (ROLE_ADMIN);
+    VALUES ('ROLE_ADMIN');
 	
 INSERT INTO t_authority(
             name)
-    VALUES (ROLE_USER);
+    VALUES ('ROLE_USER');
 	
 INSERT INTO t_user(
             id, login, password, first_name, last_name, email, activated, 
             lang_key, activation_key, created_by, created_date, last_modified_by, 
             last_modified_date)
-    VALUES (1, "admin", "$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC", "Admin", "Administrator", "admin@admin.com", TRUE, 
-            "en", "55555", "admin", "2015-02-15 00:00:00", "admin", 
-            "2015-02-15 00:00:00");
+    VALUES (1, 'admin', '$2a$10$gSAhZrxMllrbgj/kkK9UceBPpChGWJA7SYIb1Mqo.n5aNLq1/oRrC', 'Admin', 'Administrator', 'admin@admin.com', TRUE, 
+            'en', '55555', 'admin', '2015-02-15 00:00:00', 'admin', 
+            '2015-02-15 00:00:00');
+            
 INSERT INTO t_user_authority(
             user_id, authority_name)
-    VALUES (3, "ROLE_ADMIN");
+    VALUES (1, 'ROLE_ADMIN');
+
+CREATE TABLE settings
+(
+  key text NOT NULL, -- key of the setting
+  value text, -- value of the setting
+  description text, -- description of the setting
+  CONSTRAINT pk_setting UNIQUE (key)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE settings
+  OWNER TO postgres;
+COMMENT ON TABLE settings
+  IS 'table that will hold in format key/value various settings of the system';
+COMMENT ON COLUMN settings.key IS 'key of the setting';
+COMMENT ON COLUMN settings.value IS 'value of the setting';
+COMMENT ON COLUMN settings.description IS 'description of the setting';
+
+	
