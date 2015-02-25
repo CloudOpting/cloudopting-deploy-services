@@ -56,6 +56,8 @@ drop table t_user;
 
 drop table t_user_authority;
 
+drop table settings;
+
 drop sequence application_media_media_id_seq;
 
 drop sequence applications_application_id_seq;
@@ -395,3 +397,23 @@ INSERT INTO t_user(
 INSERT INTO t_user_authority(
             user_id, authority_name)
     VALUES (1, 'ROLE_ADMIN');
+
+CREATE TABLE settings
+(
+  key text NOT NULL, -- key of the setting
+  value text, -- value of the setting
+  description text, -- description of the setting
+  CONSTRAINT pk_setting UNIQUE (key)
+)
+WITH (
+  OIDS=FALSE
+);
+ALTER TABLE settings
+  OWNER TO postgres;
+COMMENT ON TABLE settings
+  IS 'table that will hold in format key/value various settings of the system';
+COMMENT ON COLUMN settings.key IS 'key of the setting';
+COMMENT ON COLUMN settings.value IS 'value of the setting';
+COMMENT ON COLUMN settings.description IS 'description of the setting';
+
+	
