@@ -50,7 +50,7 @@ public class ApplicationResource extends AbstractController<Applications> {
      * @param response   HttpServletResponse
      * @return applications list
      */
-    @RequestMapping(value = "/list", params = {QueryConstants.PAGE, QueryConstants.SIZE,
+    @RequestMapping(value = "/application/list", params = {QueryConstants.PAGE, QueryConstants.SIZE,
             QueryConstants.SORT_BY, QueryConstants.SORT_ORDER},
             method = RequestMethod.GET)
     @ResponseBody
@@ -73,7 +73,7 @@ public class ApplicationResource extends AbstractController<Applications> {
      * @param response   HttpServletResponse
      * @return applications instance
      */
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/application/{id}", method = RequestMethod.GET)
     @ResponseBody
     public final Applications findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder,
                                                final HttpServletResponse response) {
@@ -88,7 +88,7 @@ public class ApplicationResource extends AbstractController<Applications> {
      * @param uriBuilder
      * @param response
      */
-    @RequestMapping(value="/create",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/application/create",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public final void create(@RequestBody Applications applications, final UriComponentsBuilder uriBuilder,
                              final HttpServletResponse response) {
