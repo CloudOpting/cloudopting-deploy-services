@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="Examples">
+  <process id="cloudoptingProcess" name="The CloudOpting Orchestration Process" isExecutable="true">
+    <startEvent id="theStart"></startEvent>
+    <sequenceFlow id="flow1" sourceRef="theStart" targetRef="vmTask"></sequenceFlow>
+    <serviceTask id="vmTask" name="generating the VM" activiti:class="eu.cloudopting.activiti.CloudoptingProcessVM"></serviceTask>
+    <endEvent id="theEnd"></endEvent>
+    <serviceTask id="dockerTask" name="generating the Dockefile" activiti:class="eu.cloudopting.activiti.CloudoptingProcessDocker">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="dockerNodesList" activiti:elementVariable="dockerNode"></multiInstanceLoopCharacteristics>
+    </serviceTask>
+    <sequenceFlow id="flow3" sourceRef="vmTask" targetRef="dockerTask"></sequenceFlow>
+    <sequenceFlow id="flow4" sourceRef="dockerTask" targetRef="theEnd"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_cloudoptingProcess">
+    <bpmndi:BPMNPlane bpmnElement="cloudoptingProcess" id="BPMNPlane_cloudoptingProcess">
+      <bpmndi:BPMNShape bpmnElement="theStart" id="BPMNShape_theStart">
+        <omgdc:Bounds height="35.0" width="35.0" x="-10.0" y="93.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="vmTask" id="BPMNShape_vmTask">
+        <omgdc:Bounds height="60.0" width="100.0" x="151.0" y="81.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="theEnd" id="BPMNShape_theEnd">
+        <omgdc:Bounds height="35.0" width="35.0" x="640.0" y="93.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="dockerTask" id="BPMNShape_dockerTask">
+        <omgdc:Bounds height="78.0" width="105.0" x="410.0" y="72.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
+        <omgdi:waypoint x="25.0" y="110.0"></omgdi:waypoint>
+        <omgdi:waypoint x="151.0" y="111.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow3" id="BPMNEdge_flow3">
+        <omgdi:waypoint x="251.0" y="111.0"></omgdi:waypoint>
+        <omgdi:waypoint x="410.0" y="111.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow4" id="BPMNEdge_flow4">
+        <omgdi:waypoint x="515.0" y="111.0"></omgdi:waypoint>
+        <omgdi:waypoint x="640.0" y="110.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -147,17 +147,18 @@ public class ToscaFileManager {
 
 	}
 	
-	public void getNodeByType(String type){
+	public DTMNodeList getNodeByType(String type){
 		// Get the node by the type
 		DTMNodeList nodes = null;
+		System.out.println("//NodeTemplate[@type='"+type+"']");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate/@type="+type,
+			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@type='"+type+"']",
 					this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		return nodes;
 	}
 	
 	/**
