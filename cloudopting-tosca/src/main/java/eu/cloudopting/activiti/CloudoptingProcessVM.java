@@ -51,11 +51,12 @@ public class CloudoptingProcessVM implements JavaDelegate {
 					.getNodeValue());
 		}
 		
-		
-//		dockerNodesList.add("Nodo1");
+		ArrayList<String> dockerPortsList = new ArrayList<String>();
+		dockerPortsList.add("Port1");
 //		dockerNodesList.add("Nodo2");
 //		dockerNodesList.add("Nodo3");
 		execution.setVariable("dockerNodesList", dockerNodesList);
+		execution.setVariable("vmPortsList", dockerPortsList);
 		
 	}
 
