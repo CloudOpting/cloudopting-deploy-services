@@ -5,6 +5,7 @@ import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
@@ -51,7 +52,7 @@ public class ToscaFileManager {
 			// TODO Auto-generated catch block
 			e2.printStackTrace();
 		}
-//		this.document = nul;
+		// this.document = nul;
 		try {
 			this.document = (DocumentImpl) db.parse(source);
 		} catch (SAXException e1) {
@@ -74,8 +75,8 @@ public class ToscaFileManager {
 		// Get the NodeTemplates
 		DTMNodeList nodes = null;
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate", this.document,
-					XPathConstants.NODESET);
+			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate",
+					this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -84,14 +85,16 @@ public class ToscaFileManager {
 		// Get the RelationshipTemplate
 		DTMNodeList relations = null;
 		try {
-			relations = (DTMNodeList) this.xpath.evaluate("//RelationshipTemplate",
-					this.document, XPathConstants.NODESET);
+			relations = (DTMNodeList) this.xpath.evaluate(
+					"//RelationshipTemplate", this.document,
+					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		// Now we create the Graph structure so we know the correct traversal ordering
+		// Now we create the Graph structure so we know the correct traversal
+		// ordering
 		ArrayList<String> values = new ArrayList<String>();
 		for (int i = 0; i < nodes.getLength(); ++i) {
 			// values.add(nodes.item(i).getFirstChild().getNodeValue());
@@ -143,32 +146,109 @@ public class ToscaFileManager {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//this.g.
+		// this.g.
 
 	}
-	
-	public DTMNodeList getNodeByType(String type){
+
+	public DTMNodeList getNodeByType(String type) {
 		// Get the node by the type
 		DTMNodeList nodes = null;
-		System.out.println("//NodeTemplate[@type='"+type+"']");
+		System.out.println("//NodeTemplate[@type='" + type + "']");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@type='"+type+"']",
-					this.document, XPathConstants.NODESET);
+			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@type='"
+					+ type + "']", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return nodes;
 	}
-	
+
 	/**
-	 * The TOSCA file could contain more than one root since there could be elements that do not have children or parents (at the moment the standard do not force a single root
-	 * We know that we start working from the VMhost type so we consider that the root 
+	 * The TOSCA file could contain more than one root since there could be
+	 * elements that do not have children or parents (at the moment the standard
+	 * do not force a single root We know that we start working from the VMhost
+	 * type so we consider that the root
 	 */
-	public void getRootNode(){
-	
+	public void getRootNode() {
+
 		getNodeByType("VMhost");
 		return;
+	}
+
+	public String getTemplateForNode(String id) {
+		//
+		DTMNodeList nodes = null;
+		System.out.println("//NodeTemplate[@id='" + id + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
+					+ id + "']", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// since there is a single ID we are sure that the array is with a
+		// single element
+		// We need to get the type
+		String type = nodes.item(0).getAttributes().getNamedItem("type")
+				.getNodeValue();
+		DTMNodeList nodesTI = null;
+		System.out.println("//NodeTypeImplementation[@nodeType='" + type
+				+ "']/ImplementationArtifacts/ImplementationArtifact");
+		try {
+			nodesTI = (DTMNodeList) this.xpath
+					.evaluate(
+							"//NodeTypeImplementation[@nodeType='"
+									+ type
+									+ "']/ImplementationArtifacts/ImplementationArtifact",
+							this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		String template = nodesTI.item(0).getAttributes()
+				.getNamedItem("artifactRef").getNodeValue();
+		System.out.println("The template is:" + template);
+		return template;
+
+	}
+
+	public ArrayList<String> getOrderedContainers() {
+		// TODO here I return a fixed list will have to check the TOSCA instance
+		// file to get the ORDERED list of DockerContainers
+		// ORDERED means that reading the TOSCA file we need to determine the
+		// dependencies (probably using a graph) and presenting the list with
+		// the first to go in first position
+		ArrayList<String> dockerNodesList = new ArrayList<String>();
+		dockerNodesList.add("ClearoApacheDC");
+		dockerNodesList.add("ClearoMySQLDC");
+		return dockerNodesList;
+
+	}
+
+	public HashMap getPropertiesForNode(String id) {
+		DTMNodeList nodes = null;
+		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
+					+ id + "']/Properties/*", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		HashMap<String, String> myHash = new HashMap<String, String>();
+		NodeList props = nodes.item(0).getChildNodes();
+		for (int i = 0; i < props.getLength(); ++i) {
+			// values.add(nodes.item(i).getFirstChild().getNodeValue());
+			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
+			System.out.println("property:" + props.item(i).getNodeName());
+			System.out.println("property val:" + props.item(i).getTextContent());
+			myHash.put(props.item(i).getNodeName(), props.item(i)
+					.getNodeValue());
+		}
+
+		return myHash;
+
 	}
 
 }

@@ -23,7 +23,7 @@ public class ProcessService {
 	@Transactional
     public void startProcess() {
 		HashMap<String, Object> v = new HashMap<String, Object>();
-		v.put("toscaFile", new String("ClearoExample.xml"));
+		v.put("toscaFile", new String("ClearoExampleInstance.xml"));
         runtimeService.startProcessInstanceByKey("cloudoptingProcess",v);
     }
 

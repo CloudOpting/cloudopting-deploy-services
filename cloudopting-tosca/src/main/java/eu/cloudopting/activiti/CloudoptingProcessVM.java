@@ -36,7 +36,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		System.out.println("I'm creating the VM");
 		
 		
-		// TODO here we prepare the array to create the containers
+		// TODO here we prepare the array to create the containers )will have to create the correct ordered array
 		System.out.println("Now prepare to create the Containers");
 		
 		DTMNodeList nodes = tfm.getNodeByType("DockerContainer");

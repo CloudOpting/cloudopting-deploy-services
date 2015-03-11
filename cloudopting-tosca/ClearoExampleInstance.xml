@@ -133,8 +133,7 @@
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
 				<Properties>
 					<co:ApacheVirtualHostProperties>
-						<co:VHostName><?getInput VHostName?>
-						</co:VHostName>
+						<co:VHostName>www.clearo.com</co:VHostName>
 						<co:aliases></co:aliases>
 						<co:default_vhost>false</co:default_vhost>
 						<co:docroot></co:docroot>
@@ -156,8 +155,7 @@
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH2">
 				<Properties>
 					<co:ApacheVirtualHostProperties>
-						<co:VHostName><?getInput VHostName?>
-						</co:VHostName>
+						<co:VHostName>www.trasparenza.it</co:VHostName>
 						<co:aliases></co:aliases>
 						<co:default_vhost>false</co:default_vhost>
 						<co:docroot></co:docroot>
@@ -190,8 +188,7 @@
 				<Properties>
 					<documentation></documentation>
 					<co:MySQLProperties>
-						<co:root_password><?getInput root_password?>
-						</co:root_password>
+						<co:root_password>mypass</co:root_password>
 						<co:remove_default_accounts></co:remove_default_accounts>
 						<co:override_options></co:override_options>
 					</co:MySQLProperties>
@@ -203,8 +200,7 @@
 					<co:MySQLDatabaseProperties>
 						<co:dbName></co:dbName>
 						<co:dbUser></co:dbUser>
-						<co:dbPassword><?getInput dbPassword?>
-						</co:dbPassword>
+						<co:dbPassword>clearoDBpass</co:dbPassword>
 						<co:connectionHost></co:connectionHost>
 						<co:grant></co:grant>
 						<co:sql></co:sql>

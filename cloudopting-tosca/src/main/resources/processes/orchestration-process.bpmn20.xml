@@ -43,7 +43,14 @@ This task will probably be transformed into a subprocess, but at the moment we n
       </serviceTask>
       <sequenceFlow id="flow12" sourceRef="startevent1" targetRef="puppetTask"></sequenceFlow>
       <sequenceFlow id="flow13" sourceRef="dockerTask" targetRef="buildTask"></sequenceFlow>
-      <serviceTask id="puppetTask" name="Generate the puppet node file" activiti:class="eu.cloudopting.activiti.CloudoptingProcessPuppet"></serviceTask>
+      <serviceTask id="puppetTask" name="Generate the puppet node file" activiti:type="shell">
+      <extensionElements>
+    <activiti:field name="command" stringValue="touch" />
+    <activiti:field name="arg1" stringValue="testshell.txt" />
+    <activiti:field name="wait" stringValue="true" />
+    <activiti:field name="outputVariable" stringValue="resultVar" />
+  </extensionElements>
+  </serviceTask>
       <serviceTask id="buildTask" name="build the Docker image" activiti:class="eu.cloudopting.activiti.CloudoptingProcessDockerBuild"></serviceTask>
       <serviceTask id="commitTask" name="Commit the Dokerimage" activiti:class="eu.cloudopting.activiti.CloudoptingProcessDockerCommit"></serviceTask>
       <sequenceFlow id="flow14" sourceRef="buildTask" targetRef="commitTask"></sequenceFlow>
