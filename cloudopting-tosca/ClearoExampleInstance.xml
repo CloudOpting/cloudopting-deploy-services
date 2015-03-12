@@ -134,17 +134,47 @@
 				<Properties>
 					<co:ApacheVirtualHostProperties>
 						<co:VHostName>www.clearo.com</co:VHostName>
-						<co:aliases></co:aliases>
+						<co:aliases>[
+  { aliasmatch       => '^/image/(.*)\.jpg$',
+    path             => '/files/jpg.images/$1.jpg',
+  },
+  { alias            => '/image',
+    path             => '/ftp/pub/image',
+  },
+  { scriptaliasmatch => '^/cgi-bin(.*)',
+    path             => '/usr/local/share/cgi-bin$1',
+  },
+  { scriptalias      => '/nagios/cgi-bin/',
+    path             => '/usr/lib/nagios/cgi-bin/',
+  },
+  { alias            => '/nagios',
+    path             => '/usr/share/nagios/html',
+  },
+]</co:aliases>
 						<co:default_vhost>false</co:default_vhost>
 						<co:docroot></co:docroot>
-						<co:directories></co:directories>
+						<co:directories>[
+        { path        => '/path/to/directory',
+          addhandlers => [{ handler => 'cgi-script', extensions => ['.cgi']}],
+        },
+      ]</co:directories>
 						<co:log_level></co:log_level>
-						<co:options></co:options>
+						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
 						<co:port></co:port>
-						<co:proxy_pass></co:proxy_pass>
-						<co:redirect_source></co:redirect_source>
-						<co:redirect_dest></co:redirect_dest>
-						<co:redirect_status></co:redirect_status>
+						<co:proxy_pass>[
+    { 'path' => '/a', 'url' => 'http://backend-a/' },
+    { 'path' => '/b', 'url' => 'http://backend-b/' },
+    { 'path' => '/c', 'url' => 'http://backend-a/c', 'params' => {'max'=>20, 'ttl'=>120, 'retry'=>300}},
+    { 'path' => '/l', 'url' => 'http://backend-xy',
+      'reverse_urls' => ['http://backend-x', 'http://backend-y'] },
+    { 'path' => '/d', 'url' => 'http://backend-a/d',
+      'params' => { 'retry' => '0', 'timeout' => '5' }, },
+    { 'path' => '/e', 'url' => 'http://backend-a/e',
+      'keywords' => ['nocanon', 'interpolate'] },
+  ]</co:proxy_pass>
+						<co:redirect_source>['/images','/downloads']</co:redirect_source>
+						<co:redirect_dest>['http://img.example.com/','http://downloads.example.com/']</co:redirect_dest>
+						<co:redirect_status>['temp','permanent']</co:redirect_status>
 						<co:rewrites></co:rewrites>
 						<co:setenv></co:setenv>
 						<co:ssl>false</co:ssl>

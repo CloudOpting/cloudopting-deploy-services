@@ -55,7 +55,13 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
 		ToscaFileManager tfm = new ToscaFileManager(xml);
 		String myTemplate = tfm.getTemplateForNode("ClearoApacheVH");
+		System.out.println("The template is :"+myTemplate);
 		Map nodeData = tfm.getPropertiesForNode("ClearoApacheVH");
+//		System.out.println("Data :"+nodeData.toString());
+		Template tpl1 = cfg.getTemplate(myTemplate+".ftl");
+
+		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+		tpl1.process(nodeData, outputTempl);
 	}
 
 }

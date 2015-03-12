@@ -231,7 +231,8 @@ public class ToscaFileManager {
 		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
 		try {
 			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
-					+ id + "']/Properties/*", this.document, XPathConstants.NODESET);
+					+ id + "']/Properties/*", this.document,
+					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -241,10 +242,15 @@ public class ToscaFileManager {
 		for (int i = 0; i < props.getLength(); ++i) {
 			// values.add(nodes.item(i).getFirstChild().getNodeValue());
 			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
-			System.out.println("property:" + props.item(i).getNodeName());
-			System.out.println("property val:" + props.item(i).getTextContent());
-			myHash.put(props.item(i).getNodeName(), props.item(i)
-					.getNodeValue());
+
+			System.out
+					.println("property val:" + props.item(i).getTextContent());
+			String[] keys = props.item(i).getNodeName().split(":");
+			if (keys.length > 1) {
+				String key = keys[1];
+				System.out.println("property:" + key);
+				myHash.put(key, props.item(i).getTextContent());
+			}
 		}
 
 		return myHash;
