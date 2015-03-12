@@ -8,6 +8,8 @@ import java.nio.file.Paths;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -15,6 +17,8 @@ import eu.cloudopting.tosca.transformer.ToscaFileManager;
 
 @RestController
 public class ToscaController {
+	@Autowired
+	ToscaFileManager toscaFileManager;
 
 //	private ToscaFileManager tfm = null;
 	@RequestMapping("/tosca/")
@@ -58,7 +62,8 @@ public class ToscaController {
 		}
 
 		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
-		ToscaFileManager tfm = new ToscaFileManager(xml);
+		//ToscaFileManager tfm = new ToscaFileManager(xml);
+		toscaFileManager.setToscaFile(xml);
 		
 		// Now we need to start the work on the TOSCA file we start from the root that we know is the CloudVM to be created
 		

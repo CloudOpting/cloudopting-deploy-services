@@ -8,10 +8,16 @@ import java.util.ArrayList;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.xml.dtm.ref.DTMNodeList;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.cloudopting.tosca.transformer.IToscaFileManager;
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
 
 public class CloudoptingProcessVM implements JavaDelegate {
+	
+	@Autowired
+	ToscaFileManager toscaFileManager;
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
@@ -30,7 +36,9 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		}
 
 		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
-		ToscaFileManager tfm = new ToscaFileManager(xml);
+//		ToscaFileManager tfm = new ToscaFileManager(xml);
+		toscaFileManager = ToscaFileManager.getInstance();
+		toscaFileManager.setToscaFile(xml);
 		
 		// TODO here we need a mean to create the VM
 		System.out.println("I'm creating the VM");
@@ -39,7 +47,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		// TODO here we prepare the array to create the containers )will have to create the correct ordered array
 		System.out.println("Now prepare to create the Containers");
 		
-		DTMNodeList nodes = tfm.getNodeByType("DockerContainer");
+		DTMNodeList nodes = toscaFileManager.getNodeByType("DockerContainer");
 		ArrayList<String> dockerNodesList = new ArrayList<String>();
 		System.out.println("before cycle");
 		for (int i = 0; i < nodes.getLength(); ++i) {

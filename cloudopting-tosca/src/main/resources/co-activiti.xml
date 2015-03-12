@@ -7,10 +7,11 @@
                            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd">
 
     <context:component-scan base-package="eu.cloudopting.activiti"/>
-
+    <context:component-scan base-package="eu.cloudopting.tosca.transformer"/>
+<bean id="toscaFileManager" class="edu.java.spring.ws.bo.impl.UserBoImpl"></bean>
     <bean id="cloudoptingProcess" class="eu.cloudopting.activiti.CloudoptingProcess"/>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.SimpleDriverDataSource">
+    <bean id="dataSource" class="eu.cloudopting.tosca.transformer.ToscaFileManager">
         <property name="driverClass" value="org.h2.Driver"/>
         <property name="url" value="jdbc:h2:mem:activiti;DB_CLOSE_DELAY=1000"/>
         <property name="username" value="sa"/>

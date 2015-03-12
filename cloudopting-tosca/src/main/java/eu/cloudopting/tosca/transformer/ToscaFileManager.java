@@ -6,6 +6,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
@@ -22,18 +23,41 @@ import org.apache.xpath.jaxp.XPathImpl;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-public class ToscaFileManager {
+@Component("toscaFileManager")
+public class ToscaFileManager implements IToscaFileManager {
 
+	@Value("")
 	private String xmlFile;
 	private DefaultDirectedGraph<String, DefaultEdge> g;
 	private DocumentImpl document = null;
 	private XPathImpl xpath;
 
-	public ToscaFileManager(String xmlFile) {
+	private static AtomicReference<ToscaFileManager> INSTANCE = new AtomicReference<ToscaFileManager>();
+
+    public ToscaFileManager() {
+        final ToscaFileManager previous = INSTANCE.getAndSet(this);
+        if(previous != null)
+            throw new IllegalStateException("Second singleton " + this + " created after " + previous);
+    }
+
+    public static ToscaFileManager getInstance() {
+        return INSTANCE.get();
+    }
+	
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#setToscaFile(java.lang.String)
+	 */
+	@Override
+	public void setToscaFile(String xmlFile) {
 
 		this.xmlFile = xmlFile;
 		this.g = new DefaultDirectedGraph<String, DefaultEdge>(
@@ -150,7 +174,13 @@ public class ToscaFileManager {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getNodeByType(java.lang.String)
+	 */
+	@Override
 	public DTMNodeList getNodeByType(String type) {
+		if (this.xmlFile == null) 
+			return null;
 		// Get the node by the type
 		DTMNodeList nodes = null;
 		System.out.println("//NodeTemplate[@type='" + type + "']");
@@ -164,19 +194,22 @@ public class ToscaFileManager {
 		return nodes;
 	}
 
-	/**
-	 * The TOSCA file could contain more than one root since there could be
-	 * elements that do not have children or parents (at the moment the standard
-	 * do not force a single root We know that we start working from the VMhost
-	 * type so we consider that the root
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getRootNode()
 	 */
+	@Override
 	public void getRootNode() {
-
 		getNodeByType("VMhost");
 		return;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getTemplateForNode(java.lang.String)
+	 */
+	@Override
 	public String getTemplateForNode(String id) {
+		if (this.xmlFile == null) 
+			return null;
 		//
 		DTMNodeList nodes = null;
 		System.out.println("//NodeTemplate[@id='" + id + "']");
@@ -213,7 +246,13 @@ public class ToscaFileManager {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getOrderedContainers()
+	 */
+	@Override
 	public ArrayList<String> getOrderedContainers() {
+		if (this.xmlFile == null) 
+			return null;
 		// TODO here I return a fixed list will have to check the TOSCA instance
 		// file to get the ORDERED list of DockerContainers
 		// ORDERED means that reading the TOSCA file we need to determine the
@@ -226,7 +265,13 @@ public class ToscaFileManager {
 
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getPropertiesForNode(java.lang.String)
+	 */
+	@Override
 	public HashMap getPropertiesForNode(String id) {
+		if (this.xmlFile == null) 
+			return null;
 		DTMNodeList nodes = null;
 		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
 		try {

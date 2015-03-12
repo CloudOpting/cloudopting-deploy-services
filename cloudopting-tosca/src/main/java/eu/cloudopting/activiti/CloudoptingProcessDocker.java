@@ -9,12 +9,16 @@ import java.util.Map;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
 
 public class CloudoptingProcessDocker implements JavaDelegate {
+	
+	@Autowired
+	ToscaFileManager tfm;
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
@@ -53,7 +57,9 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 		}
 
 		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
-		ToscaFileManager tfm = new ToscaFileManager(xml);
+//		ToscaFileManager tfm = new ToscaFileManager(xml);
+		tfm = ToscaFileManager.getInstance();
+
 		String myTemplate = tfm.getTemplateForNode("ClearoApacheVH");
 		System.out.println("The template is :"+myTemplate);
 		Map nodeData = tfm.getPropertiesForNode("ClearoApacheVH");
