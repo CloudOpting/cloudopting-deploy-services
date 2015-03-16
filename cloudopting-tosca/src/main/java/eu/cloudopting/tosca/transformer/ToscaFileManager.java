@@ -6,6 +6,8 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -41,20 +43,23 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	private static AtomicReference<ToscaFileManager> INSTANCE = new AtomicReference<ToscaFileManager>();
 
-    public ToscaFileManager() {
-        final ToscaFileManager previous = INSTANCE.getAndSet(this);
-        if(previous != null)
-            throw new IllegalStateException("Second singleton " + this + " created after " + previous);
-    }
+	public ToscaFileManager() {
+		final ToscaFileManager previous = INSTANCE.getAndSet(this);
+		if (previous != null)
+			throw new IllegalStateException("Second singleton " + this
+					+ " created after " + previous);
+	}
 
-    public static ToscaFileManager getInstance() {
-        return INSTANCE.get();
-    }
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#setToscaFile(java.lang.String)
+	public static ToscaFileManager getInstance() {
+		return INSTANCE.get();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.cloudopting.tosca.transformer.IToscaFileManager#setToscaFile(java.
+	 * lang.String)
 	 */
 	@Override
 	public void setToscaFile(String xmlFile) {
@@ -63,7 +68,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		this.g = new DefaultDirectedGraph<String, DefaultEdge>(
 				DefaultEdge.class);
 
-		System.out.println(xmlFile);
+//		System.out.println(xmlFile);
 
 		// Here we do the stuff to parse the XML
 		InputSource source = new InputSource(new StringReader(xmlFile));
@@ -123,8 +128,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		for (int i = 0; i < nodes.getLength(); ++i) {
 			// values.add(nodes.item(i).getFirstChild().getNodeValue());
 			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
-			System.out.println(nodes.item(i).getAttributes().getNamedItem("id")
-					.getNodeValue());
+//			System.out.println(nodes.item(i).getAttributes().getNamedItem("id").getNodeValue());
 			this.g.addVertex(nodes.item(i).getAttributes().getNamedItem("id")
 					.getNodeValue());
 		}
@@ -133,15 +137,11 @@ public class ToscaFileManager implements IToscaFileManager {
 			// values.add(nodes.item(i).getFirstChild().getNodeValue());
 			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
 			NodeList nl = relations.item(i).getChildNodes();
-			System.out.println(nl.item(0).getNodeValue());
-			System.out.println(nl.item(1).getNodeValue());
+//			System.out.println(nl.item(0).getNodeValue());
+//			System.out.println(nl.item(1).getNodeValue());
 
-			System.out.println("relation s:"
-					+ nl.item(1).getAttributes().getNamedItem("ref")
-							.getNodeValue());
-			System.out.println("relation t:"
-					+ nl.item(3).getAttributes().getNamedItem("ref")
-							.getNodeValue());
+//			System.out.println("relation s:"+ nl.item(1).getAttributes().getNamedItem("ref").getNodeValue());
+//			System.out.println("relation t:"+ nl.item(3).getAttributes().getNamedItem("ref").getNodeValue());
 			// System.out.println(relations.item(i).getFirstChild()
 			// .getAttributes().getNamedItem("ref").getNodeValue());
 			// System.out.println(relations.item(i).getAttributes()
@@ -174,12 +174,16 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getNodeByType(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.cloudopting.tosca.transformer.IToscaFileManager#getNodeByType(java
+	 * .lang.String)
 	 */
 	@Override
 	public DTMNodeList getNodeByType(String type) {
-		if (this.xmlFile == null) 
+		if (this.xmlFile == null)
 			return null;
 		// Get the node by the type
 		DTMNodeList nodes = null;
@@ -194,7 +198,9 @@ public class ToscaFileManager implements IToscaFileManager {
 		return nodes;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getRootNode()
 	 */
 	@Override
@@ -203,12 +209,16 @@ public class ToscaFileManager implements IToscaFileManager {
 		return;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getTemplateForNode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.cloudopting.tosca.transformer.IToscaFileManager#getTemplateForNode
+	 * (java.lang.String)
 	 */
 	@Override
-	public String getTemplateForNode(String id) {
-		if (this.xmlFile == null) 
+	public String getTemplateForNode(String id,String templateType) {
+		if (this.xmlFile == null)
 			return null;
 		//
 		DTMNodeList nodes = null;
@@ -227,13 +237,13 @@ public class ToscaFileManager implements IToscaFileManager {
 				.getNodeValue();
 		DTMNodeList nodesTI = null;
 		System.out.println("//NodeTypeImplementation[@nodeType='" + type
-				+ "']/ImplementationArtifacts/ImplementationArtifact");
+				+ "']/ImplementationArtifacts/ImplementationArtifact[@artifactType='"+templateType+"']");
 		try {
 			nodesTI = (DTMNodeList) this.xpath
 					.evaluate(
 							"//NodeTypeImplementation[@nodeType='"
 									+ type
-									+ "']/ImplementationArtifacts/ImplementationArtifact",
+									+ "']/ImplementationArtifacts/ImplementationArtifact[@artifactType='"+templateType+"']",
 							this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -246,12 +256,15 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getOrderedContainers()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.cloudopting.tosca.transformer.IToscaFileManager#getOrderedContainers()
 	 */
 	@Override
 	public ArrayList<String> getOrderedContainers() {
-		if (this.xmlFile == null) 
+		if (this.xmlFile == null)
 			return null;
 		// TODO here I return a fixed list will have to check the TOSCA instance
 		// file to get the ORDERED list of DockerContainers
@@ -265,12 +278,16 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.cloudopting.tosca.transformer.IToscaFileManager#getPropertiesForNode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * eu.cloudopting.tosca.transformer.IToscaFileManager#getPropertiesForNode
+	 * (java.lang.String)
 	 */
 	@Override
 	public HashMap getPropertiesForNode(String id) {
-		if (this.xmlFile == null) 
+		if (this.xmlFile == null)
 			return null;
 		DTMNodeList nodes = null;
 		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
@@ -288,8 +305,7 @@ public class ToscaFileManager implements IToscaFileManager {
 			// values.add(nodes.item(i).getFirstChild().getNodeValue());
 			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
 
-			System.out
-					.println("property val:" + props.item(i).getTextContent());
+//			System.out.println("property val:" + props.item(i).getTextContent());
 			String[] keys = props.item(i).getNodeName().split(":");
 			if (keys.length > 1) {
 				String key = keys[1];
@@ -302,4 +318,44 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
+	public ArrayList<String> getChildrenOfNode(String node) {
+
+		if (this.xmlFile == null)
+			return null;
+		//
+		Set edges = this.g.outgoingEdgesOf(node);
+		System.out.println("Children of:" + node + " are:" + edges.toString());
+		Iterator<DefaultEdge> iterator = edges.iterator();
+		ArrayList<String> children = new ArrayList<String>();
+		while(iterator.hasNext()){
+			String target = g.getEdgeTarget(iterator.next());
+//			System.out.println(target);
+			children.add(target);
+		}
+		
+		
+		return children;
+
+	}
+
+	public String getNodeType(String id) {
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList nodes = null;
+		System.out.println("//NodeTemplate[@id='" + id + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
+					+ id + "']", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// since there is a single ID we are sure that the array is with a
+		// single element
+		// We need to get the type
+		String type = nodes.item(0).getAttributes().getNamedItem("type")
+				.getNodeValue();
+		return type;
+	}
 }

@@ -253,6 +253,10 @@
 				<TargetElement ref="ClearoApacheVH" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoApache" />
+				<TargetElement ref="ClearoApacheVH2" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoMySQLDC" />
 			</RelationshipTemplate>
@@ -288,7 +292,22 @@
 				artifactRef="ApacheVirtualHostPT">
 			</ImplementationArtifact>
 		</ImplementationArtifacts></NodeTypeImplementation>
-	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl"></NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="ApachePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="DockerContainer" name="DockerContainerImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="DockerContainerPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="DockerfileTemplate"
+				artifactRef="DockerContainerDT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
 	<ArtifactType name="PuppetTemplate"></ArtifactType>
+	<ArtifactType name="DockerfileTemplate"></ArtifactType>
 	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT"></ArtifactTemplate>
 </Definitions>
