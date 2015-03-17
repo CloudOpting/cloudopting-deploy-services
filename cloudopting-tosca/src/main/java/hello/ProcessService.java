@@ -24,6 +24,7 @@ public class ProcessService {
     public void startProcess() {
 		HashMap<String, Object> v = new HashMap<String, Object>();
 		v.put("toscaFile", new String("ClearoExampleInstance.xml"));
+		v.put("customer", new String("csi"));
         runtimeService.startProcessInstanceByKey("cloudoptingProcess",v);
     }
 

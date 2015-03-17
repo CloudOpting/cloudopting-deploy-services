@@ -1,5 +1,6 @@
 package eu.cloudopting.activiti;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -25,6 +26,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		System.out.println("Sono nella classe java");
 		String toscaFile = (String) execution.getVariable("toscaFile");
 		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String customer = (String) execution.getVariable("customer");
 		
 //		String filePath = new String("ClearoExample.xml");
 		String xml = null;
@@ -66,6 +68,27 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		execution.setVariable("dockerNodesList", dockerNodesList);
 		execution.setVariable("vmPortsList", dockerPortsList);
 		
+		// preparing the Puppet env
+		String serviceName = toscaFileManager.getServiceName();
+		String dir = new String(customer+"-"+serviceName);
+
+        // Creating new directory in Java, if it doesn't exists
+		boolean success = false;
+        File directory = new File(dir);
+        if (directory.exists()) {
+            System.out.println("Directory already exists ...");
+
+        } else {
+            System.out.println("Directory not exists, creating now");
+
+            success = directory.mkdir();
+            if (success) {
+                System.out.printf("Successfully created new directory : %s%n", dir);
+            } else {
+                System.out.printf("Failed to create new directory: %s%n", dir);
+            }
+        }
+        execution.setVariable("creationPath", dir);
 	}
 
 }

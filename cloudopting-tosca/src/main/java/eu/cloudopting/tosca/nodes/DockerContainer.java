@@ -1,7 +1,11 @@
 package eu.cloudopting.tosca.nodes;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -109,8 +113,21 @@ public class DockerContainer implements CloudOptingNode {
 		}
 
 		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+//		FileOutputStream outFile = new FileOutputStream("the-file-name");
+		PrintWriter outFile = null;
+		String puppetFile = new String(id+".pp");
 		try {
-			tpl.process(nodeData, outputTempl);
+			outFile = new PrintWriter(puppetFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			//tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, outFile);
 		} catch (TemplateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -119,8 +136,51 @@ public class DockerContainer implements CloudOptingNode {
 			e.printStackTrace();
 		}
 		// I get the Dockerfile template name
-		
+		Map nodeDataDC = tfm.getPropertiesForNode(id);
+		nodeDataDC.put("puppetFile",puppetFile);
+		String myDCTemplate = tfm.getTemplateForNode(id,"DockerfileTemplate");
+		System.out.println("The template for DockerContainer is :"+myDCTemplate);
 		// I add the data and get the final docker template and write it
+		Template tplDC = null;
+		try {
+			tplDC = cfg.getTemplate(myDCTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+//		FileOutputStream outFile = new FileOutputStream("the-file-name");
+		PrintWriter outFileDC = null;
+		String dockerFile = new String(id+".dockerfile");
+		try {
+			outFileDC = new PrintWriter(dockerFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			//tpl.process(nodeData, outputTempl);
+			tplDC.process(nodeDataDC, outFileDC);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		return id;
 	}
 }

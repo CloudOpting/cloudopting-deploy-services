@@ -358,4 +358,23 @@ public class ToscaFileManager implements IToscaFileManager {
 				.getNodeValue();
 		return type;
 	}
+	
+	public String getServiceName(){
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList nodes = null;
+		System.out.println("//ServiceTemplate/@id");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ServiceTemplate/@id", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// since there is a single ID we are sure that the array is with a
+		// single element
+		// We need to get the type
+		String serviceName = nodes.item(0).getNodeValue();
+		return serviceName;
+	}
 }
