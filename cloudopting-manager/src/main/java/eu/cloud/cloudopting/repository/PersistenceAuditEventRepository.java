@@ -1,5 +1,6 @@
 package eu.cloud.cloudopting.repository;
 
+
 import eu.cloud.cloudopting.domain.PersistentAuditEvent;
 import org.joda.time.LocalDateTime;
 import org.springframework.data.jpa.repository.JpaRepository;
