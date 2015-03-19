@@ -19,7 +19,7 @@ public interface IToscaFileManager {
 	 */
 	public abstract void getRootNode();
 
-	public abstract String getTemplateForNode(String id);
+	public abstract String getTemplateForNode(String id,String templateType);
 
 	public abstract ArrayList<String> getOrderedContainers();
 

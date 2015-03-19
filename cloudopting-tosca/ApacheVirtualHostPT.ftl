@@ -1,4 +1,4 @@
-apache::vhost { <#if VHostName?has_content>${VHostName}</#if>:
+apache::vhost { '<#if VHostName?has_content>${VHostName}</#if>':
       <#if port?has_content>port    => ${port},</#if>
       <#if docroot?has_content>docroot => ${docroot},</#if>
       <#if aliases?has_content>aliases => ${aliases},</#if>

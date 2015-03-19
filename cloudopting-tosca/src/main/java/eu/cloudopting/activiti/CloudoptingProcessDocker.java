@@ -11,6 +11,8 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.cloudopting.tosca.nodes.CloudOptingNode;
+import eu.cloudopting.tosca.nodes.DockerContainer;
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
 import freemarker.template.Configuration;
 import freemarker.template.Template;
@@ -31,7 +33,8 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 		String dockerNode = (String) execution.getVariable("dockerNode");
 		System.out.println("I will create the Dockerfile for :"+dockerNode);
 		
-		
+		CloudOptingNode dc = new DockerContainer();
+		dc.prepare(dockerNode);
 		
 		// Add the values in the datamodel
 
@@ -58,9 +61,9 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 
 		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
 //		ToscaFileManager tfm = new ToscaFileManager(xml);
-		tfm = ToscaFileManager.getInstance();
+/*		tfm = ToscaFileManager.getInstance();
 
-		String myTemplate = tfm.getTemplateForNode("ClearoApacheVH");
+		String myTemplate = tfm.getTemplateForNode("ClearoApacheVH","PuppetTemplate");
 		System.out.println("The template is :"+myTemplate);
 		Map nodeData = tfm.getPropertiesForNode("ClearoApacheVH");
 //		System.out.println("Data :"+nodeData.toString());
@@ -68,6 +71,7 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 
 		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
 		tpl1.process(nodeData, outputTempl);
+		*/
 	}
 
 }

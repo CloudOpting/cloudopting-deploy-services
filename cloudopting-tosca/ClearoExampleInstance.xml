@@ -81,6 +81,12 @@
 			</Interface>
 		</Interfaces>
 	</NodeType>
+	<NodeType name="Tomcat">
+		<documentation>This is the Tomcat server (we should not ask anything
+			to the end user about tomcat, but we need to set the properties)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
 	<ServiceTemplate id="Clearo" name=""
 		substitutableNodeType="QName" targetNamespace="http://tempuri.org">
 
@@ -119,10 +125,18 @@
 					</co:VMhostProperties>
 				</Properties>
 			</NodeTemplate>
-			<NodeTemplate type="DockerContainer" id="ClearoApacheDC"></NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoApacheDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $? -eq 2 ]</co:run>
+						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
+						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+			</NodeTemplate>
 			<NodeTemplate type="Apache" id="ClearoApache">
 				<Properties>
-					<documentation></documentation>
 					<co:ApacheProperties>
 						<co:default_mods>true</co:default_mods>
 						<co:servername>fqdn</co:servername>
@@ -206,7 +220,6 @@
 			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoMySQLDC">
 				<Properties>
-					<documentation></documentation>
 					<co:DockerContainerProperties>
 						<co:from></co:from>
 						<co:entrypoint></co:entrypoint>
@@ -216,7 +229,6 @@
 			</NodeTemplate>
 			<NodeTemplate type="MySQL" id="ClearoMySQL">
 				<Properties>
-					<documentation></documentation>
 					<co:MySQLProperties>
 						<co:root_password>mypass</co:root_password>
 						<co:remove_default_accounts></co:remove_default_accounts>
@@ -226,7 +238,6 @@
 			</NodeTemplate>
 			<NodeTemplate type="MySQLDatabase" id="ClearoMySQLDB">
 				<Properties>
-					<documentation></documentation>
 					<co:MySQLDatabaseProperties>
 						<co:dbName></co:dbName>
 						<co:dbUser></co:dbUser>
@@ -238,6 +249,23 @@
 						<co:charset></co:charset>
 						<co:collate></co:collate>
 					</co:MySQLDatabaseProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoTomcatDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $? -eq 2 ]</co:run>
+						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
+						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="Tomcat" id="ClearoTomcat">
+				<Properties>
+					<co:TomcatProperties>
+						<co:port>8088</co:port>
+					</co:TomcatProperties>
 				</Properties>
 			</NodeTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
@@ -253,6 +281,10 @@
 				<TargetElement ref="ClearoApacheVH" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoApache" />
+				<TargetElement ref="ClearoApacheVH2" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoMySQLDC" />
 			</RelationshipTemplate>
@@ -263,6 +295,14 @@
 			<RelationshipTemplate type="QName" id="idvalue0">
 				<SourceElement ref="ClearoMySQL" />
 				<TargetElement ref="ClearoMySQLDB" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoTomcatDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoTomcatDC" />
+				<TargetElement ref="ClearoTomcat" />
 			</RelationshipTemplate>
 		</TopologyTemplate>
 		<Plans targetNamespace="http://tempuri.org">
@@ -288,7 +328,22 @@
 				artifactRef="ApacheVirtualHostPT">
 			</ImplementationArtifact>
 		</ImplementationArtifacts></NodeTypeImplementation>
-	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl"></NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="ApachePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="DockerContainer" name="DockerContainerImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="DockerContainerPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="DockerfileTemplate"
+				artifactRef="DockerContainerDT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
 	<ArtifactType name="PuppetTemplate"></ArtifactType>
+	<ArtifactType name="DockerfileTemplate"></ArtifactType>
 	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT"></ArtifactTemplate>
 </Definitions>
