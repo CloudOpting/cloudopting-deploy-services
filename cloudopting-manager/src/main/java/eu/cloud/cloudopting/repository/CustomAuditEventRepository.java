@@ -1,6 +1,7 @@
 package eu.cloud.cloudopting.repository;
 
 import eu.cloud.cloudopting.config.audit.AuditEventConverter;
+
 import eu.cloud.cloudopting.domain.PersistentAuditEvent;
 import org.joda.time.LocalDateTime;
 import org.springframework.boot.actuate.audit.AuditEvent;
@@ -50,7 +51,7 @@ public class CustomAuditEventRepository {
                 PersistentAuditEvent persistentAuditEvent = new PersistentAuditEvent();
                 persistentAuditEvent.setPrincipal(event.getPrincipal());
                 persistentAuditEvent.setAuditEventType(event.getType());
-                persistentAuditEvent.setAuditEventDate(new LocalDateTime(event.getTimestamp()));
+               persistentAuditEvent.setAuditEventDate(new LocalDateTime(event.getTimestamp()));
                 persistentAuditEvent.setData(auditEventConverter.convertDataToStrings(event.getData()));
 
                 persistenceAuditEventRepository.save(persistentAuditEvent);

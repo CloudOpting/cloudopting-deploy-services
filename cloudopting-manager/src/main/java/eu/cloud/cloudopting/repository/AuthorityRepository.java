@@ -1,6 +1,7 @@
 package eu.cloud.cloudopting.repository;
 
 import eu.cloud.cloudopting.domain.Authority;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

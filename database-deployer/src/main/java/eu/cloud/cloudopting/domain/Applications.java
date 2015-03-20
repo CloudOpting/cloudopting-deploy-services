@@ -1,177 +1,218 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.cloud.cloudopting.domain;
+import java.util.List;
+import java.util.Set;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.annotation.Transactional;
 import ro.tn.events.api.entity.BaseEntity;
 
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
-/**
- *
- * @author danielpo
- */
 @Entity
-@Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"status_id"})})
-@NamedQueries({
-    @NamedQuery(name = "Applications.findAll", query = "SELECT a FROM Applications a")})
+@Table(schema = "public",name = "applications")
+@Configurable
 public class Applications implements BaseEntity {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(nullable = false)
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
-    @Basic(optional = false)
-    @Column(name = "application_name", nullable = false, length = 50)
-    private String applicationName;
-    @Basic(optional = false)
-    @Column(name = "application_description", nullable = false, length = 2147483647)
-    private String applicationDescription;
-    @Basic(optional = false)
-    @Column(name = "application_tosca_template", nullable = false)
-    private Serializable applicationToscaTemplate;
-    @Basic(optional = false)
-    @Column(name = "application_version", nullable = false, length = 10)
-    private String applicationVersion;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "applicationId")
-    private Customizations customizations;
-    @OneToOne(mappedBy = "applicationId")
-    private ApplicationMedia applicationMedia;
+
+	public Long getId() {
+        return this.id;
+    }
+
+	public void setId(Long id) {
+        this.id = id;
+    }
+
+	@OneToMany(mappedBy = "applicationId", fetch = FetchType.EAGER)
+    @JsonManagedReference
+    private Set<ApplicationMedia> applicationMedias;
+
+	@OneToMany(mappedBy = "applicationId", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<Customizations> customizationss;
+
+	@ManyToOne
     @JoinColumn(name = "status_id", referencedColumnName = "id", nullable = false)
-    @OneToOne(optional = false)
     private Status statusId;
+
+	@ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    @ManyToOne
     private User userId;
 
-    public Applications() {
+	@Column(name = "application_name", length = 50)
+    @NotNull
+    private String applicationName;
+
+	@Column(name = "application_description")
+    @NotNull
+    private String applicationDescription;
+
+	@Column(name = "application_tosca_template")
+    @NotNull
+    private String applicationToscaTemplate;
+
+	@Column(name = "application_version", length = 10)
+    @NotNull
+    private String applicationVersion;
+
+	public Set<ApplicationMedia> getApplicationMedias() {
+        return applicationMedias;
     }
 
-    public Applications(Long id) {
-        this.id = id;
+	public void setApplicationMedias(Set<ApplicationMedia> applicationMedias) {
+        this.applicationMedias = applicationMedias;
     }
 
-    public Applications(Long id, String applicationName, String applicationDescription, Serializable applicationToscaTemplate, String applicationVersion) {
-        this.id = id;
-        this.applicationName = applicationName;
-        this.applicationDescription = applicationDescription;
-        this.applicationToscaTemplate = applicationToscaTemplate;
-        this.applicationVersion = applicationVersion;
+	public Set<Customizations> getCustomizationss() {
+        return customizationss;
     }
 
-    public Long getId() {
-        return id;
+	public void setCustomizationss(Set<Customizations> customizationss) {
+        this.customizationss = customizationss;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getApplicationName() {
-        return applicationName;
-    }
-
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
-    }
-
-    public String getApplicationDescription() {
-        return applicationDescription;
-    }
-
-    public void setApplicationDescription(String applicationDescription) {
-        this.applicationDescription = applicationDescription;
-    }
-
-    public Serializable getApplicationToscaTemplate() {
-        return applicationToscaTemplate;
-    }
-
-    public void setApplicationToscaTemplate(Serializable applicationToscaTemplate) {
-        this.applicationToscaTemplate = applicationToscaTemplate;
-    }
-
-    public String getApplicationVersion() {
-        return applicationVersion;
-    }
-
-    public void setApplicationVersion(String applicationVersion) {
-        this.applicationVersion = applicationVersion;
-    }
-
-    public Customizations getCustomizations() {
-        return customizations;
-    }
-
-    public void setCustomizations(Customizations customizations) {
-        this.customizations = customizations;
-    }
-
-    public ApplicationMedia getApplicationMedia() {
-        return applicationMedia;
-    }
-
-    public void setApplicationMedia(ApplicationMedia applicationMedia) {
-        this.applicationMedia = applicationMedia;
-    }
-
-    public Status getStatusId() {
+	public Status getStatusId() {
         return statusId;
     }
 
-    public void setStatusId(Status statusId) {
+	public void setStatusId(Status statusId) {
         this.statusId = statusId;
     }
 
-    public User getUserId() {
+	public User getUserId() {
         return userId;
     }
 
-    public void setUserId(User userId) {
+	public void setUserId(User userId) {
         this.userId = userId;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
+	public String getApplicationName() {
+        return applicationName;
     }
 
-    @Override
-    public boolean equals(Object object) {
+	public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
+    }
 
-        if (!(object instanceof Applications)) {
-            return false;
+	public String getApplicationDescription() {
+        return applicationDescription;
+    }
+
+	public void setApplicationDescription(String applicationDescription) {
+        this.applicationDescription = applicationDescription;
+    }
+
+	public String getApplicationToscaTemplate() {
+        return applicationToscaTemplate;
+    }
+
+	public void setApplicationToscaTemplate(String applicationToscaTemplate) {
+        this.applicationToscaTemplate = applicationToscaTemplate;
+    }
+
+	public String getApplicationVersion() {
+        return applicationVersion;
+    }
+
+	public void setApplicationVersion(String applicationVersion) {
+        this.applicationVersion = applicationVersion;
+    }
+
+	public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).setExcludeFieldNames("applicationMedias", "customizationss", "statusId", "userId").toString();
+    }
+
+	@PersistenceContext
+    transient EntityManager entityManager;
+
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("");
+
+	public static final EntityManager entityManager() {
+        EntityManager em = new Applications().entityManager;
+        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        return em;
+    }
+
+	public static long countApplicationses() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM Applications o", Long.class).getSingleResult();
+    }
+
+	public static List<Applications> findAllApplicationses() {
+        return entityManager().createQuery("SELECT o FROM Applications o", Applications.class).getResultList();
+    }
+
+	public static List<Applications> findAllApplicationses(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Applications o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
         }
-        Applications other = (Applications) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return entityManager().createQuery(jpaQuery, Applications.class).getResultList();
     }
 
-    @Override
-    public String toString() {
-        return "Applications[ id=" + id + " ]";
+	public static Applications findApplications(Long id) {
+        if (id == null) return null;
+        return entityManager().find(Applications.class, id);
     }
-    
+
+	public static List<Applications> findApplicationsEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM Applications o", Applications.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+
+	public static List<Applications> findApplicationsEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Applications o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, Applications.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+
+	@Transactional
+    public void persist() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.persist(this);
+    }
+
+	@Transactional
+    public void remove() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager.contains(this)) {
+            this.entityManager.remove(this);
+        } else {
+            Applications attached = Applications.findApplications(this.id);
+            this.entityManager.remove(attached);
+        }
+    }
+
+	@Transactional
+    public void flush() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.flush();
+    }
+
+	@Transactional
+    public void clear() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.clear();
+    }
+
+	@Transactional
+    public Applications merge() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        Applications merged = this.entityManager.merge(this);
+        this.entityManager.flush();
+        return merged;
+    }
 }

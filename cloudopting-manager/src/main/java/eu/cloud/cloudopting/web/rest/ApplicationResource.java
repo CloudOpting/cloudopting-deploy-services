@@ -2,6 +2,7 @@ package eu.cloud.cloudopting.web.rest;
 
 import eu.cloud.cloudopting.domain.Applications;
 import eu.cloud.cloudopting.service.ApplicationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +13,7 @@ import ro.tn.events.api.controller.AbstractController;
 import ro.tn.events.api.service.BaseService;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
@@ -21,7 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/api")
 public class ApplicationResource extends AbstractController<Applications> {
 
-    @Inject
+    @Autowired
     ApplicationService applicationService;
 
     /**
@@ -77,7 +79,7 @@ public class ApplicationResource extends AbstractController<Applications> {
     @ResponseBody
     public final Applications findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder,
                                                final HttpServletResponse response) {
-        return findOneInternal(id, uriBuilder, response);
+        return getService().findOne(id);
     }
 
 
@@ -88,10 +90,15 @@ public class ApplicationResource extends AbstractController<Applications> {
      * @param uriBuilder
      * @param response
      */
-    @RequestMapping(value="/application/create",method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value="/application/create",method = RequestMethod.POST,  produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
+    @ResponseBody
     public final void create(@RequestBody Applications applications, final UriComponentsBuilder uriBuilder,
-                             final HttpServletResponse response) {
+                             final HttpServletResponse response, final HttpServletRequest request) {
+        String xmlTosca = (String) request.getAttribute("xmlTosca");
+        if(xmlTosca!=null && !xmlTosca.equals("")){
+            applications.setApplicationToscaTemplate(xmlTosca);
+        }
         createInternal(applications, uriBuilder, response);
     }
 

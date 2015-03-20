@@ -1,115 +1,162 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package eu.cloud.cloudopting.domain;
-
-import java.io.Serializable;
-import javax.persistence.Basic;
-import javax.persistence.CascadeType;
+import java.util.List;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityManager;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.NotNull;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.apache.commons.lang3.builder.ToStringStyle;
+import org.springframework.beans.factory.annotation.Configurable;
+import org.springframework.transaction.annotation.Transactional;
+import ro.tn.events.api.entity.BaseEntity;
 
-/**
- *
- * @author danielpo
- */
 @Entity
-@Table(uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"status"})})
-@NamedQueries({
-    @NamedQuery(name = "Status.findAll", query = "SELECT s FROM Status s")})
-public class Status implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(nullable = false)
+@Table(schema = "public",name = "status")
+@Configurable
+public class Status implements BaseEntity {
+
+	public String toString() {
+        return new ReflectionToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).setExcludeFieldNames("applicationss", "customizationss").toString();
+    }
+
+	@Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Long id;
-    @Basic(optional = false)
-    @Column(nullable = false, length = 20)
+
+	public Long getId() {
+        return this.id;
+    }
+
+	public void setId(Long id) {
+        this.id = id;
+    }
+
+	@OneToMany(mappedBy = "statusId")
+    private Set<Applications> applicationss;
+
+	@OneToMany(mappedBy = "statusId")
+    private Set<Customizations> customizationss;
+
+	@Column(name = "status", length = 20, unique = true)
+    @NotNull
     private String status;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "statusId")
-    private Customizations customizations;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "statusId")
-    private Applications applications;
 
-    public Status() {
+	public Set<Applications> getApplicationss() {
+        return applicationss;
     }
 
-    public Status(Long id) {
-        this.id = id;
+	public void setApplicationss(Set<Applications> applicationss) {
+        this.applicationss = applicationss;
     }
 
-    public Status(Long id, String status) {
-        this.id = id;
-        this.status = status;
+	public Set<Customizations> getCustomizationss() {
+        return customizationss;
     }
 
-    public Long getId() {
-        return id;
+	public void setCustomizationss(Set<Customizations> customizationss) {
+        this.customizationss = customizationss;
     }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
+	public String getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+	public void setStatus(String status) {
         this.status = status;
     }
 
-    public Customizations getCustomizations() {
-        return customizations;
+	@PersistenceContext
+    transient EntityManager entityManager;
+
+	public static final List<String> fieldNames4OrderClauseFilter = java.util.Arrays.asList("");
+
+	public static final EntityManager entityManager() {
+        EntityManager em = new Status().entityManager;
+        if (em == null) throw new IllegalStateException("Entity manager has not been injected (is the Spring Aspects JAR configured as an AJC/AJDT aspects library?)");
+        return em;
     }
 
-    public void setCustomizations(Customizations customizations) {
-        this.customizations = customizations;
+	public static long countStatuses() {
+        return entityManager().createQuery("SELECT COUNT(o) FROM Status o", Long.class).getSingleResult();
     }
 
-    public Applications getApplications() {
-        return applications;
+	public static List<Status> findAllStatuses() {
+        return entityManager().createQuery("SELECT o FROM Status o", Status.class).getResultList();
     }
 
-    public void setApplications(Applications applications) {
-        this.applications = applications;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 0;
-        hash += (id != null ? id.hashCode() : 0);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-
-        if (!(object instanceof Status)) {
-            return false;
+	public static List<Status> findAllStatuses(String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Status o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
         }
-        Status other = (Status) object;
-        if ((this.id == null && other.id != null) || (this.id != null && !this.id.equals(other.id))) {
-            return false;
-        }
-        return true;
+        return entityManager().createQuery(jpaQuery, Status.class).getResultList();
     }
 
-    @Override
-    public String toString() {
-        return "Status[ id=" + id + " ]";
+	public static Status findStatus(Long id) {
+        if (id == null) return null;
+        return entityManager().find(Status.class, id);
     }
-    
+
+	public static List<Status> findStatusEntries(int firstResult, int maxResults) {
+        return entityManager().createQuery("SELECT o FROM Status o", Status.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+
+	public static List<Status> findStatusEntries(int firstResult, int maxResults, String sortFieldName, String sortOrder) {
+        String jpaQuery = "SELECT o FROM Status o";
+        if (fieldNames4OrderClauseFilter.contains(sortFieldName)) {
+            jpaQuery = jpaQuery + " ORDER BY " + sortFieldName;
+            if ("ASC".equalsIgnoreCase(sortOrder) || "DESC".equalsIgnoreCase(sortOrder)) {
+                jpaQuery = jpaQuery + " " + sortOrder;
+            }
+        }
+        return entityManager().createQuery(jpaQuery, Status.class).setFirstResult(firstResult).setMaxResults(maxResults).getResultList();
+    }
+
+	@Transactional
+    public void persist() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.persist(this);
+    }
+
+	@Transactional
+    public void remove() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        if (this.entityManager.contains(this)) {
+            this.entityManager.remove(this);
+        } else {
+            Status attached = Status.findStatus(this.id);
+            this.entityManager.remove(attached);
+        }
+    }
+
+	@Transactional
+    public void flush() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.flush();
+    }
+
+	@Transactional
+    public void clear() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        this.entityManager.clear();
+    }
+
+	@Transactional
+    public Status merge() {
+        if (this.entityManager == null) this.entityManager = entityManager();
+        Status merged = this.entityManager.merge(this);
+        this.entityManager.flush();
+        return merged;
+    }
 }

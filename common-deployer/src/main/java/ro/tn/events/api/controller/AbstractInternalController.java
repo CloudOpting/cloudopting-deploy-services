@@ -99,7 +99,7 @@ abstract class AbstractInternalController<T extends BaseEntity> {
                                       final UriComponentsBuilder uriBuilder,
                                       final HttpServletResponse response) {
         final T resource = findOneInternal(id);
-        getEventPublisher().publishEvent(new SingleResourceRetrievedEvent<>(clazz, uriBuilder, response));
+      //  getEventPublisher().publishEvent(new SingleResourceRetrievedEvent<>(clazz, uriBuilder, response));
         return resource;
     }
 
