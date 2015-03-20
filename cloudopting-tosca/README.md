@@ -1,6 +1,7 @@
 This component represent the orchestration core of the CloudOpting platform.
 It uses Activiti BPMN engine to execute a process that orchestrate the deployment of the service.
 It reads the TOSCA instance file (an example is found [here](https://raw.githubusercontent.com/CloudOpting/cloudopting-deploy-services/master/cloudopting-tosca/ClearoExampleInstance.xml)) and with that content it:
+
 1. command the cloud to generate a proper new VM
 2. open the needed ports on the new VM
 3. generates the puppet files 
