@@ -89,6 +89,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
             }
         }
         execution.setVariable("creationPath", dir);
+        execution.setVariable("service", serviceName);
 	}
 
 }
