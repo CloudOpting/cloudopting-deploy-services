@@ -30,6 +30,11 @@ This is only the set of components used in the orchestrator and component like t
 This component is a headless element and does not return any graphic information to the user.
 At the moment the current implementation make use of an internal TOSCA file manager element that is not developed in the proper way: the component needs to have an array of TOSCA files caches and he has to return the cache ID to the process and all the calls to the manager need to add this ID so that each process will operate on his TOSCA file.
 This change will be done in the next iteration of the component.
+
 The TOSCA file manager also just make use of a graph manager, but does not leveradge on it for returning the correct ordered nodes, also this part will be developed in a next iteration; the graph manager is needed to allow the TOSCA manager to return the correctly dependent elements in the proper order.
 
 Even if the TOSCA file manager could be implemented as an external REST component this could be an overkill in the simple actual architecture of the project; at the moment is used as a singleton object in the process. This generate a dependency on the elements that has to be validated, design team needs to vote on the better implementation.
+
+The orchestrator also make use of the Cloud manager that has the knowledge to deploy the VM and will make use of the JClouds library.
+
+At the moment the implementation for the Docker execution is done directly in the Task implementation as a shell command execution leveradging on the available task without any other complications.
