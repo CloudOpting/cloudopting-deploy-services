@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Definitions id="Clearo" name="" targetNamespace="http://tempuri.org"
+	xmlns="http://docs.oasis-open.org/tosca/ns/2011/12" xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:co="http://docs.oasis-open.org/tosca/ns/2011/12/CloudOptingTypes"
+	xsi:schemaLocation="http://docs.oasis-open.org/tosca/ns/2011/12 TOSCA-v1.0.xsd 
+	http://docs.oasis-open.org/tosca/ns/2011/12/CloudOptingTypes ./Types/CloudOptingTypes.xsd">
+	<NodeType name="VMhost">
+		<documentation>This is the VM description, we need to collect the SLA
+			information (that is the set of CPU+RAM+DISK) that the VM need to
+			have for the service (this information is just a label for the end
+			user but translate to data for the system)
+		</documentation>
+		<PropertiesDefinition element="co:VMhostProperties"
+			type="co:tVMhostProperties" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<documentation>The parameters to ask to the end user to execute the
+						"install" operation of this node
+					</documentation>
+					<InputParameters>
+						<InputParameter name="co:SLA.co:Chosen" type="co:SLA" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="DockerContainer">
+		<documentation>This is the Docker Container (the Docker host is
+			already installed in the VM image)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="Apache">
+		<documentation>This is the Apache server (we should not ask anything
+			to the end user about apache, but we need to set the properties)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="ApacheVirtualHost">
+		<documentation>This is the Apache Virtual Host and here we have things
+			to ask to the user
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="VHostName" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="MySQL">
+		<documentation>This is the MySQL engine
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="root_password" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="MySQLDatabase">
+		<documentation>This is the MySQL engine
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="dbPassword" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="Tomcat">
+		<documentation>This is the Tomcat server (we should not ask anything
+			to the end user about tomcat, but we need to set the properties)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<ServiceTemplate id="Clearo" name=""
+		substitutableNodeType="QName" targetNamespace="http://tempuri.org">
+
+		<TopologyTemplate>
+			<documentation xml:lang="" source="http://tempuri.org" />
+			<NodeTemplate id="ClearoVM" maxInstances="1"
+				minInstances="1" name="" type="VMhost">
+				<documentation xml:lang="" source="http://tempuri.org" />
+				<Properties>
+					<documentation xml:lang="" source="http://tempuri.org" />
+					<co:VMhostProperties>
+						<co:SLAsProperties>
+							<co:SLA Name="Big City" id="BigCity">
+								<co:NumCpus>2</co:NumCpus>
+								<co:Memory>2</co:Memory>
+								<co:Price>10000</co:Price>
+								<co:Disk>10</co:Disk>
+								<co:Chosen>false</co:Chosen>
+							</co:SLA>
+							<co:SLA Name="Small City" id="SmallCity">
+								<co:NumCpus>1</co:NumCpus>
+								<co:Memory>1</co:Memory>
+								<co:Price>5000</co:Price>
+								<co:Disk>5</co:Disk>
+								<co:Chosen>true</co:Chosen>
+							</co:SLA>
+							<co:SLA Name="Region" id="Region">
+								<co:NumCpus>4</co:NumCpus>
+								<co:Memory>4</co:Memory>
+								<co:Price>20000</co:Price>
+								<co:Disk>20</co:Disk>
+								<co:Chosen>false</co:Chosen>
+							</co:SLA>
+							<co:vmImage></co:vmImage>
+						</co:SLAsProperties>
+					</co:VMhostProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoApacheDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $? -eq 2 ]</co:run>
+						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
+						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="Apache" id="ClearoApache">
+				<Properties>
+					<co:ApacheProperties>
+						<co:default_mods>true</co:default_mods>
+						<co:servername>fqdn</co:servername>
+						<co:log_formats>{ vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }</co:log_formats>
+					</co:ApacheProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
+				<Properties>
+					<co:ApacheVirtualHostProperties>
+						<co:VHostName>www.clearo.com</co:VHostName>
+						<co:aliases>[
+  { aliasmatch       => '^/image/(.*)\.jpg$',
+    path             => '/files/jpg.images/$1.jpg',
+  },
+  { alias            => '/image',
+    path             => '/ftp/pub/image',
+  },
+  { scriptaliasmatch => '^/cgi-bin(.*)',
+    path             => '/usr/local/share/cgi-bin$1',
+  },
+  { scriptalias      => '/nagios/cgi-bin/',
+    path             => '/usr/lib/nagios/cgi-bin/',
+  },
+  { alias            => '/nagios',
+    path             => '/usr/share/nagios/html',
+  },
+]</co:aliases>
+						<co:default_vhost>false</co:default_vhost>
+						<co:docroot></co:docroot>
+						<co:directories>[
+        { path        => '/path/to/directory',
+          addhandlers => [{ handler => 'cgi-script', extensions => ['.cgi']}],
+        },
+      ]</co:directories>
+						<co:log_level></co:log_level>
+						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
+						<co:port></co:port>
+						<co:proxy_pass>[
+    { 'path' => '/a', 'url' => 'http://backend-a/' },
+    { 'path' => '/b', 'url' => 'http://backend-b/' },
+    { 'path' => '/c', 'url' => 'http://backend-a/c', 'params' => {'max'=>20, 'ttl'=>120, 'retry'=>300}},
+    { 'path' => '/l', 'url' => 'http://backend-xy',
+      'reverse_urls' => ['http://backend-x', 'http://backend-y'] },
+    { 'path' => '/d', 'url' => 'http://backend-a/d',
+      'params' => { 'retry' => '0', 'timeout' => '5' }, },
+    { 'path' => '/e', 'url' => 'http://backend-a/e',
+      'keywords' => ['nocanon', 'interpolate'] },
+  ]</co:proxy_pass>
+						<co:redirect_source>['/images','/downloads']</co:redirect_source>
+						<co:redirect_dest>['http://img.example.com/','http://downloads.example.com/']</co:redirect_dest>
+						<co:redirect_status>['temp','permanent']</co:redirect_status>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
+						<co:ssl>false</co:ssl>
+						<co:serveradmin></co:serveradmin>
+					</co:ApacheVirtualHostProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH2">
+				<Properties>
+					<co:ApacheVirtualHostProperties>
+						<co:VHostName>www.trasparenza.it</co:VHostName>
+						<co:aliases></co:aliases>
+						<co:default_vhost>false</co:default_vhost>
+						<co:docroot></co:docroot>
+						<co:directories></co:directories>
+						<co:log_level></co:log_level>
+						<co:options></co:options>
+						<co:port></co:port>
+						<co:proxy_pass></co:proxy_pass>
+						<co:redirect_source></co:redirect_source>
+						<co:redirect_dest></co:redirect_dest>
+						<co:redirect_status></co:redirect_status>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
+						<co:ssl>false</co:ssl>
+						<co:serveradmin></co:serveradmin>
+					</co:ApacheVirtualHostProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoMySQLDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:from></co:from>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd></co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="MySQL" id="ClearoMySQL">
+				<Properties>
+					<co:MySQLProperties>
+						<co:root_password>mypass</co:root_password>
+						<co:remove_default_accounts></co:remove_default_accounts>
+						<co:override_options></co:override_options>
+					</co:MySQLProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="MySQLDatabase" id="ClearoMySQLDB">
+				<Properties>
+					<co:MySQLDatabaseProperties>
+						<co:dbName></co:dbName>
+						<co:dbUser></co:dbUser>
+						<co:dbPassword>clearoDBpass</co:dbPassword>
+						<co:connectionHost></co:connectionHost>
+						<co:grant></co:grant>
+						<co:sql></co:sql>
+						<co:import_timeout></co:import_timeout>
+						<co:charset></co:charset>
+						<co:collate></co:collate>
+					</co:MySQLDatabaseProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoTomcatDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $? -eq 2 ]</co:run>
+						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
+						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="Tomcat" id="ClearoTomcat">
+				<Properties>
+					<co:TomcatProperties>
+						<co:port>8088</co:port>
+					</co:TomcatProperties>
+				</Properties>
+			</NodeTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoApacheDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoApacheDC" />
+				<TargetElement ref="ClearoApache" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoApache" />
+				<TargetElement ref="ClearoApacheVH" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoApache" />
+				<TargetElement ref="ClearoApacheVH2" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoMySQLDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoMySQLDC" />
+				<TargetElement ref="ClearoMySQL" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoMySQL" />
+				<TargetElement ref="ClearoMySQLDB" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoTomcatDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoTomcatDC" />
+				<TargetElement ref="ClearoTomcat" />
+			</RelationshipTemplate>
+		</TopologyTemplate>
+		<Plans targetNamespace="http://tempuri.org">
+			<Plan id="idvalue5" name="" planLanguage="http://tempuri.org"
+				planType="http://tempuri.org">
+				<documentation xml:lang="" source="http://tempuri.org" />
+				<Precondition expressionLanguage="http://tempuri.org" />
+				<InputParameters>
+					<InputParameter name="" required="yes" type="" />
+				</InputParameters>
+				<OutputParameters>
+					<OutputParameter name="" required="yes" type="" />
+				</OutputParameters>
+				<PlanModel>
+					<documentation xml:lang="" source="http://tempuri.org" />
+				</PlanModel>
+			</Plan>
+		</Plans>
+	</ServiceTemplate>
+	<NodeTypeImplementation nodeType="ApacheVirtualHost" name="ApacheVirtualHostImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="ApacheVirtualHostPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="ApachePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="DockerContainer" name="DockerContainerImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate"
+				artifactRef="DockerContainerPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="DockerfileTemplate"
+				artifactRef="DockerContainerDT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts></NodeTypeImplementation>
+	<ArtifactType name="PuppetTemplate"></ArtifactType>
+	<ArtifactType name="DockerfileTemplate"></ArtifactType>
+	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT"></ArtifactTemplate>
+</Definitions>

@@ -35,8 +35,8 @@ public class DockerManager {
 	    List<String> commands = new ArrayList<String>();
 	    commands.add("/bin/sh");
 	    commands.add("-c");
-	    commands.add("docker build -t cloudopting/"+customer+" -f "+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
-	    System.out.println("docker build -t cloudopting/"+customer+" -f "+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
+	    commands.add("docker build -t cloudopting/"+customer+"_"+dockerfile+" -f "+path+"/"+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
+	    System.out.println("docker build -t cloudopting/"+customer+"_"+dockerfile+" -f "+path+"/"+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
 	    // execute the command
 	    SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
 	    int result = 0;

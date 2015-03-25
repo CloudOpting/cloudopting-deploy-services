@@ -1,15 +1,27 @@
 package eu.cloudopting.activiti;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
+import freemarker.core.ParseException;
+import freemarker.template.Configuration;
+import freemarker.template.MalformedTemplateNameException;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
+import freemarker.template.TemplateNotFoundException;
 
 public class CloudoptingProcessSetup implements JavaDelegate {
 	@Autowired
@@ -22,10 +34,10 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 		String toscaFile = (String) execution.getVariable("toscaFile");
 		System.out.println("toscaFile :" + toscaFile);
 		String customer = (String) execution.getVariable("customer");
-		System.out.println("customer :"+customer);
+		System.out.println("customer :" + customer);
 		String cloud = (String) execution.getVariable("cloud");
-		System.out.println("cloud :"+cloud);
-		
+		System.out.println("cloud :" + cloud);
+
 		String xml = null;
 		try {
 			xml = new String(Files.readAllBytes(Paths.get(toscaFile)));
@@ -41,7 +53,8 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 		// preparing the Puppet env
 		String serviceName = toscaFileManager.getServiceName();
 		String dockerContextPath = new String("/cloudOptingData");
-		String dir = new String(dockerContextPath+"/"+customer + "-" + serviceName);
+		String dir = new String(dockerContextPath + "/" + customer + "-"
+				+ serviceName);
 
 		// Creating new directory in Java, if it doesn't exists
 		boolean success = false;
@@ -60,11 +73,66 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 				System.out.printf("Failed to create new directory: %s%n", dir);
 			}
 		}
+
+		// getting the list of puppet modules that this service needs
+		ArrayList<String> modules = toscaFileManager.getPuppetModules();
+		ArrayList<HashMap<String, String>> modData = new ArrayList<HashMap<String, String>>();
+		for (String mod : modules) {
+			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
+			System.out.println(mod);
+		}
+		System.out.println(modData.toString());
+		
+		HashMap<String, Object> templData = new HashMap<String, Object>();
+		templData.put("modData", modData);
+		// write the "Puppetfile" file
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate("Puppetfile.ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+//		FileOutputStream outFile = new FileOutputStream("the-file-name");
+		PrintWriter outFile = null;
+		String puppetFile = new String("Puppetfile");
+		try {
+			outFile = new PrintWriter(dir+"/"+puppetFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			//tpl.process(nodeData, outputTempl);
+			tpl.process(templData, outFile);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// setting the variables for the rest of the tasks
 		execution.setVariable("creationPath", dir);
 		execution.setVariable("dockerContextPath", dockerContextPath);
 		execution.setVariable("service", serviceName);
 		execution.setVariable("servicePath", customer + "-" + serviceName);
-		
 
 	}
 
