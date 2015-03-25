@@ -38,3 +38,8 @@ Even if the TOSCA file manager could be implemented as an external REST componen
 The orchestrator also make use of the Cloud manager that has the knowledge to deploy the VM and will make use of the JClouds library.
 
 At the moment the implementation for the Docker execution is done directly in the Task implementation as a shell command execution leveradging on the available task without any other complications.
+
+## Settings
+The orchestrator needs a folder in /cloudOptingData writable from the java process where all the file generation will be done (in this folder we will also have all the community puppet modules used in the build
+
+To populate this folder we will use r10k tool during the CloudOpting master machine creation, this will set up the puppet environment with all the puppet modules we use in the project
