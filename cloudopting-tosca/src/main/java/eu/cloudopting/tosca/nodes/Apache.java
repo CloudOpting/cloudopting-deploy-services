@@ -23,8 +23,9 @@ public class Apache implements CloudOptingNode {
 	ToscaFileManager tfm;
 
 	@Override
-	public String prepare(String id) {
+	public String prepare(HashMap<String, String> data) {
 		// TODO Auto-generated method stub
+		String id = data.get("id");
 		System.out.println("I'm in the Apache.prepare for :" + id);
 
 		// With my ID I ask to the TFM the array of my sons
@@ -67,7 +68,9 @@ public class Apache implements CloudOptingNode {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			templateChunks.add(childInstance.prepare(mychildren.get(i)));
+			HashMap<String, String> hm = new HashMap<String, String>();
+			hm.put("id", mychildren.get(i));
+			templateChunks.add(childInstance.prepare(hm));
 		}
 		// I get the puppetFile template name
 		String myTemplate = tfm.getTemplateForNode(id, "PuppetTemplate");

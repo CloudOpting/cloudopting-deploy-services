@@ -32,8 +32,11 @@ public class DockerContainer implements CloudOptingNode {
 	 * @see eu.cloudopting.tosca.nodes.CloudOptingNode#prepare(java.lang.String)
 	 */
 	@Override
-	public String prepare(String id){
+	public String prepare(HashMap<String, String> data){
 		// here I'm a generic container ... I need to have my ID
+		String id = data.get("id");
+		String creationPath = data.get("creationPath");
+		String servicePath = data.get("servicePath");
 		System.out.println("I'm in the DockerContainer.prepare for :"+id);
 		
 		//String customer = (String) execution.getVariable("customer");
@@ -81,7 +84,9 @@ public class DockerContainer implements CloudOptingNode {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} 
-			templateChunks.add(childInstance.prepare(mychildren.get(i)));
+			HashMap<String, String> hm = new HashMap<String, String>();
+			hm.put("id", mychildren.get(i));
+			templateChunks.add(childInstance.prepare(hm));
 		}
 		
 		
@@ -117,7 +122,7 @@ public class DockerContainer implements CloudOptingNode {
 		PrintWriter outFile = null;
 		String puppetFile = new String(id+".pp");
 		try {
-			outFile = new PrintWriter(puppetFile, "UTF-8");
+			outFile = new PrintWriter(creationPath+"/"+puppetFile, "UTF-8");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -138,6 +143,7 @@ public class DockerContainer implements CloudOptingNode {
 		// I get the Dockerfile template name
 		Map nodeDataDC = tfm.getPropertiesForNode(id);
 		nodeDataDC.put("puppetFile",puppetFile);
+		nodeDataDC.put("servicePath",servicePath);
 		String myDCTemplate = tfm.getTemplateForNode(id,"DockerfileTemplate");
 		System.out.println("The template for DockerContainer is :"+myDCTemplate);
 		// I add the data and get the final docker template and write it
@@ -163,7 +169,7 @@ public class DockerContainer implements CloudOptingNode {
 		PrintWriter outFileDC = null;
 		String dockerFile = new String(id+".dockerfile");
 		try {
-			outFileDC = new PrintWriter(dockerFile, "UTF-8");
+			outFileDC = new PrintWriter(creationPath+"/"+dockerFile, "UTF-8");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();

@@ -17,11 +17,12 @@ public class CloudoptingProcessDockerBuild implements JavaDelegate {
 		System.out.println("I will create the Dockerfile for :"+dockerNode);
 		String customer = (String) execution.getVariable("customer");
 		String service = (String) execution.getVariable("service");
+		String dockerContextPath = (String) execution.getVariable("dockerContextPath");
 		
 		DockerManager dm = new DockerManager();
 		dm.getDockerVersion();
 		
-		dm.buildDockerImage(customer, service, dockerNode);
+		dm.buildDockerImage(customer, service, dockerNode,dockerContextPath);
 		
 	}
 	
