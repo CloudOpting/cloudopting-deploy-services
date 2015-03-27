@@ -25,16 +25,24 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("Sono nella classe CloudoptingProcessDocker");
+		System.out.println("CloudoptingProcessDocker");
 		String resultVar = (String) execution.getVariable("resultVar");
 		System.out.println("result from shell execution:"+resultVar);
 		String toscaFile = (String) execution.getVariable("toscaFile");
-		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		System.out.println("toscaFile :"+toscaFile);
 		String dockerNode = (String) execution.getVariable("dockerNode");
 		System.out.println("I will create the Dockerfile for :"+dockerNode);
+		String creationPath = (String) execution.getVariable("creationPath");
+		System.out.println("creationPath :"+creationPath);
+		String servicePath = (String) execution.getVariable("servicePath");
+		System.out.println("servicePath :"+servicePath);
 		
 		CloudOptingNode dc = new DockerContainer();
-		dc.prepare(dockerNode);
+		HashMap<String, String> hm = new HashMap<String, String>();
+		hm.put("id", dockerNode);
+		hm.put("creationPath", creationPath);
+		hm.put("servicePath", servicePath);
+		dc.prepare(hm);
 		
 		// Add the values in the datamodel
 

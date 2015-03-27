@@ -24,23 +24,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
 		System.out.println("Sono nella classe java");
-		String toscaFile = (String) execution.getVariable("toscaFile");
-		System.out.println("la variabile toscaFile vale:"+toscaFile);
-		String customer = (String) execution.getVariable("customer");
 		
-//		String filePath = new String("ClearoExample.xml");
-		String xml = null;
-		try {
-			xml = new String(Files.readAllBytes(Paths.get(toscaFile)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
-//		ToscaFileManager tfm = new ToscaFileManager(xml);
-		toscaFileManager = ToscaFileManager.getInstance();
-		toscaFileManager.setToscaFile(xml);
 		
 		// TODO here we need a mean to create the VM
 		System.out.println("I'm creating the VM");
@@ -48,7 +32,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		
 		// TODO here we prepare the array to create the containers )will have to create the correct ordered array
 		System.out.println("Now prepare to create the Containers");
-		
+		toscaFileManager = ToscaFileManager.getInstance();
 		DTMNodeList nodes = toscaFileManager.getNodeByType("DockerContainer");
 		ArrayList<String> dockerNodesList = new ArrayList<String>();
 		System.out.println("before cycle");
@@ -63,32 +47,10 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		
 		ArrayList<String> dockerPortsList = new ArrayList<String>();
 		dockerPortsList.add("Port1");
-//		dockerNodesList.add("Nodo2");
-//		dockerNodesList.add("Nodo3");
 		execution.setVariable("dockerNodesList", dockerNodesList);
 		execution.setVariable("vmPortsList", dockerPortsList);
 		
-		// preparing the Puppet env
-		String serviceName = toscaFileManager.getServiceName();
-		String dir = new String(customer+"-"+serviceName);
-
-        // Creating new directory in Java, if it doesn't exists
-		boolean success = false;
-        File directory = new File(dir);
-        if (directory.exists()) {
-            System.out.println("Directory already exists ...");
-
-        } else {
-            System.out.println("Directory not exists, creating now");
-
-            success = directory.mkdir();
-            if (success) {
-                System.out.printf("Successfully created new directory : %s%n", dir);
-            } else {
-                System.out.printf("Failed to create new directory: %s%n", dir);
-            }
-        }
-        execution.setVariable("creationPath", dir);
+		
 	}
 
 }

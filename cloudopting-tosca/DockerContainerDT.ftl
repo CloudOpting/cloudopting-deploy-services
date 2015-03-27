@@ -7,7 +7,7 @@ RUN rpm -ivh https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
 # INSTALL PUPPET AND PREPARE NEEDED FILES
 RUN yum install -y puppet tar
 ADD puppet/modules/ /etc/puppet/modules/
-ADD puppet/manifests/site.pp /etc/puppet/manifests/
+ADD <#if servicePath?has_content>${servicePath}</#if>/<#if puppetFile?has_content>${puppetFile}</#if> /etc/puppet/manifests/
 #ADD common.yaml /var/lib/hiera/common.yaml
 
 # EXECUTE PUPPET STANDALONE

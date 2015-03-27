@@ -256,6 +256,62 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
+	public ArrayList<String> getPuppetModules() {
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList modules = null;
+		System.out.println("//NodeTypeImplementation/ImplementationArtifacts/ImplementationArtifact[@artifactType='PuppetModule']/@artifactRef");
+		try {
+			modules = (DTMNodeList) this.xpath.evaluate("//NodeTypeImplementation/ImplementationArtifacts/ImplementationArtifact[@artifactType='PuppetModule']/@artifactRef", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<String> modulesList = new ArrayList<String>();
+		
+		for (int i = 0; i < modules.getLength(); ++i) {
+			
+			String module = modules.item(i).getNodeValue();
+			modulesList.add(module);
+			
+		}
+		
+		return modulesList;
+
+	}
+	
+	public HashMap<String, String> getPuppetModulesProperties(String module) {
+		
+		if (this.xmlFile == null)
+			return null;
+		DTMNodeList nodes = null;
+		System.out.println("//ArtifactTemplate[@id='" + module + "']/Properties/*");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ArtifactTemplate[@id='"
+					+ module + "']/Properties/*", this.document,
+					XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		HashMap<String, String> propHash = new HashMap<String, String>();
+		NodeList props = nodes.item(0).getChildNodes();
+		for (int i = 0; i < props.getLength(); ++i) {
+			// values.add(nodes.item(i).getFirstChild().getNodeValue());
+			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
+
+//			System.out.println("property val:" + props.item(i).getTextContent());
+			String[] keys = props.item(i).getNodeName().split(":");
+			if (keys.length > 1) {
+				String key = keys[1];
+				System.out.println("property:" + key);
+				propHash.put(key, props.item(i).getTextContent());
+			}
+		}
+		return propHash;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

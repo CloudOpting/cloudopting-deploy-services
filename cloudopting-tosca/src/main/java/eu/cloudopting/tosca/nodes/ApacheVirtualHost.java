@@ -3,6 +3,7 @@ package eu.cloudopting.tosca.nodes;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.StringWriter;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,9 @@ public class ApacheVirtualHost implements CloudOptingNode{
 	@Autowired
 	ToscaFileManager tfm;
 	@Override
-	public String prepare(String id) {
+	public String prepare(HashMap<String, String> data) {
 		// TODO Auto-generated method stub
+		String id = data.get("id");
 		tfm = ToscaFileManager.getInstance();
 		String myTemplate = tfm.getTemplateForNode("ClearoApacheVH","PuppetTemplate");
 		System.out.println("The template is :"+myTemplate);

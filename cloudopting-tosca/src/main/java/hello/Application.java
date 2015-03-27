@@ -59,7 +59,7 @@ public class Application {
         return DataSourceBuilder.create()
             .url("jdbc:mysql://127.0.0.1:3306/activiti?characterEncoding=UTF-8")
             .username("root")
-            .password("amanita")
+            .password("")
             .driverClassName("com.mysql.jdbc.Driver")
             .build();
     }
