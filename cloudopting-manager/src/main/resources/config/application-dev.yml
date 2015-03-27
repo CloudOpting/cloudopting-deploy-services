@@ -9,7 +9,7 @@ spring:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
         url:
         databaseName: cloudopting
-        serverName: localhost
+        serverName: cloudopting1.cloudapp.net
         username: postgres
         password: 1qaz2wsx
 
