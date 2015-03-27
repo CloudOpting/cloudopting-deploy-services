@@ -5,27 +5,22 @@ import org.activiti.engine.delegate.JavaDelegate;
 
 import eu.cloudopting.file.FileSystemManager;
 
-public class CloudoptingProcessDockerBuild implements JavaDelegate {
+public class CloudoptingProcessR10K implements JavaDelegate {
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("Sono nella classe CloudoptingProcessDockerBuild");
+		System.out.println("Sono nella classe CloudoptingProcessR10K");
 		String toscaFile = (String) execution.getVariable("toscaFile");
 		System.out.println("la variabile toscaFile vale:"+toscaFile);
-		String dockerNode = (String) execution.getVariable("dockerNode");
-		System.out.println("I will create the Dockerfile for :"+dockerNode);
 		String customer = (String) execution.getVariable("customer");
 		String service = (String) execution.getVariable("service");
 		String dockerContextPath = (String) execution.getVariable("dockerContextPath");
 		
+
 		FileSystemManager dm = new FileSystemManager();
 		dm.getDockerVersion();
-		
-		dm.buildDockerImage(customer, service, dockerNode,dockerContextPath);
-		
+		dm.runR10K(customer, service, dockerContextPath);
 	}
-	
-	
 
 }

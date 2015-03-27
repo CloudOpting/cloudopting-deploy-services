@@ -188,17 +188,14 @@
 							}, ]
 						</co:aliases>
 						<co:default_vhost>false</co:default_vhost>
-						<co:docroot>
-						</co:docroot>
+						<co:docroot>'/var/www/html'</co:docroot>
 						<co:directories>
 							[ { path => '/path/to/directory', addhandlers => [{ handler => 'cgi-script', extensions
 							=> ['.cgi']}], }, ]
 						</co:directories>
-						<co:log_level>
-						</co:log_level>
+						<co:log_level></co:log_level>
 						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
-						<co:port>
-						</co:port>
+						<co:port></co:port>
 						<co:proxy_pass>
 							[ { 'path' => '/a', 'url' => 'http://backend-a/' }, { 'path' => '/b', 'url' => 'http://backend-b/'
 							}, { 'path' => '/c', 'url' => 'http://backend-a/c', 'params' => {'max'=>20,
@@ -211,13 +208,10 @@
 						<co:redirect_source>['/images','/downloads']</co:redirect_source>
 						<co:redirect_dest>['http://img.example.com/','http://downloads.example.com/']</co:redirect_dest>
 						<co:redirect_status>['temp','permanent']</co:redirect_status>
-						<co:rewrites>
-						</co:rewrites>
-						<co:setenv>
-						</co:setenv>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
 						<co:ssl>false</co:ssl>
-						<co:serveradmin>
-						</co:serveradmin>
+						<co:serveradmin></co:serveradmin>
 					</co:ApacheVirtualHostProperties>
 				</Properties>
 			</NodeTemplate>
@@ -225,34 +219,21 @@
 				<Properties>
 					<co:ApacheVirtualHostProperties>
 						<co:VHostName>www.trasparenza.it</co:VHostName>
-						<co:aliases>
-						</co:aliases>
+						<co:aliases></co:aliases>
 						<co:default_vhost>false</co:default_vhost>
-						<co:docroot>
-						</co:docroot>
-						<co:directories>
-						</co:directories>
-						<co:log_level>
-						</co:log_level>
-						<co:options>
-						</co:options>
-						<co:port>
-						</co:port>
-						<co:proxy_pass>
-						</co:proxy_pass>
-						<co:redirect_source>
-						</co:redirect_source>
-						<co:redirect_dest>
-						</co:redirect_dest>
-						<co:redirect_status>
-						</co:redirect_status>
-						<co:rewrites>
-						</co:rewrites>
-						<co:setenv>
-						</co:setenv>
+						<co:docroot>'/var/www/html'</co:docroot>
+						<co:directories></co:directories>
+						<co:log_level></co:log_level>
+						<co:options></co:options>
+						<co:port></co:port>
+						<co:proxy_pass></co:proxy_pass>
+						<co:redirect_source></co:redirect_source>
+						<co:redirect_dest></co:redirect_dest>
+						<co:redirect_status></co:redirect_status>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
 						<co:ssl>false</co:ssl>
-						<co:serveradmin>
-						</co:serveradmin>
+						<co:serveradmin></co:serveradmin>
 					</co:ApacheVirtualHostProperties>
 				</Properties>
 			</NodeTemplate>

@@ -1,4 +1,4 @@
-node '<#if hostname?has_content>${hostname}</#if>' {
+node default {
 
 <#foreach childTemplate in childtemplates>
 ${childTemplate}
