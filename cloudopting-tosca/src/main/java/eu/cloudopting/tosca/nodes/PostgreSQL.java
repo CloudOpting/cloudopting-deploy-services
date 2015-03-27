@@ -1,7 +1,9 @@
+/**
+ * 
+ */
 package eu.cloudopting.tosca.nodes;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
@@ -18,15 +20,20 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
-public class Apache implements CloudOptingNode {
+/**
+ * @author gioppo
+ *
+ */
+public class PostgreSQL implements CloudOptingNode {
 	@Autowired
 	ToscaFileManager tfm;
-
+	/* (non-Javadoc)
+	 * @see eu.cloudopting.tosca.nodes.CloudOptingNode#prepare(java.lang.String)
+	 */
 	@Override
 	public String prepare(HashMap<String, String> data) {
-		// TODO Auto-generated method stub
 		String id = data.get("id");
-		System.out.println("I'm in the Apache.prepare for :" + id);
+		System.out.println("I'm in the PostgreSQL.prepare for :" + id);
 
 		// With my ID I ask to the TFM the array of my sons
 		tfm = ToscaFileManager.getInstance();
@@ -74,7 +81,7 @@ public class Apache implements CloudOptingNode {
 		}
 		// I get the puppetFile template name
 		String myTemplate = tfm.getTemplateForNode(id, "PuppetTemplate");
-		System.out.println("The template for Apache is :" + myTemplate);
+		System.out.println("The template for PostgreSQL is :" + myTemplate);
 		// I merge all the template chunks from sons and all my own data and get
 		// the final template and write it
 
