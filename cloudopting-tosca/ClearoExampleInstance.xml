@@ -69,7 +69,33 @@
 		</Interfaces>
 	</NodeType>
 	<NodeType name="MySQLDatabase">
-		<documentation>This is the MySQL engine</documentation>
+		<documentation>This is the MySQL DB</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="dbPassword" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="PostgreSQL">
+		<documentation>This is the PostgreSQL engine</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="postgres_password" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="PostgreSQLDatabase">
+		<documentation>This is the PostgreSQL DB</documentation>
 		<PropertiesDefinition element="" type="" />
 		<Interfaces>
 			<Interface name="http://tempuri.org">
@@ -85,6 +111,12 @@
 		<documentation>
 			This is the Tomcat server (we should not ask anything to the end user about tomcat,
 			but we need to set the properties)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="War">
+		<documentation>
+			This is the War component that can be deployed on a tomcat server
 		</documentation>
 		<PropertiesDefinition element="" type="" />
 	</NodeType>
@@ -156,17 +188,14 @@
 							}, ]
 						</co:aliases>
 						<co:default_vhost>false</co:default_vhost>
-						<co:docroot>
-						</co:docroot>
+						<co:docroot>'/var/www/html'</co:docroot>
 						<co:directories>
 							[ { path => '/path/to/directory', addhandlers => [{ handler => 'cgi-script', extensions
 							=> ['.cgi']}], }, ]
 						</co:directories>
-						<co:log_level>
-						</co:log_level>
+						<co:log_level></co:log_level>
 						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
-						<co:port>
-						</co:port>
+						<co:port></co:port>
 						<co:proxy_pass>
 							[ { 'path' => '/a', 'url' => 'http://backend-a/' }, { 'path' => '/b', 'url' => 'http://backend-b/'
 							}, { 'path' => '/c', 'url' => 'http://backend-a/c', 'params' => {'max'=>20,
@@ -179,13 +208,10 @@
 						<co:redirect_source>['/images','/downloads']</co:redirect_source>
 						<co:redirect_dest>['http://img.example.com/','http://downloads.example.com/']</co:redirect_dest>
 						<co:redirect_status>['temp','permanent']</co:redirect_status>
-						<co:rewrites>
-						</co:rewrites>
-						<co:setenv>
-						</co:setenv>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
 						<co:ssl>false</co:ssl>
-						<co:serveradmin>
-						</co:serveradmin>
+						<co:serveradmin></co:serveradmin>
 					</co:ApacheVirtualHostProperties>
 				</Properties>
 			</NodeTemplate>
@@ -193,68 +219,49 @@
 				<Properties>
 					<co:ApacheVirtualHostProperties>
 						<co:VHostName>www.trasparenza.it</co:VHostName>
-						<co:aliases>
-						</co:aliases>
+						<co:aliases></co:aliases>
 						<co:default_vhost>false</co:default_vhost>
-						<co:docroot>
-						</co:docroot>
-						<co:directories>
-						</co:directories>
-						<co:log_level>
-						</co:log_level>
-						<co:options>
-						</co:options>
-						<co:port>
-						</co:port>
-						<co:proxy_pass>
-						</co:proxy_pass>
-						<co:redirect_source>
-						</co:redirect_source>
-						<co:redirect_dest>
-						</co:redirect_dest>
-						<co:redirect_status>
-						</co:redirect_status>
-						<co:rewrites>
-						</co:rewrites>
-						<co:setenv>
-						</co:setenv>
+						<co:docroot>'/var/www/html'</co:docroot>
+						<co:directories></co:directories>
+						<co:log_level></co:log_level>
+						<co:options></co:options>
+						<co:port></co:port>
+						<co:proxy_pass></co:proxy_pass>
+						<co:redirect_source></co:redirect_source>
+						<co:redirect_dest></co:redirect_dest>
+						<co:redirect_status></co:redirect_status>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
 						<co:ssl>false</co:ssl>
-						<co:serveradmin>
-						</co:serveradmin>
+						<co:serveradmin></co:serveradmin>
 					</co:ApacheVirtualHostProperties>
 				</Properties>
 			</NodeTemplate>
-			<NodeTemplate type="DockerContainer" id="ClearoMySQLDC">
+			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
 				<Properties>
 					<co:DockerContainerProperties>
-						<co:from>
-						</co:from>
-						<co:entrypoint>
-						</co:entrypoint>
-						<co:cmd>
-						</co:cmd>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd>["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
-			<NodeTemplate type="MySQL" id="ClearoMySQL">
+			<NodeTemplate type="PostgreSQL" id="ClearoPostgreSQL">
 				<Properties>
-					<co:MySQLProperties>
-						<co:root_password>mypass</co:root_password>
-						<co:remove_default_accounts>
-						</co:remove_default_accounts>
-						<co:override_options>
-						</co:override_options>
-					</co:MySQLProperties>
+					<co:PostgreSQLProperties>
+						<co:postgresql_password>'mypass'</co:postgresql_password>
+						<co:listen_addresses>'*'</co:listen_addresses>
+						<co:datadir></co:datadir>
+					</co:PostgreSQLProperties>
 				</Properties>
 			</NodeTemplate>
-			<NodeTemplate type="MySQLDatabase" id="ClearoMySQLDB">
+			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
 				<Properties>
-					<co:MySQLDatabaseProperties>
-						<co:dbName>
-						</co:dbName>
-						<co:dbUser>
-						</co:dbUser>
-						<co:dbPassword>clearoDBpass</co:dbPassword>
+					<co:PostgreSQLDatabaseProperties>
+						<co:dbname>'clearodb'</co:dbname>
+						<co:user>'clearoadmin'</co:user>
+						<co:password>'clearoDBpass'</co:password>
 						<co:connectionHost>
 						</co:connectionHost>
 						<co:grant>
@@ -267,7 +274,7 @@
 						</co:charset>
 						<co:collate>
 						</co:collate>
-					</co:MySQLDatabaseProperties>
+					</co:PostgreSQLDatabaseProperties>
 				</Properties>
 			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoTomcatDC">
@@ -275,16 +282,25 @@
 					<co:DockerContainerProperties>
 						<co:image>centos:6.6</co:image>
 						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
-						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
-						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd>service tomcat7 start &amp;&amp; tail -f /var/lib/tomcat7/logs/catalina.out</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>
 					<co:TomcatProperties>
+						<co:catalina_base>8088</co:catalina_base>
 						<co:port>8088</co:port>
 					</co:TomcatProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="War" id="ClearoLiferay">
+				<Properties>
+					<co:WarProperties>
+						<co:catalina_base>8088</co:catalina_base>
+						<co:war_source>8088</co:war_source>
+					</co:WarProperties>
 				</Properties>
 			</NodeTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
@@ -305,15 +321,15 @@
 			</RelationshipTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
-				<TargetElement ref="ClearoMySQLDC" />
+				<TargetElement ref="ClearoPostgreSQLDC" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
-				<SourceElement ref="ClearoMySQLDC" />
-				<TargetElement ref="ClearoMySQL" />
+				<SourceElement ref="ClearoPostgreSQLDC" />
+				<TargetElement ref="ClearoPostgreSQL" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
-				<SourceElement ref="ClearoMySQL" />
-				<TargetElement ref="ClearoMySQLDB" />
+				<SourceElement ref="ClearoPostgreSQL" />
+				<TargetElement ref="ClearoPostgreSQLDB" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="QName" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
@@ -322,6 +338,10 @@
 			<RelationshipTemplate type="QName" id="idvalue0">
 				<SourceElement ref="ClearoTomcatDC" />
 				<TargetElement ref="ClearoTomcat" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="QName" id="idvalue0">
+				<SourceElement ref="ClearoTomcat" />
+				<TargetElement ref="ClearoLiferay" />
 			</RelationshipTemplate>
 		</TopologyTemplate>
 		<Plans targetNamespace="http://tempuri.org">
@@ -355,6 +375,30 @@
 			</ImplementationArtifact>
 		</ImplementationArtifacts>
 	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="PostgreSQL" name="PostgreSQLImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="PostgreSQLPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="PuppetModule"
+				artifactRef="PostgreSQLPM">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="PostgreSQLDatabase" name="PostgreSQLDatabaseImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="PostgreSQLDatabasePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="Tomcat" name="TomcatImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="TomcatPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="PuppetModule"
+				artifactRef="TomcatPM">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
 	<NodeTypeImplementation nodeType="DockerContainer" name="DockerContainerImpl">
 		<ImplementationArtifacts>
 			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="DockerContainerPT">
@@ -372,11 +416,31 @@
 	</ArtifactType>
 	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT">
 	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ApachePT">
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="PostgreSQLPT">
+	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetModule" id="ApachePM">
 		<Properties>
 			<co:PuppetModuleProperties>
 				<co:module>apache</co:module>
 				<co:git>https://github.com/puppetlabs/puppetlabs-apache</co:git>
+			</co:PuppetModuleProperties>
+		</Properties>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetModule" id="PostgreSQLPM">
+		<Properties>
+			<co:PuppetModuleProperties>
+				<co:module>postgresql</co:module>
+				<co:git>https://github.com/puppetlabs/puppetlabs-postgresql</co:git>
+			</co:PuppetModuleProperties>
+		</Properties>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetModule" id="TomcatPM">
+		<Properties>
+			<co:PuppetModuleProperties>
+				<co:module>tomcat</co:module>
+				<co:git>https://github.com/puppetlabs/puppetlabs-tomcat</co:git>
 			</co:PuppetModuleProperties>
 		</Properties>
 	</ArtifactTemplate>
