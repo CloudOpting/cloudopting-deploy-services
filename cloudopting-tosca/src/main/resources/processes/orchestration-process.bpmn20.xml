@@ -77,7 +77,9 @@ This task will probably be transformed into a subprocess, but at the moment we n
     </subProcess>
     <serviceTask id="r10kTask" name="run R10K" activiti:class="eu.cloudopting.activiti.CloudoptingProcessR10K"></serviceTask>
     <sequenceFlow id="flow19" sourceRef="r10kTask" targetRef="subDockerBuild"></sequenceFlow>
-    <sequenceFlow id="flow20" sourceRef="subDockerBuild" targetRef="deployOnDockerTask"></sequenceFlow>
+    <sequenceFlow id="flow20" sourceRef="subDockerBuild" targetRef="taskDockerComposeFile"></sequenceFlow>
+    <serviceTask id="taskDockerComposeFile" name="Prepare Docker Compose file" activiti:class="eu.cloudopting.activiti.CloudoptingProcessDockerComposeFile"></serviceTask>
+    <sequenceFlow id="flow21" sourceRef="taskDockerComposeFile" targetRef="deployOnDockerTask"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_cloudoptingProcess">
     <bpmndi:BPMNPlane bpmnElement="cloudoptingProcess" id="BPMNPlane_cloudoptingProcess">
@@ -143,6 +145,9 @@ This task will probably be transformed into a subprocess, but at the moment we n
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="r10kTask" id="BPMNShape_r10kTask">
         <omgdc:Bounds height="55.0" width="105.0" x="550.0" y="283.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="taskDockerComposeFile" id="BPMNShape_taskDockerComposeFile">
+        <omgdc:Bounds height="55.0" width="105.0" x="730.0" y="223.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow1" id="BPMNEdge_flow1">
         <omgdi:waypoint x="-25.0" y="114.0"></omgdi:waypoint>
@@ -220,7 +225,11 @@ This task will probably be transformed into a subprocess, but at the moment we n
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
         <omgdi:waypoint x="602.0" y="410.0"></omgdi:waypoint>
-        <omgdi:waypoint x="922.0" y="281.0"></omgdi:waypoint>
+        <omgdi:waypoint x="782.0" y="278.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="835.0" y="250.0"></omgdi:waypoint>
+        <omgdi:waypoint x="870.0" y="250.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

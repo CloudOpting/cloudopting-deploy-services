@@ -250,7 +250,7 @@
 			<NodeTemplate type="PostgreSQL" id="ClearoPostgreSQL">
 				<Properties>
 					<co:PostgreSQLProperties>
-						<co:postgresql_password>'mypass'</co:postgresql_password>
+						<co:postgres_password>'mypass'</co:postgres_password>
 						<co:listen_addresses>'*'</co:listen_addresses>
 						<co:datadir></co:datadir>
 					</co:PostgreSQLProperties>
@@ -290,8 +290,12 @@
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>
 					<co:TomcatProperties>
-						<co:catalina_base>8088</co:catalina_base>
-						<co:port>8088</co:port>
+						<co:tomcat>tomcat7</co:tomcat>
+						<co:catalina_base>'/opt/apache-tomcat/tomcat7'</co:catalina_base>
+						<co:source_url>'http://mirrors.muzzy.it/apache/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz'</co:source_url>
+						<co:server_port>8105</co:server_port>
+						<co:http_port>8180</co:http_port>
+						<co:ajp_port>8109</co:ajp_port>
 					</co:TomcatProperties>
 				</Properties>
 			</NodeTemplate>
@@ -399,6 +403,12 @@
 			</ImplementationArtifact>
 		</ImplementationArtifacts>
 	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="War" name="WarImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
 	<NodeTypeImplementation nodeType="DockerContainer" name="DockerContainerImpl">
 		<ImplementationArtifacts>
 			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="DockerContainerPT">
@@ -419,6 +429,8 @@
 	<ArtifactTemplate type="PuppetTemplate" id="ApachePT">
 	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetTemplate" id="PostgreSQLPT">
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="TomcatPT">
 	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetModule" id="ApachePM">
 		<Properties>

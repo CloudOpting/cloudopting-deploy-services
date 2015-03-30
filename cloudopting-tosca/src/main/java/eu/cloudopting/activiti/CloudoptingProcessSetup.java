@@ -37,6 +37,8 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 		System.out.println("customer :" + customer);
 		String cloud = (String) execution.getVariable("cloud");
 		System.out.println("cloud :" + cloud);
+		
+		
 
 		String xml = null;
 		try {

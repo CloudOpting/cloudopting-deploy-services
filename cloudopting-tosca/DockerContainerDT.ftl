@@ -17,5 +17,5 @@ RUN puppet apply /etc/puppet/manifests/<#if puppetFile?has_content>${puppetFile}
 #$exposestr
 
 # START APACHE
-ENTRYPOINT <#if entrypoint?has_content>${entrypoint}</#if>
+<#if entrypoint?has_content>ENTRYPOINT ${entrypoint}</#if>
 CMD <#if cmd?has_content>${cmd}</#if>

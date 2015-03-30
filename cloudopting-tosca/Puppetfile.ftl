@@ -9,3 +9,6 @@ mod 'concat',
 
 mod 'stdlib',
   :git => 'https://github.com/puppetlabs/puppetlabs-stdlib'
+  
+mod 'java',
+  :git => 'https://github.com/puppetlabs/puppetlabs-java'
