@@ -37,7 +37,7 @@ public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
 		for (String node : dockerNodesList) {
 			HashMap<String, String> containerData = new HashMap<String, String>();
 			containerData.put("container", node);
-			containerData.put("image", "cloudopting/"+customer+"_"+node);
+			containerData.put("image", "cloudopting/"+customer+"_"+node.toLowerCase());
 //			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
 			System.out.println(node);
 			modData.add(containerData);
