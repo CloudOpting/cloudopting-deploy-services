@@ -50,8 +50,14 @@ public abstract class AbstractController<T extends BaseEntity> extends AbstractI
 
         // note: mind the autoboxing and potential NPE when the resource has null id at this point
         // (likely when working with DTOs)
-        getEventPublisher().publishEvent(new AfterResourceCreatedEvent<>(getClazz(), uriBuilder, response,
-                existingResource.getId().toString()));
+        try {
+            getEventPublisher().publishEvent(new AfterResourceCreatedEvent<>(getClazz(), uriBuilder, response,
+                    existingResource.getId().toString()));
+        }catch (Exception e){
+            if(!e.getMessage().contains("null source")){
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     /**
