@@ -240,20 +240,18 @@
 			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
 				<Properties>
 					<co:DockerContainerProperties>
-						<co:from>
-						</co:from>
-						<co:entrypoint>
-						</co:entrypoint>
-						<co:cmd>
-						</co:cmd>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd>["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
 			<NodeTemplate type="PostgreSQL" id="ClearoPostgreSQL">
 				<Properties>
 					<co:PostgreSQLProperties>
-						<co:postgresql_password>mypass</co:postgresql_password>
-						<co:listen_addresses>*</co:listen_addresses>
+						<co:postgresql_password>'mypass'</co:postgresql_password>
+						<co:listen_addresses>'*'</co:listen_addresses>
 						<co:datadir></co:datadir>
 					</co:PostgreSQLProperties>
 				</Properties>
@@ -261,9 +259,9 @@
 			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
 				<Properties>
 					<co:PostgreSQLDatabaseProperties>
-						<co:dbname>clearodb</co:dbname>
-						<co:user>clearoadmin</co:user>
-						<co:password>clearoDBpass</co:password>
+						<co:dbname>'clearodb'</co:dbname>
+						<co:user>'clearoadmin'</co:user>
+						<co:password>'clearoDBpass'</co:password>
 						<co:connectionHost>
 						</co:connectionHost>
 						<co:grant>
@@ -284,8 +282,8 @@
 					<co:DockerContainerProperties>
 						<co:image>centos:6.6</co:image>
 						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
-						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
-						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd>service tomcat7 start &amp;&amp; tail -f /var/lib/tomcat7/logs/catalina.out</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
