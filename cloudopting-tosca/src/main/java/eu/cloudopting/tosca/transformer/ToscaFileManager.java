@@ -115,7 +115,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		DTMNodeList relations = null;
 		try {
 			relations = (DTMNodeList) this.xpath.evaluate(
-					"//RelationshipTemplate", this.document,
+					"//RelationshipTemplate[@type='hostedOn']", this.document,
 					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -432,5 +432,11 @@ public class ToscaFileManager implements IToscaFileManager {
 		// We need to get the type
 		String serviceName = nodes.item(0).getNodeValue();
 		return serviceName;
+	}
+	public ArrayList<String> getExposedPortsOfChildren(String id){
+		ArrayList<String> exPorts = new ArrayList<String>();
+		
+		return exPorts;
+		
 	}
 }

@@ -175,6 +175,7 @@
 						<co:log_formats>{ vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }</co:log_formats>
 					</co:ApacheProperties>
 				</Properties>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
 				<Properties>
@@ -255,6 +256,7 @@
 						<co:datadir></co:datadir>
 					</co:PostgreSQLProperties>
 				</Properties>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
 				<Properties>
@@ -307,43 +309,43 @@
 					</co:WarProperties>
 				</Properties>
 			</NodeTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoApacheDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoApacheDC" />
 				<TargetElement ref="ClearoApache" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoApache" />
 				<TargetElement ref="ClearoApacheVH" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoApache" />
 				<TargetElement ref="ClearoApacheVH2" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoPostgreSQLDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoPostgreSQLDC" />
 				<TargetElement ref="ClearoPostgreSQL" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoPostgreSQL" />
 				<TargetElement ref="ClearoPostgreSQLDB" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoTomcatDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoTomcatDC" />
 				<TargetElement ref="ClearoTomcat" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="QName" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoTomcat" />
 				<TargetElement ref="ClearoLiferay" />
 			</RelationshipTemplate>
