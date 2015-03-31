@@ -333,8 +333,14 @@ abstract class AbstractInternalController<T extends BaseEntity> {
         if (resultPage == null || page > resultPage.getTotalPages()) {
             throw new ResourceNotFoundException();
         }
-        getEventPublisher().publishEvent(new PaginatedResultsRetrievedEvent<>(clazz, uriBuilder, response, page,
-                resultPage.getTotalPages(), size));
+        try {
+            getEventPublisher().publishEvent(new PaginatedResultsRetrievedEvent<>(clazz, uriBuilder, response, page,
+                    resultPage.getTotalPages(), size));
+        }catch (Exception e){
+            if(!e.getMessage().contains("null source")){
+                throw new RuntimeException(e);
+            }
+        }
         return resultPage;
     }
 }
