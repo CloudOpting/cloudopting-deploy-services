@@ -141,8 +141,13 @@ abstract class AbstractInternalController<T extends BaseEntity> {
         if (request.getParameterNames().hasMoreElements()) {
             throw new ResourceNotFoundException();
         }
-
-        getEventPublisher().publishEvent(new MultipleResourcesRetrievedEvent<>(clazz, uriBuilder, response));
+        try {
+            getEventPublisher().publishEvent(new MultipleResourcesRetrievedEvent<>(clazz, uriBuilder, response));
+        }catch (Exception e){
+            if(!e.getMessage().contains("null source")){
+                throw new RuntimeException(e);
+            }
+        }
         return getService().findAll(pageable);
     }
 
