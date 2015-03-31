@@ -140,10 +140,17 @@ public class DockerContainer implements CloudOptingNode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		/// DOCKERFILE PART
+		
+		// get the exposed ports
+		ArrayList<String> exPorts = tfm.getExposedPortsOfChildren(id);
+		System.out.println("The EXPOSED PORTS DockerContainer are :"+exPorts.toString());
 		// I get the Dockerfile template name
 		Map nodeDataDC = tfm.getPropertiesForNode(id);
 		nodeDataDC.put("puppetFile",puppetFile);
 		nodeDataDC.put("servicePath",servicePath);
+		nodeDataDC.put("exposedPorts",exPorts);
 		String myDCTemplate = tfm.getTemplateForNode(id,"DockerfileTemplate");
 		System.out.println("The template for DockerContainer is :"+myDCTemplate);
 		// I add the data and get the final docker template and write it

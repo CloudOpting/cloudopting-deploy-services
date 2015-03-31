@@ -14,7 +14,7 @@ ADD <#if servicePath?has_content>${servicePath}</#if>/<#if puppetFile?has_conten
 RUN puppet apply /etc/puppet/manifests/<#if puppetFile?has_content>${puppetFile}</#if> --verbose --detailed-exitcodes || [ $? -eq 2 ]
 
 # OPEN UP PORT
-#$exposestr
+<#if exposedPorts?has_content>EXPOSE ${exposedPorts?join(" ")}</#if>
 
 # START APACHE
 <#if entrypoint?has_content>ENTRYPOINT ${entrypoint}</#if>
