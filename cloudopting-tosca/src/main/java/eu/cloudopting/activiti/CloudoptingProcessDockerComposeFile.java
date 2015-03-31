@@ -1,18 +1,16 @@
 package eu.cloudopting.activiti;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
@@ -23,75 +21,52 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
-public class CloudoptingProcessSetup implements JavaDelegate {
+public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
 	@Autowired
-	ToscaFileManager toscaFileManager;
+	ToscaFileManager tfm;
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("In CloudoptingProcessSetup");
+		System.out.println("Sono nella classe CloudoptingProcessDockerComposeFile");
 		String toscaFile = (String) execution.getVariable("toscaFile");
-		System.out.println("toscaFile :" + toscaFile);
+		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String dockerNode = (String) execution.getVariable("dockerNode");
+		System.out.println("I will create the Dockerfile for :"+dockerNode);
+		String creationPath = (String) execution.getVariable("creationPath");
 		String customer = (String) execution.getVariable("customer");
-		System.out.println("customer :" + customer);
-		String cloud = (String) execution.getVariable("cloud");
-		System.out.println("cloud :" + cloud);
+		ArrayList<String> dockerNodesList = (ArrayList<String>) execution.getVariable("dockerNodesList");
+		tfm = ToscaFileManager.getInstance();
 		
-		
-
-		String xml = null;
-		try {
-			xml = new String(Files.readAllBytes(Paths.get(toscaFile)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// With the retrieved XML we instantiate the ToscaFileManager that is
-		// the only one that know how to read it
-		toscaFileManager = ToscaFileManager.getInstance();
-		toscaFileManager.setToscaFile(xml);
-		// preparing the Puppet env
-		String serviceName = toscaFileManager.getServiceName();
-		String dockerContextPath = new String("/cloudOptingData");
-		String dir = new String(dockerContextPath + "/" + customer + "-"
-				+ serviceName);
-
-		// Creating new directory in Java, if it doesn't exists
-		boolean success = false;
-		File directory = new File(dir);
-		if (directory.exists()) {
-			System.out.println("Directory already exists ...");
-
-		} else {
-			System.out.println("Directory not exists, creating now");
-
-			success = directory.mkdir();
-			if (success) {
-				System.out.printf("Successfully created new directory : %s%n",
-						dir);
-			} else {
-				System.out.printf("Failed to create new directory: %s%n", dir);
-			}
-		}
-
-		// getting the list of puppet modules that this service needs
-		ArrayList<String> modules = toscaFileManager.getPuppetModules();
 		ArrayList<HashMap<String, String>> modData = new ArrayList<HashMap<String, String>>();
-		for (String mod : modules) {
-			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
-			System.out.println(mod);
+		for (String node : dockerNodesList) {
+			HashMap<String, String> containerData = new HashMap<String, String>();
+			containerData.put("container", node);
+			containerData.put("image", "cloudopting/"+customer+"_"+node.toLowerCase());
+//			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
+			// get the link information for the node
+			
+			ArrayList<String> links = tfm.getContainerLinks(node);
+			if(links != null && !links.isEmpty()){
+				containerData.put("links", "   - "+StringUtils.join(links,"\n   - "));
+			}
+			ArrayList<String> exPorts = tfm.getExposedPortsOfChildren(node);
+			if(exPorts != null && !exPorts.isEmpty()){
+				containerData.put("exPorts", "   - \""+StringUtils.join(exPorts,"\"\n   - \"")+"\"");
+			}
+			
+			System.out.println(node);
+			modData.add(containerData);
 		}
 		System.out.println(modData.toString());
 		
 		HashMap<String, Object> templData = new HashMap<String, Object>();
-		templData.put("modData", modData);
+		templData.put("dockerContainers", modData);
 		// write the "Puppetfile" file
 		Configuration cfg = new Configuration();
 		Template tpl = null;
 		try {
-			tpl = cfg.getTemplate("Puppetfile.ftl");
+			tpl = cfg.getTemplate("docker-compose.ftl");
 		} catch (TemplateNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -109,9 +84,9 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
 //		FileOutputStream outFile = new FileOutputStream("the-file-name");
 		PrintWriter outFile = null;
-		String puppetFile = new String("Puppetfile");
+		String composeFile = new String("docker-compose.yml");
 		try {
-			outFile = new PrintWriter(dir+"/"+puppetFile, "UTF-8");
+			outFile = new PrintWriter(creationPath+"/"+composeFile, "UTF-8");
 		} catch (FileNotFoundException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -129,13 +104,6 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
-		// setting the variables for the rest of the tasks
-		execution.setVariable("creationPath", dir);
-		execution.setVariable("dockerContextPath", dockerContextPath);
-		execution.setVariable("service", serviceName);
-		execution.setVariable("servicePath", customer + "-" + serviceName);
-
 	}
 
 }

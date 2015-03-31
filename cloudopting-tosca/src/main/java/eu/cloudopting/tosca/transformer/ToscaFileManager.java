@@ -14,6 +14,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.xerces.dom.DocumentImpl;
 import org.apache.xerces.impl.xpath.XPath;
 import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
@@ -115,7 +116,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		DTMNodeList relations = null;
 		try {
 			relations = (DTMNodeList) this.xpath.evaluate(
-					"//RelationshipTemplate", this.document,
+					"//RelationshipTemplate[@type='hostedOn']", this.document,
 					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -393,6 +394,20 @@ public class ToscaFileManager implements IToscaFileManager {
 		return children;
 
 	}
+	
+	public ArrayList<String> getAllChildrenOfNode(String node){
+		ArrayList<String> children = new ArrayList<String>();
+		children = getChildrenOfNode(node);
+		Iterator<String> child = children.iterator();
+		ArrayList<String> returnChildren = new ArrayList<String>();
+		while(child.hasNext()){
+			String theChild = child.next();
+			returnChildren.addAll(getAllChildrenOfNode(theChild));
+			returnChildren.add(theChild);
+		}
+		
+		return returnChildren;
+	}
 
 	public String getNodeType(String id) {
 		if (this.xmlFile == null)
@@ -433,4 +448,58 @@ public class ToscaFileManager implements IToscaFileManager {
 		String serviceName = nodes.item(0).getNodeValue();
 		return serviceName;
 	}
+	public ArrayList<String> getExposedPortsOfChildren(String id){
+		ArrayList<String> exPorts = new ArrayList<String>();
+		
+		ArrayList<String> allChildren = getAllChildrenOfNode(id);
+		Iterator<String> aChild = allChildren.iterator();
+		System.out.println("all children" + allChildren.toString());
+		ArrayList<String> xPathExprList = new ArrayList<String>();
+		while (aChild.hasNext()){
+			xPathExprList.add("//NodeTemplate[@id='"+aChild.next()+"']/Capabilities/Capability/Properties/*");
+		}
+		String xPathExpr = StringUtils.join(xPathExprList, "|"); 
+		System.out.println("xpath :" + xPathExpr);
+		DTMNodeList nodes = null;
+		System.out.println("//NodeTemplate[@id='" + id + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("nodes :" + nodes.toString());
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			exPorts.add(nodes.item(i).getTextContent());
+		}
+		return exPorts;
+		
+	}
+
+	public ArrayList<String> getContainerLinks(String id) {
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList links = null;
+		System.out.println("//RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement");
+		try {
+			links = (DTMNodeList) this.xpath.evaluate("//RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<String> linksList = new ArrayList<String>();
+		
+		for (int i = 0; i < links.getLength(); ++i) {
+			
+			String link = links.item(i).getAttributes().getNamedItem("ref").getNodeValue();
+			linksList.add(link);
+			
+		}
+		
+		return linksList;
+
+	}
+
 }

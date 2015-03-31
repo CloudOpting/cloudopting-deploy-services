@@ -1,7 +1,9 @@
+/**
+ * 
+ */
 package eu.cloudopting.tosca.nodes;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,14 +18,18 @@ import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
-public class ApacheVirtualHost implements CloudOptingNode{
+/**
+ * @author gioppo
+ *
+ */
+public class War implements CloudOptingNode {
 	@Autowired
 	ToscaFileManager tfm;
 	@Override
 	public String prepare(HashMap<String, String> data) {
 		// TODO Auto-generated method stub
 		String id = data.get("id");
-		System.out.println("I'm in the ApacheVirtualHost.prepare for :" + id);
+		System.out.println("I'm in the War.prepare for :" + id);
 		tfm = ToscaFileManager.getInstance();
 		String myTemplate = tfm.getTemplateForNode(id,"PuppetTemplate");
 		System.out.println("The template is :"+myTemplate);
