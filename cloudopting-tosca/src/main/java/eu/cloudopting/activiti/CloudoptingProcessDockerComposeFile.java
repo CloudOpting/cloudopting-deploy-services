@@ -10,7 +10,10 @@ import java.util.HashMap;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.cloudopting.tosca.transformer.ToscaFileManager;
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
 import freemarker.template.MalformedTemplateNameException;
@@ -19,6 +22,8 @@ import freemarker.template.TemplateException;
 import freemarker.template.TemplateNotFoundException;
 
 public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
+	@Autowired
+	ToscaFileManager tfm;
 
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
@@ -31,7 +36,7 @@ public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
 		String creationPath = (String) execution.getVariable("creationPath");
 		String customer = (String) execution.getVariable("customer");
 		ArrayList<String> dockerNodesList = (ArrayList<String>) execution.getVariable("dockerNodesList");
-
+		tfm = ToscaFileManager.getInstance();
 		
 		ArrayList<HashMap<String, String>> modData = new ArrayList<HashMap<String, String>>();
 		for (String node : dockerNodesList) {
@@ -40,6 +45,16 @@ public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
 			containerData.put("image", "cloudopting/"+customer+"_"+node.toLowerCase());
 //			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
 			// get the link information for the node
+			
+			ArrayList<String> links = tfm.getContainerLinks(node);
+			if(links != null && !links.isEmpty()){
+				containerData.put("links", "   - "+StringUtils.join(links,"\n   - "));
+			}
+			ArrayList<String> exPorts = tfm.getExposedPortsOfChildren(node);
+			if(exPorts != null && !exPorts.isEmpty()){
+				containerData.put("exPorts", "   - \""+StringUtils.join(exPorts,"\"\n   - \"")+"\"");
+			}
+			
 			System.out.println(node);
 			modData.add(containerData);
 		}

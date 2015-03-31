@@ -12,3 +12,6 @@ mod 'stdlib',
   
 mod 'java',
   :git => 'https://github.com/puppetlabs/puppetlabs-java'
+  
+mod 'staging',
+  :git => 'https://github.com/nanliu/puppet-staging.git'

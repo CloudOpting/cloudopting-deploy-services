@@ -482,9 +482,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		DTMNodeList links = null;
-		System.out.println("//RelationshipTemplate[@type='containerLink']");
+		System.out.println("//RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement");
 		try {
-			links = (DTMNodeList) this.xpath.evaluate("//RelationshipTemplate[@type='containerLink']", this.document, XPathConstants.NODESET);
+			links = (DTMNodeList) this.xpath.evaluate("//RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -493,8 +493,8 @@ public class ToscaFileManager implements IToscaFileManager {
 		
 		for (int i = 0; i < links.getLength(); ++i) {
 			
-			String module = links.item(i).getNodeValue();
-			linksList.add(module);
+			String link = links.item(i).getAttributes().getNamedItem("ref").getNodeValue();
+			linksList.add(link);
 			
 		}
 		
