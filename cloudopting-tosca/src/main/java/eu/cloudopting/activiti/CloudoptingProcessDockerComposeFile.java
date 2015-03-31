@@ -39,6 +39,7 @@ public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
 			containerData.put("container", node);
 			containerData.put("image", "cloudopting/"+customer+"_"+node.toLowerCase());
 //			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
+			// get the link information for the node
 			System.out.println(node);
 			modData.add(containerData);
 		}

@@ -476,4 +476,30 @@ public class ToscaFileManager implements IToscaFileManager {
 		return exPorts;
 		
 	}
+
+	public ArrayList<String> getContainerLinks(String id) {
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList links = null;
+		System.out.println("//RelationshipTemplate[@type='containerLink']");
+		try {
+			links = (DTMNodeList) this.xpath.evaluate("//RelationshipTemplate[@type='containerLink']", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ArrayList<String> linksList = new ArrayList<String>();
+		
+		for (int i = 0; i < links.getLength(); ++i) {
+			
+			String module = links.item(i).getNodeValue();
+			linksList.add(module);
+			
+		}
+		
+		return linksList;
+
+	}
+
 }

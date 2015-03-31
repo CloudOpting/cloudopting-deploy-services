@@ -261,7 +261,7 @@
 			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
 				<Properties>
 					<co:PostgreSQLDatabaseProperties>
-						<co:dbname>'clearodb'</co:dbname>
+						<co:dbname>clearodb</co:dbname>
 						<co:user>'clearoadmin'</co:user>
 						<co:password>'clearoDBpass'</co:password>
 						<co:connectionHost>
@@ -348,6 +348,14 @@
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoTomcat" />
 				<TargetElement ref="ClearoLiferay" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="containerLink" id="idvalue0">
+				<SourceElement ref="ClearoApacheDC" />
+				<TargetElement ref="ClearoTomcatDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="containerLink" id="idvalue0">
+				<SourceElement ref="ClearoTomcatDC" />
+				<TargetElement ref="ClearoPostgreSQLDC" />
 			</RelationshipTemplate>
 		</TopologyTemplate>
 		<Plans targetNamespace="http://tempuri.org">
