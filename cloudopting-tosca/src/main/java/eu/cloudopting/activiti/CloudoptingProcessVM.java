@@ -23,7 +23,7 @@ public class CloudoptingProcessVM implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("Sono nella classe java");
+//		System.out.println("Sono nella classe java");
 		
 		
 		// TODO here we need a mean to create the VM
@@ -31,24 +31,9 @@ public class CloudoptingProcessVM implements JavaDelegate {
 		
 		
 		// TODO here we prepare the array to create the containers )will have to create the correct ordered array
+		// TODO this stuff has to be moved to the setup
 		System.out.println("Now prepare to create the Containers");
 		toscaFileManager = ToscaFileManager.getInstance();
-		DTMNodeList nodes = toscaFileManager.getNodeByType("DockerContainer");
-		ArrayList<String> dockerNodesList = new ArrayList<String>();
-		System.out.println("before cycle");
-		for (int i = 0; i < nodes.getLength(); ++i) {
-			// values.add(nodes.item(i).getFirstChild().getNodeValue());
-			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
-			System.out.println(nodes.item(i).getAttributes().getNamedItem("id")
-					.getNodeValue());
-			dockerNodesList.add(nodes.item(i).getAttributes().getNamedItem("id")
-					.getNodeValue());
-		}
-		
-		ArrayList<String> dockerPortsList = new ArrayList<String>();
-		dockerPortsList.add("Port1");
-		execution.setVariable("dockerNodesList", dockerNodesList);
-		execution.setVariable("vmPortsList", dockerPortsList);
 		
 		
 	}

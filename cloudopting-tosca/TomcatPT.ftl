@@ -8,14 +8,14 @@ tomcat::instance { '<#if tomcat?has_content>${tomcat}</#if>':
 }->
 tomcat::config::server { '<#if tomcat?has_content>${tomcat}</#if>':
   <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
-  port          => '8105',
+  port          => '8005',
 }->
 tomcat::config::server::connector { '<#if tomcat?has_content>${tomcat}</#if>-http':
   <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
   port                  => '8180',
   protocol              => 'HTTP/1.1',
   additional_attributes => {
-    'redirectPort' => '8543'
+    'redirectPort' => '8443'
   },
 }->
 tomcat::config::server::connector { '<#if tomcat?has_content>${tomcat}</#if>-ajp':
