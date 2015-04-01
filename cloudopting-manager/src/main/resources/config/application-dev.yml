@@ -7,7 +7,8 @@ spring:
 
     datasource:
         dataSourceClassName: org.postgresql.ds.PGSimpleDataSource
-        url:
+        driver: org.postgresql.Driver
+        url: jdbc:postgresql://cloudopting1.cloudapp.net/cloudopting
         databaseName: cloudopting
         serverName: cloudopting1.cloudapp.net
         username: postgres

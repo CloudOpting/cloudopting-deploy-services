@@ -136,6 +136,11 @@
                     </exclusion>
                 </exclusions>
             </dependency>
+            <dependency>
+                <groupId>commons-dbcp</groupId>
+                <artifactId>commons-dbcp</artifactId>
+                <version>1.4</version>
+            </dependency>
             <!-- The HikariCP Java Agent is disabled by default, as it is experimental
             <dependency>
                 <groupId>com.zaxxer</groupId>
