@@ -4,6 +4,7 @@ import eu.cloud.cloudopting.domain.Applications;
 import eu.cloud.cloudopting.service.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import ro.tn.events.api.service.BaseService;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 
 /**
  * @author Daniel P.
@@ -65,6 +67,22 @@ public class ApplicationResource extends AbstractController<Applications> {
             final UriComponentsBuilder uriBuilder,
             final HttpServletResponse response) {
         return findPaginatedAndSortedWithFilter(page, size, sortBy, sortOrder, filterObj, uriBuilder, response);
+    }
+
+    /**
+     * This method returns a list of Applications
+     *
+     * @param uriBuilder UriComponentsBuilder
+     * @param response   HttpServletResponse
+     * @return applications list
+     */
+    @RequestMapping(value = "/application/listunpaginated",
+            method = RequestMethod.GET)
+    @ResponseBody
+    public final Page<Applications> findAllPaginated(
+            final UriComponentsBuilder uriBuilder,
+            final HttpServletResponse response, final HttpServletRequest request, final Pageable pageable) {
+        return findAllInternalPageable(request, uriBuilder, response,pageable);
     }
 
     /**
