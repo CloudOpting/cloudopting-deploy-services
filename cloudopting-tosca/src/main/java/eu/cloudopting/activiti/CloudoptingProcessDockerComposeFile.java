@@ -54,6 +54,10 @@ public class CloudoptingProcessDockerComposeFile implements JavaDelegate {
 			if(exPorts != null && !exPorts.isEmpty()){
 				containerData.put("exPorts", "   - \""+StringUtils.join(exPorts,"\"\n   - \"")+"\"");
 			}
+			ArrayList<String> ports = tfm.getContainerPorts(node);
+			if(ports != null && !ports.isEmpty()){
+				containerData.put("ports", "   - \""+StringUtils.join(exPorts,"\"\n   - \"")+"\"");
+			}
 			
 			System.out.println(node);
 			modData.add(containerData);

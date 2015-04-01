@@ -6,4 +6,6 @@ ${dockerContainer['container']}:
 ${dockerContainer['links']}</#if>
 <#if dockerContainer['exPorts']?has_content>  expose:
 ${dockerContainer['exPorts']}</#if>
+<#if dockerContainer['ports']?has_content>  ports:
+${dockerContainer['ports']}</#if>
 </#list>

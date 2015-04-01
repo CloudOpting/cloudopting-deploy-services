@@ -25,17 +25,17 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("CloudoptingProcessDocker");
+//		System.out.println("CloudoptingProcessDocker");
 		String resultVar = (String) execution.getVariable("resultVar");
-		System.out.println("result from shell execution:"+resultVar);
+//		System.out.println("result from shell execution:"+resultVar);
 		String toscaFile = (String) execution.getVariable("toscaFile");
-		System.out.println("toscaFile :"+toscaFile);
+//		System.out.println("toscaFile :"+toscaFile);
 		String dockerNode = (String) execution.getVariable("dockerNode");
 		System.out.println("I will create the Dockerfile for :"+dockerNode);
 		String creationPath = (String) execution.getVariable("creationPath");
-		System.out.println("creationPath :"+creationPath);
+//		System.out.println("creationPath :"+creationPath);
 		String servicePath = (String) execution.getVariable("servicePath");
-		System.out.println("servicePath :"+servicePath);
+//		System.out.println("servicePath :"+servicePath);
 		
 		CloudOptingNode dc = new DockerContainer();
 		HashMap<String, String> hm = new HashMap<String, String>();
@@ -43,7 +43,7 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 		hm.put("creationPath", creationPath);
 		hm.put("servicePath", servicePath);
 		dc.prepare(hm);
-		
+		/*
 		// Add the values in the datamodel
 
 		Map datamodel = new HashMap();
@@ -66,7 +66,7 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-
+*/
 		// With the retrieved XML we instantiate the ToscaFileManager that is the only one that know how to read it
 //		ToscaFileManager tfm = new ToscaFileManager(xml);
 /*		tfm = ToscaFileManager.getInstance();

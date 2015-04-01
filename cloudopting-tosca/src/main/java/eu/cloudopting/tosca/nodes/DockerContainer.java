@@ -37,11 +37,11 @@ public class DockerContainer implements CloudOptingNode {
 		String id = data.get("id");
 		String creationPath = data.get("creationPath");
 		String servicePath = data.get("servicePath");
-		System.out.println("I'm in the DockerContainer.prepare for :"+id);
+//		System.out.println("I'm in the DockerContainer.prepare for :"+id);
 		
 		//String customer = (String) execution.getVariable("customer");
 		String customer = new String("csi");
-		System.out.println("result from shell execution:"+customer);
+//		System.out.println("result from shell execution:"+customer);
 		
 		// With my ID I ask to the TFM the array of my sons
 		tfm = ToscaFileManager.getInstance();
@@ -93,7 +93,7 @@ public class DockerContainer implements CloudOptingNode {
 		
 		// I get the puppetFile template name
 		String myTemplate = tfm.getTemplateForNode(id,"PuppetTemplate");
-		System.out.println("The template for DockerContainer is :"+myTemplate);
+		System.out.println("The Puppet template for this DockerContainer is :"+myTemplate);
 		// I merge all the template chunks from sons and all my own data and get the final template and write it
 		
 		Map nodeData = new HashMap();
@@ -140,7 +140,7 @@ public class DockerContainer implements CloudOptingNode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+		System.out.println("Puppet file created");
 		/// DOCKERFILE PART
 		
 		// get the exposed ports
@@ -152,7 +152,7 @@ public class DockerContainer implements CloudOptingNode {
 		nodeDataDC.put("servicePath",servicePath);
 		nodeDataDC.put("exposedPorts",exPorts);
 		String myDCTemplate = tfm.getTemplateForNode(id,"DockerfileTemplate");
-		System.out.println("The template for DockerContainer is :"+myDCTemplate);
+		System.out.println("The Dockerfile template for this DockerContainer is :"+myDCTemplate);
 		// I add the data and get the final docker template and write it
 		Template tplDC = null;
 		try {
@@ -194,6 +194,7 @@ public class DockerContainer implements CloudOptingNode {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		System.out.println("Dockerfile created");
 		return id;
 	}
 }

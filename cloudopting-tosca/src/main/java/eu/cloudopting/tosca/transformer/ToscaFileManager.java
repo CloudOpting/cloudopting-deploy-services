@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
@@ -75,6 +76,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		InputSource source = new InputSource(new StringReader(xmlFile));
 
 		DocumentBuilderFactoryImpl dbf = new DocumentBuilderFactoryImpl();
+		dbf.setNamespaceAware(true);
 		DocumentBuilderImpl db = null;
 		try {
 			db = (DocumentBuilderImpl) dbf.newDocumentBuilder();
@@ -101,11 +103,12 @@ public class ToscaFileManager implements IToscaFileManager {
 		XPathFactoryImpl xpathFactory = (XPathFactoryImpl) XPathFactoryImpl
 				.newInstance();
 		this.xpath = (XPathImpl) xpathFactory.newXPath();
+		this.xpath.setNamespaceContext(new coNamespaceContext());
 
 		// Get the NodeTemplates
 		DTMNodeList nodes = null;
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate",
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate",
 					this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -116,7 +119,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		DTMNodeList relations = null;
 		try {
 			relations = (DTMNodeList) this.xpath.evaluate(
-					"//RelationshipTemplate[@type='hostedOn']", this.document,
+					"//ns:RelationshipTemplate[@type='hostedOn']", this.document,
 					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -158,11 +161,12 @@ public class ToscaFileManager implements IToscaFileManager {
 
 		orderIterator = new TopologicalOrderIterator<String, DefaultEdge>(
 				this.g);
-		System.out.println("\nOrdering:");
+//		System.out.println("\nOrdering:");
 		while (orderIterator.hasNext()) {
 			v = orderIterator.next();
-			System.out.println(v);
+//			System.out.println(v);
 		}
+		/*
 		String filePath = new String("ClearoExample.xml");
 		String xml = null;
 		try {
@@ -172,7 +176,7 @@ public class ToscaFileManager implements IToscaFileManager {
 			e.printStackTrace();
 		}
 		// this.g.
-
+*/
 	}
 
 	/*
@@ -188,9 +192,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		// Get the node by the type
 		DTMNodeList nodes = null;
-		System.out.println("//NodeTemplate[@type='" + type + "']");
+//		System.out.println("//ns:NodeTemplate[@type='" + type + "']");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@type='"
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@type='"
 					+ type + "']", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -223,9 +227,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		DTMNodeList nodes = null;
-		System.out.println("//NodeTemplate[@id='" + id + "']");
+//		System.out.println("//ns:NodeTemplate[@id='" + id + "']");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
 					+ id + "']", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -237,14 +241,13 @@ public class ToscaFileManager implements IToscaFileManager {
 		String type = nodes.item(0).getAttributes().getNamedItem("type")
 				.getNodeValue();
 		DTMNodeList nodesTI = null;
-		System.out.println("//NodeTypeImplementation[@nodeType='" + type
-				+ "']/ImplementationArtifacts/ImplementationArtifact[@artifactType='"+templateType+"']");
+//		System.out.println("//ns:NodeTypeImplementation[@nodeType='" + type+ "']/ns:ImplementationArtifacts/ns:ImplementationArtifact[@artifactType='"+templateType+"']");
 		try {
 			nodesTI = (DTMNodeList) this.xpath
 					.evaluate(
-							"//NodeTypeImplementation[@nodeType='"
+							"//ns:NodeTypeImplementation[@nodeType='"
 									+ type
-									+ "']/ImplementationArtifacts/ImplementationArtifact[@artifactType='"+templateType+"']",
+									+ "']/ns:ImplementationArtifacts/ns:ImplementationArtifact[@artifactType='"+templateType+"']",
 							this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -252,7 +255,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		}
 		String template = nodesTI.item(0).getAttributes()
 				.getNamedItem("artifactRef").getNodeValue();
-		System.out.println("The template is:" + template);
+//		System.out.println("The template is:" + template);
 		return template;
 
 	}
@@ -262,9 +265,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		DTMNodeList modules = null;
-		System.out.println("//NodeTypeImplementation/ImplementationArtifacts/ImplementationArtifact[@artifactType='PuppetModule']/@artifactRef");
+//		System.out.println("//NodeTypeImplementation/ImplementationArtifacts/ImplementationArtifact[@artifactType='PuppetModule']/@artifactRef");
 		try {
-			modules = (DTMNodeList) this.xpath.evaluate("//NodeTypeImplementation/ImplementationArtifacts/ImplementationArtifact[@artifactType='PuppetModule']/@artifactRef", this.document, XPathConstants.NODESET);
+			modules = (DTMNodeList) this.xpath.evaluate("//ns:NodeTypeImplementation/ns:ImplementationArtifacts/ns:ImplementationArtifact[@artifactType='PuppetModule']/@artifactRef", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -287,10 +290,10 @@ public class ToscaFileManager implements IToscaFileManager {
 		if (this.xmlFile == null)
 			return null;
 		DTMNodeList nodes = null;
-		System.out.println("//ArtifactTemplate[@id='" + module + "']/Properties/*");
+//		System.out.println("//ArtifactTemplate[@id='" + module + "']/Properties/*");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//ArtifactTemplate[@id='"
-					+ module + "']/Properties/*", this.document,
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:ArtifactTemplate[@id='"
+					+ module + "']/ns:Properties/*", this.document,
 					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -306,7 +309,7 @@ public class ToscaFileManager implements IToscaFileManager {
 			String[] keys = props.item(i).getNodeName().split(":");
 			if (keys.length > 1) {
 				String key = keys[1];
-				System.out.println("property:" + key);
+//				System.out.println("property:" + key);
 				propHash.put(key, props.item(i).getTextContent());
 			}
 		}
@@ -347,10 +350,10 @@ public class ToscaFileManager implements IToscaFileManager {
 		if (this.xmlFile == null)
 			return null;
 		DTMNodeList nodes = null;
-		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
+//		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
-					+ id + "']/Properties/*", this.document,
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
+					+ id + "']/ns:Properties/*", this.document,
 					XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -366,7 +369,7 @@ public class ToscaFileManager implements IToscaFileManager {
 			String[] keys = props.item(i).getNodeName().split(":");
 			if (keys.length > 1) {
 				String key = keys[1];
-				System.out.println("property:" + key);
+//				System.out.println("property:" + key);
 				myHash.put(key, props.item(i).getTextContent());
 			}
 		}
@@ -381,7 +384,7 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		Set edges = this.g.outgoingEdgesOf(node);
-		System.out.println("Children of:" + node + " are:" + edges.toString());
+//		System.out.println("Children of:" + node + " are:" + edges.toString());
 		Iterator<DefaultEdge> iterator = edges.iterator();
 		ArrayList<String> children = new ArrayList<String>();
 		while(iterator.hasNext()){
@@ -414,9 +417,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		DTMNodeList nodes = null;
-		System.out.println("//NodeTemplate[@id='" + id + "']");
+//		System.out.println("//NodeTemplate[@id='" + id + "']");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//NodeTemplate[@id='"
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
 					+ id + "']", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
@@ -435,9 +438,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		DTMNodeList nodes = null;
-		System.out.println("//ServiceTemplate/@id");
+//		System.out.println("//ServiceTemplate/@id");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//ServiceTemplate/@id", this.document, XPathConstants.NODESET);
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:ServiceTemplate/@id", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -453,15 +456,15 @@ public class ToscaFileManager implements IToscaFileManager {
 		
 		ArrayList<String> allChildren = getAllChildrenOfNode(id);
 		Iterator<String> aChild = allChildren.iterator();
-		System.out.println("all children" + allChildren.toString());
+//		System.out.println("all children" + allChildren.toString());
 		ArrayList<String> xPathExprList = new ArrayList<String>();
 		while (aChild.hasNext()){
-			xPathExprList.add("//NodeTemplate[@id='"+aChild.next()+"']/Capabilities/Capability/Properties/*");
+			xPathExprList.add("//ns:NodeTemplate[@id='"+aChild.next()+"']/ns:Capabilities/ns:Capability/ns:Properties/*");
 		}
 		String xPathExpr = StringUtils.join(xPathExprList, "|"); 
-		System.out.println("xpath :" + xPathExpr);
+//		System.out.println("xpath :" + xPathExpr);
 		DTMNodeList nodes = null;
-		System.out.println("//NodeTemplate[@id='" + id + "']");
+//		System.out.println("//NodeTemplate[@id='" + id + "']");
 		try {
 			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
@@ -469,7 +472,7 @@ public class ToscaFileManager implements IToscaFileManager {
 			e.printStackTrace();
 		}
 		
-		System.out.println("nodes :" + nodes.toString());
+//		System.out.println("nodes :" + nodes.toString());
 		for (int i = 0; i < nodes.getLength(); ++i) {
 			exPorts.add(nodes.item(i).getTextContent());
 		}
@@ -482,9 +485,9 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 		//
 		DTMNodeList links = null;
-		System.out.println("//RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement");
+//		System.out.println("//ns:RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement");
 		try {
-			links = (DTMNodeList) this.xpath.evaluate("//RelationshipTemplate[@type='containerLink']/SourceElement[@ref='"+id+"']/../TargetElement", this.document, XPathConstants.NODESET);
+			links = (DTMNodeList) this.xpath.evaluate("//ns:RelationshipTemplate[@type='containerLink']/ns:SourceElement[@ref='"+id+"']/../ns:TargetElement", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -505,8 +508,9 @@ public class ToscaFileManager implements IToscaFileManager {
 	public ArrayList<String> getContainerPorts(String id){
 		ArrayList<String> ports = new ArrayList<String>();
 		
-		String xPathExpr = new String("//NodeTemplate[@id='"+id+"']/Capabilities/Capability/Properties/co:ports/*"); 
-		System.out.println("xpath :" + xPathExpr);
+		String xPathExpr = new String("//ns:NodeTemplate[@id='"+id+"']/ns:Capabilities/ns:Capability/ns:Properties/co:ports"); 
+//		System.out.println("xpath :" + xPathExpr);
+		
 		DTMNodeList nodes = null;
 		try {
 			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
@@ -515,12 +519,40 @@ public class ToscaFileManager implements IToscaFileManager {
 			e.printStackTrace();
 		}
 		
-		System.out.println("nodes :" + nodes.toString());
+		System.out.println("nodes :" + nodes.getLength());
 		for (int i = 0; i < nodes.getLength(); ++i) {
-			ports.add(nodes.item(i).getTextContent());
+			String portInfo = nodes.item(i).getAttributes().getNamedItem("host").getNodeValue()+":"+nodes.item(i).getAttributes().getNamedItem("container").getNodeValue();
+			ports.add(portInfo);
+			System.out.println("portInfo :" + portInfo);
 		}
 		return ports;
 		
 	}
 	
+	public ArrayList<String> getHostPorts(){
+		ArrayList<String> ports = new ArrayList<String>();
+		
+		String xPathExpr = new String("//ns:NodeTemplate[@type='DockerContainer']/ns:Capabilities/ns:Capability/ns:Properties/co:ports"); 
+//		System.out.println("xpath :" + xPathExpr);
+		
+		DTMNodeList nodes = null;
+		try {
+			XPathExpression expr = this.xpath.compile(xPathExpr);
+			
+			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
+			nodes = (DTMNodeList) expr.evaluate(this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("nodes :" + nodes.getLength());
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			String portInfo = nodes.item(i).getAttributes().getNamedItem("host").getNodeValue();
+			ports.add(portInfo);
+	//		System.out.println("portInfo :" + portInfo);
+		}
+		return ports;
+		
+	}
 }

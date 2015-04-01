@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.apache.xml.dtm.ref.DTMNodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
@@ -30,7 +31,7 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("In CloudoptingProcessSetup");
+		System.out.println("Setting up the process information and preparing the environment");
 		String toscaFile = (String) execution.getVariable("toscaFile");
 		System.out.println("toscaFile :" + toscaFile);
 		String customer = (String) execution.getVariable("customer");
@@ -59,6 +60,7 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 				+ serviceName);
 
 		// Creating new directory in Java, if it doesn't exists
+		System.out.println("Preparing the folders for the service and customer");
 		boolean success = false;
 		File directory = new File(dir);
 		if (directory.exists()) {
@@ -77,13 +79,14 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 		}
 
 		// getting the list of puppet modules that this service needs
+		System.out.printf("Preparing the Puppetfile");
 		ArrayList<String> modules = toscaFileManager.getPuppetModules();
 		ArrayList<HashMap<String, String>> modData = new ArrayList<HashMap<String, String>>();
 		for (String mod : modules) {
 			modData.add(toscaFileManager.getPuppetModulesProperties(mod));
-			System.out.println(mod);
+//			System.out.println(mod);
 		}
-		System.out.println(modData.toString());
+//		System.out.println(modData.toString());
 		
 		HashMap<String, Object> templData = new HashMap<String, Object>();
 		templData.put("modData", modData);
@@ -130,6 +133,23 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 			e.printStackTrace();
 		}
 
+		DTMNodeList nodes = toscaFileManager.getNodeByType("DockerContainer");
+		ArrayList<String> dockerNodesList = new ArrayList<String>();
+		System.out.println("before cycle");
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			// values.add(nodes.item(i).getFirstChild().getNodeValue());
+			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
+//			System.out.println(nodes.item(i).getAttributes().getNamedItem("id").getNodeValue());
+			dockerNodesList.add(nodes.item(i).getAttributes().getNamedItem("id")
+					.getNodeValue());
+		}
+		
+		ArrayList<String> dockerPortsList = toscaFileManager.getHostPorts();
+		dockerPortsList.add("Port1");
+		execution.setVariable("dockerNodesList", dockerNodesList);
+		execution.setVariable("vmPortsList", dockerPortsList);
+		
+		
 		// setting the variables for the rest of the tasks
 		execution.setVariable("creationPath", dir);
 		execution.setVariable("dockerContextPath", dockerContextPath);
