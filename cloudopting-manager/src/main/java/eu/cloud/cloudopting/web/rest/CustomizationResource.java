@@ -13,6 +13,7 @@ import ro.tn.events.api.service.BaseService;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 
 /**
  * Created by danielpo on 19/03/2015.
@@ -41,6 +42,13 @@ public class CustomizationResource  extends AbstractController<Customizations> {
     public final Customizations findOne(@PathVariable("id") final Long id, final UriComponentsBuilder uriBuilder,
                                       final HttpServletResponse response) {
         return findOneInternal(id);
+    }
+
+    @RequestMapping(value = "/customization/list", method = RequestMethod.GET)
+    @ResponseBody
+    public final List<Customizations> findAll(final UriComponentsBuilder uriBuilder,
+                                        final HttpServletResponse response, final HttpServletRequest request) {
+        return findAllInternal(request, uriBuilder, response);
     }
 
     @RequestMapping(value="/customization/create",method = RequestMethod.POST,  produces = MediaType.APPLICATION_JSON_VALUE)

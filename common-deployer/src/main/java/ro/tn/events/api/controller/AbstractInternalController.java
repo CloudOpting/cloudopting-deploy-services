@@ -99,7 +99,7 @@ abstract class AbstractInternalController<T extends BaseEntity> {
                                       final UriComponentsBuilder uriBuilder,
                                       final HttpServletResponse response) {
         final T resource = findOneInternal(id);
-      //  getEventPublisher().publishEvent(new SingleResourceRetrievedEvent<>(clazz, uriBuilder, response));
+        //  getEventPublisher().publishEvent(new SingleResourceRetrievedEvent<>(clazz, uriBuilder, response));
         return resource;
     }
 
@@ -111,6 +111,18 @@ abstract class AbstractInternalController<T extends BaseEntity> {
      */
     protected final T findOneInternal(final Long id) {
         return RestPreconditions.checkNotNull(getService().findOne(id));
+    }
+
+
+    private void raiseEvent(final UriComponentsBuilder uriBuilder,
+                            final HttpServletResponse response) {
+        try {
+            getEventPublisher().publishEvent(new MultipleResourcesRetrievedEvent<>(clazz, uriBuilder, response));
+        } catch (Exception e) {
+            if (!e.getMessage().contains("null source")) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     // find - all
@@ -130,21 +142,21 @@ abstract class AbstractInternalController<T extends BaseEntity> {
             throw new ResourceNotFoundException();
         }
 
-        getEventPublisher().publishEvent(new MultipleResourcesRetrievedEvent<>(clazz, uriBuilder, response));
+        raiseEvent(uriBuilder, response);
         return getService().findAll();
     }
 
     protected final Page<T> findAllInternalPageable(final HttpServletRequest request,
-                                            final UriComponentsBuilder uriBuilder,
-                                            final HttpServletResponse response,
-                                            Pageable pageable) {
+                                                    final UriComponentsBuilder uriBuilder,
+                                                    final HttpServletResponse response,
+                                                    Pageable pageable) {
         if (request.getParameterNames().hasMoreElements()) {
             throw new ResourceNotFoundException();
         }
         try {
             getEventPublisher().publishEvent(new MultipleResourcesRetrievedEvent<>(clazz, uriBuilder, response));
-        }catch (Exception e){
-            if(!e.getMessage().contains("null source")){
+        } catch (Exception e) {
+            if (!e.getMessage().contains("null source")) {
                 throw new RuntimeException(e);
             }
         }
@@ -336,8 +348,8 @@ abstract class AbstractInternalController<T extends BaseEntity> {
         try {
             getEventPublisher().publishEvent(new PaginatedResultsRetrievedEvent<>(clazz, uriBuilder, response, page,
                     resultPage.getTotalPages(), size));
-        }catch (Exception e){
-            if(!e.getMessage().contains("null source")){
+        } catch (Exception e) {
+            if (!e.getMessage().contains("null source")) {
                 throw new RuntimeException(e);
             }
         }
