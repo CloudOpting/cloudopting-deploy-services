@@ -162,10 +162,11 @@
 					<co:DockerContainerProperties>
 						<co:image>centos:6.6</co:image>
 						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
-						<co:entrypoint>[ \"/usr/sbin/httpd\" ]</co:entrypoint>
-						<co:cmd>[ \"-D\", \"FOREGROUND\" ]</co:cmd>
+						<co:entrypoint>[ "/usr/sbin/httpd" ]</co:entrypoint>
+						<co:cmd>[ "-D", "FOREGROUND" ]</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
+				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="80" container="80"></co:ports></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="Apache" id="ClearoApache">
 				<Properties>

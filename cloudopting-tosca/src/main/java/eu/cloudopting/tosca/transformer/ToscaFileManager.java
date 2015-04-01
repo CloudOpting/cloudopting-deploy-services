@@ -502,4 +502,25 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
+	public ArrayList<String> getContainerPorts(String id){
+		ArrayList<String> ports = new ArrayList<String>();
+		
+		String xPathExpr = new String("//NodeTemplate[@id='"+id+"']/Capabilities/Capability/Properties/co:ports/*"); 
+		System.out.println("xpath :" + xPathExpr);
+		DTMNodeList nodes = null;
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("nodes :" + nodes.toString());
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			ports.add(nodes.item(i).getTextContent());
+		}
+		return ports;
+		
+	}
+	
 }
