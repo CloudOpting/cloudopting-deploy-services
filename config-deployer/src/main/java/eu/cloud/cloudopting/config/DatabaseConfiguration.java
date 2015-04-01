@@ -4,6 +4,7 @@ package eu.cloud.cloudopting.config;
 import com.fasterxml.jackson.datatype.hibernate4.Hibernate4Module;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.dbcp.BasicDataSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
@@ -19,7 +20,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Configuration
 @EnableJpaRepositories("eu.cloud.cloudopting.repository")
@@ -41,7 +44,7 @@ public class DatabaseConfiguration implements EnvironmentAware {
         this.propertyResolver = new RelaxedPropertyResolver(env, "spring.datasource.");
     }
 
-    @Bean(destroyMethod = "shutdown")
+    /*@Bean(destroyMethod = "shutdown")
     @ConditionalOnMissingClass(name = "eu.cloud.cloudopting.config.HerokuDatabaseConfiguration")
     @Profile("!" + Constants.SPRING_PROFILE_CLOUD)
     public DataSource dataSource() {
@@ -65,6 +68,22 @@ public class DatabaseConfiguration implements EnvironmentAware {
         config.addDataSourceProperty("password", propertyResolver.getProperty("password"));
 
         return new HikariDataSource(config);
+    }*/
+
+    @Bean
+    public DataSource dataSource() {
+        BasicDataSource dataSource = new BasicDataSource();
+        dataSource.setDriverClassName(propertyResolver.getProperty("driver"));
+        dataSource.setUrl(propertyResolver.getProperty("url"));
+        dataSource.setUsername(propertyResolver.getProperty("username"));
+        dataSource.setPassword(propertyResolver.getProperty("password"));
+        dataSource.setMaxActive(100);
+        dataSource.setMaxIdle(8);
+        dataSource.setMaxWait(30000);
+       /* List<String> sqls=new ArrayList<String>();
+        sqls.add("SET SCHEMA = '" + propertyResolver.getProperty("databaseName") + "'");*/
+//        dataSource.setConnectionInitSqls(sqls);
+        return dataSource;
     }
 
 
