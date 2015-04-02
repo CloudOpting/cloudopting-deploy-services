@@ -10,9 +10,9 @@ public class CloudoptingProcessR10K implements JavaDelegate {
 	@Override
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
-		System.out.println("Sono nella classe CloudoptingProcessR10K");
+		System.out.println("I'm processing the R10K Puppetfile to download all the puppet's modules");
 		String toscaFile = (String) execution.getVariable("toscaFile");
-		System.out.println("la variabile toscaFile vale:"+toscaFile);
+//		System.out.println("la variabile toscaFile vale:"+toscaFile);
 		String customer = (String) execution.getVariable("customer");
 		String service = (String) execution.getVariable("service");
 		String dockerContextPath = (String) execution.getVariable("dockerContextPath");

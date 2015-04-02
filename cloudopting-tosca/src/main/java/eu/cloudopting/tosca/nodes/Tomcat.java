@@ -81,7 +81,7 @@ public class Tomcat implements CloudOptingNode {
 		}
 		// I get the puppetFile template name
 		String myTemplate = tfm.getTemplateForNode(id, "PuppetTemplate");
-		System.out.println("The template for PostgreSQL is :" + myTemplate);
+		System.out.println("The template for Tomcat is :" + myTemplate);
 		// I merge all the template chunks from sons and all my own data and get
 		// the final template and write it
 

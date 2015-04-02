@@ -55,6 +55,11 @@
 			</Interface>
 		</Interfaces>
 	</NodeType>
+	<NodeType name="ApacheModule">
+		<documentation>This is the Apache Module and here we have things
+			to ask to the user</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
 	<NodeType name="MySQL">
 		<documentation>This is the MySQL engine</documentation>
 		<PropertiesDefinition element="" type="" />
@@ -172,26 +177,26 @@
 				<Properties>
 					<co:ApacheProperties>
 						<co:default_mods>true</co:default_mods>
+						<co:default_vhost>false</co:default_vhost>
 						<co:servername>fqdn</co:servername>
 						<co:log_formats>{ vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }</co:log_formats>
 					</co:ApacheProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
 				<Properties>
 					<co:ApacheVirtualHostProperties>
-						<co:VHostName>www.clearo.com</co:VHostName>
+						<co:servername>www.clearo.com</co:servername>
+						<co:vhost_name>*</co:vhost_name>
 						<co:aliases></co:aliases>
 						<co:default_vhost>false</co:default_vhost>
-						<co:docroot>'/var/www/html'</co:docroot>
-						<co:directories>
-							[ { path => '/var/www/www.clearo.com/htdocs', addhandlers => [{ handler => 'cgi-script', extensions
-							=> ['.cgi']}], }, ]
-						</co:directories>
+						<co:docroot>'/var/www/www.clearo.com'</co:docroot>
+						<co:directories>[ { path => '/var/www/www.clearo.com', addhandlers => [{ handler => 'cgi-script', extensions
+							=> ['.cgi']}], }, ]</co:directories>
 						<co:log_level></co:log_level>
 						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
-						<co:port></co:port>
+						<co:port>80</co:port>
 						<co:proxy_preserve_host>true</co:proxy_preserve_host> 
 						<co:proxy_pass>[ { 'path' => '/', 'url' => 'ajp://ClearoTomcatDC:8009' }, ]</co:proxy_pass>
 						<co:redirect_source></co:redirect_source>
@@ -202,6 +207,14 @@
 						<co:ssl>false</co:ssl>
 						<co:serveradmin></co:serveradmin>
 					</co:ApacheVirtualHostProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="ApacheModule" id="ClearoApacheMod1">
+				<Properties>
+					<co:ApacheModuleProperties>
+						<co:module>proxy_ajp</co:module>
+						<co:settings></co:settings>
+					</co:ApacheModuleProperties>
 				</Properties>
 			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
@@ -254,14 +267,17 @@
 						<co:cmd>/opt/liferay/tomcat7/bin/startup.sh &amp;&amp; tail -F /opt/liferay/tomcat7/logs/catalina.out</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
+				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="8080" container="8080"></co:ports></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>
 					<co:TomcatProperties>
 						<co:tomcat>tomcat7</co:tomcat>
 						<co:catalina_base>'/opt/liferay/tomcat7'</co:catalina_base>
+						<co:catalina_home>'/opt/liferay'</co:catalina_home>
 						<co:source_url>'http://mirrors.muzzy.it/apache/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz'</co:source_url>
 						<co:server_port>8005</co:server_port>
+						<co:install_from_source>true</co:install_from_source>
 						<co:http_port></co:http_port>
 						<co:ajp_port></co:ajp_port>
 					</co:TomcatProperties>
@@ -290,7 +306,7 @@
 			</RelationshipTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoApache" />
-				<TargetElement ref="ClearoApacheVH2" />
+				<TargetElement ref="ClearoApacheMod1" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
@@ -344,6 +360,12 @@
 	<NodeTypeImplementation nodeType="ApacheVirtualHost" name="ApacheVirtualHostImpl">
 		<ImplementationArtifacts>
 			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApacheVirtualHostPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="ApacheModule" name="ApacheModuleImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApacheModulePT">
 			</ImplementationArtifact>
 		</ImplementationArtifacts>
 	</NodeTypeImplementation>
