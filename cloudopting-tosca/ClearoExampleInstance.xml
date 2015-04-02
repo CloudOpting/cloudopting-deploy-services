@@ -198,7 +198,7 @@
 						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
 						<co:port>80</co:port>
 						<co:proxy_preserve_host>true</co:proxy_preserve_host> 
-						<co:proxy_pass>[ { 'path' => '/', 'url' => 'ajp://ClearoTomcatDC:8009' }, ]</co:proxy_pass>
+						<co:proxy_pass>[ { 'path' => '/', 'url' => 'ajp://ClearoTomcatDC:8009/' }, ]</co:proxy_pass>
 						<co:redirect_source></co:redirect_source>
 						<co:redirect_dest></co:redirect_dest>
 						<co:redirect_status></co:redirect_status>
@@ -223,7 +223,7 @@
 						<co:image>centos:6.6</co:image>
 						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
 						<co:entrypoint></co:entrypoint>
-						<co:cmd>["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]</co:cmd>
+						<co:cmd>"service postgresql start &amp;&amp; tail -F /var/lib/pgsql/data/pg_log/postgres.log"</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
@@ -233,6 +233,8 @@
 						<co:postgres_password>'mypass'</co:postgres_password>
 						<co:listen_addresses>'*'</co:listen_addresses>
 						<co:datadir></co:datadir>
+						<co:ip_mask_allow_all_users>0.0.0.0/0</co:ip_mask_allow_all_users>
+						<co:log_filename>postgres.log</co:log_filename>
 					</co:PostgreSQLProperties>
 				</Properties>
 				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
@@ -241,12 +243,11 @@
 				<Properties>
 					<co:PostgreSQLDatabaseProperties>
 						<co:dbname>clearodb</co:dbname>
-						<co:user>'clearoadmin'</co:user>
-						<co:password>'clearoDBpass'</co:password>
+						<co:user>clearoadmin</co:user>
+						<co:password>postgresql_password('clearoadmin','clearoDBpass')</co:password>
 						<co:connectionHost>
 						</co:connectionHost>
-						<co:grant>
-						</co:grant>
+						<co:grant></co:grant>
 						<co:sql>
 						</co:sql>
 						<co:import_timeout>
@@ -267,7 +268,7 @@
 						<co:cmd>/opt/liferay/tomcat7/bin/startup.sh &amp;&amp; tail -F /opt/liferay/tomcat7/logs/catalina.out</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="8080" container="8080"></co:ports></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="8081" container="8080"></co:ports></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>

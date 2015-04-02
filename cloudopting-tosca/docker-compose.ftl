@@ -1,7 +1,8 @@
 <#list dockerContainers as dockerContainer>
 ${dockerContainer['container']}:
   image: ${dockerContainer['image']}
-  volumes:
+<#if dockerContainer['volumes']?has_content>  volumes:
+${dockerContainer['volumes']}</#if>
 <#if dockerContainer['links']?has_content>  links:
 ${dockerContainer['links']}</#if>
 <#if dockerContainer['exPorts']?has_content>  expose:
