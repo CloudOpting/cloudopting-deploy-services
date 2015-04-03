@@ -31,8 +31,13 @@ tomcat::config::server::connector { '<#if tomcat?has_content>${tomcat}</#if>-ajp
 }</#if>->
 tomcat::service { 'default':
 <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
+}->
+class{'liferay':
+<#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
+<#if catalina_home?has_content>catalina_home => ${catalina_home},</#if>
 }
 
 <#foreach childTemplate in childtemplates>
 ${childTemplate}
 </#foreach>
+
