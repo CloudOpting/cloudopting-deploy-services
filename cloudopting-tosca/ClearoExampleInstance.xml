@@ -223,7 +223,7 @@
 						<co:image>centos:6.6</co:image>
 						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
 						<co:entrypoint></co:entrypoint>
-						<co:cmd>"service postgresql start &amp;&amp; tail -F /var/lib/pgsql/data/pg_log/postgres.log"</co:cmd>
+						<co:cmd>/etc/init.d/postgresql-9.3 start &amp;&amp; tail -F /var/lib/pgsql/9.3/pgstartup.log</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
@@ -233,6 +233,7 @@
 						<co:postgres_password>'mypass'</co:postgres_password>
 						<co:listen_addresses>'*'</co:listen_addresses>
 						<co:datadir></co:datadir>
+						<co:version>9.3</co:version>
 						<co:ip_mask_allow_all_users>0.0.0.0/0</co:ip_mask_allow_all_users>
 						<co:log_filename>postgres.log</co:log_filename>
 					</co:PostgreSQLProperties>

@@ -1,3 +1,7 @@
+<#if version?has_content>class { 'postgresql::globals':
+manage_package_repo => true,
+<#if version?has_content>version => '${version}',</#if>
+}-></#if>
 class { 'postgresql::server':
       <#if listen_addresses?has_content>listen_addresses => ${listen_addresses},</#if>
       <#if postgres_password?has_content>postgres_password => ${postgres_password},</#if>

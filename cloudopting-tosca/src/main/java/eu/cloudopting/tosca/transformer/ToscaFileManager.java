@@ -548,7 +548,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		
 		System.out.println("nodes :" + nodes.getLength());
 		for (int i = 0; i < nodes.getLength(); ++i) {
-			String portInfo = nodes.item(i).getAttributes().getNamedItem("host").getNodeValue()+":"+nodes.item(i).getAttributes().getNamedItem("container").getNodeValue();
+			String portInfo = nodes.item(i).getAttributes().getNamedItem("host").getNodeValue();
 			ports.add(portInfo);
 	//		System.out.println("portInfo :" + portInfo);
 		}
