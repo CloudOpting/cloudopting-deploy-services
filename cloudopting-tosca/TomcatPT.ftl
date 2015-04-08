@@ -27,6 +27,7 @@ tomcat::config::server::connector { '<#if tomcat?has_content>${tomcat}</#if>-ajp
 }</#if>->
 tomcat::service { 'default':
 <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
+service_ensure => 'stopped',
 }->
 class{'liferay':
 <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
