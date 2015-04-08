@@ -294,6 +294,18 @@
 					</co:WarProperties>
 				</Properties>
 			</NodeTemplate>
+			<NodeTemplate type="WarApplication" id="ClearoLiferay">
+				<Properties>
+					<co:WarApplicationProperties>
+						<co:app_property name="catalina_home">'/opt/liferay'</co:app_property>
+						<co:app_property name="cataline_base">'/opt/liferay/tomcat7'</co:app_property>
+						<co:app_property name="dbhost">ClearoPostgreSQLDC</co:app_property>
+						<co:app_property name="dbname">clearodb</co:app_property>
+						<co:app_property name="dbuser">clearoadmin</co:app_property>
+						<co:app_property name="dbpass">clearoDBpass</co:app_property>
+					</co:WarApplicationProperties>
+				</Properties>
+			</NodeTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoApacheDC" />
@@ -407,6 +419,12 @@
 	<NodeTypeImplementation nodeType="War" name="WarImpl">
 		<ImplementationArtifacts>
 			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="WarApplication" name="WarApplicationImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarApplicationPT">
 			</ImplementationArtifact>
 		</ImplementationArtifacts>
 	</NodeTypeImplementation>

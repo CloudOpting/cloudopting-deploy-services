@@ -378,6 +378,35 @@ public class ToscaFileManager implements IToscaFileManager {
 
 	}
 
+	public HashMap getPropertiesForNodeApplication(String id) {
+		if (this.xmlFile == null)
+			return null;
+		DTMNodeList nodes = null;
+//		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
+					+ id + "']/ns:Properties/*", this.document,
+					XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		HashMap<String, String> myHash = new HashMap<String, String>();
+		NodeList props = nodes.item(0).getChildNodes();
+		for (int i = 0; i < props.getLength(); ++i) {
+			// values.add(nodes.item(i).getFirstChild().getNodeValue());
+			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
+
+//			System.out.println("property val:" + props.item(i).getTextContent());
+			String key = props.item(i).getAttributes().getNamedItem("name").getNodeValue();
+//				System.out.println("property:" + key);
+				myHash.put(key, props.item(i).getTextContent());
+		}
+
+		return myHash;
+
+	}
+
 	public ArrayList<String> getChildrenOfNode(String node) {
 
 		if (this.xmlFile == null)
