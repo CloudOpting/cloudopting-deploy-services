@@ -55,6 +55,11 @@
 			</Interface>
 		</Interfaces>
 	</NodeType>
+	<NodeType name="ApacheModule">
+		<documentation>This is the Apache Module and here we have things
+			to ask to the user</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
 	<NodeType name="MySQL">
 		<documentation>This is the MySQL engine</documentation>
 		<PropertiesDefinition element="" type="" />
@@ -172,28 +177,28 @@
 				<Properties>
 					<co:ApacheProperties>
 						<co:default_mods>true</co:default_mods>
+						<co:default_vhost>false</co:default_vhost>
 						<co:servername>fqdn</co:servername>
 						<co:log_formats>{ vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }</co:log_formats>
 					</co:ApacheProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
 				<Properties>
 					<co:ApacheVirtualHostProperties>
-						<co:VHostName>www.clearo.com</co:VHostName>
+						<co:servername>www.clearo.com</co:servername>
+						<co:vhost_name>*</co:vhost_name>
 						<co:aliases></co:aliases>
 						<co:default_vhost>false</co:default_vhost>
-						<co:docroot>'/var/www/html'</co:docroot>
-						<co:directories>
-							[ { path => '/var/www/www.clearo.com/htdocs', addhandlers => [{ handler => 'cgi-script', extensions
-							=> ['.cgi']}], }, ]
-						</co:directories>
+						<co:docroot>'/var/www/www.clearo.com'</co:docroot>
+						<co:directories>[ { path => '/var/www/www.clearo.com', addhandlers => [{ handler => 'cgi-script', extensions
+							=> ['.cgi']}], }, ]</co:directories>
 						<co:log_level></co:log_level>
 						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
-						<co:port></co:port>
+						<co:port>80</co:port>
 						<co:proxy_preserve_host>true</co:proxy_preserve_host> 
-						<co:proxy_pass>[ { 'path' => '/', 'url' => 'ajp://ClearoTomcatDC:8009' }, ]</co:proxy_pass>
+						<co:proxy_pass>[ { 'path' => '/', 'url' => 'ajp://ClearoTomcatDC:8009/' }, ]</co:proxy_pass>
 						<co:redirect_source></co:redirect_source>
 						<co:redirect_dest></co:redirect_dest>
 						<co:redirect_status></co:redirect_status>
@@ -204,13 +209,21 @@
 					</co:ApacheVirtualHostProperties>
 				</Properties>
 			</NodeTemplate>
+			<NodeTemplate type="ApacheModule" id="ClearoApacheMod1">
+				<Properties>
+					<co:ApacheModuleProperties>
+						<co:module>proxy_ajp</co:module>
+						<co:settings></co:settings>
+					</co:ApacheModuleProperties>
+				</Properties>
+			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
 				<Properties>
 					<co:DockerContainerProperties>
 						<co:image>centos:6.6</co:image>
 						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
 						<co:entrypoint></co:entrypoint>
-						<co:cmd>["/usr/lib/postgresql/9.3/bin/postgres", "-D", "/var/lib/postgresql/9.3/main", "-c", "config_file=/etc/postgresql/9.3/main/postgresql.conf"]</co:cmd>
+						<co:cmd>/etc/init.d/postgresql-9.3 start &amp;&amp; tail -F /var/lib/pgsql/9.3/pgstartup.log</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
 			</NodeTemplate>
@@ -220,6 +233,9 @@
 						<co:postgres_password>'mypass'</co:postgres_password>
 						<co:listen_addresses>'*'</co:listen_addresses>
 						<co:datadir></co:datadir>
+						<co:version>9.3</co:version>
+						<co:ip_mask_allow_all_users>0.0.0.0/0</co:ip_mask_allow_all_users>
+						<co:log_filename>postgres.log</co:log_filename>
 					</co:PostgreSQLProperties>
 				</Properties>
 				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
@@ -228,12 +244,11 @@
 				<Properties>
 					<co:PostgreSQLDatabaseProperties>
 						<co:dbname>clearodb</co:dbname>
-						<co:user>'clearoadmin'</co:user>
-						<co:password>'clearoDBpass'</co:password>
+						<co:user>clearoadmin</co:user>
+						<co:password>postgresql_password('clearoadmin','clearoDBpass')</co:password>
 						<co:connectionHost>
 						</co:connectionHost>
-						<co:grant>
-						</co:grant>
+						<co:grant></co:grant>
 						<co:sql>
 						</co:sql>
 						<co:import_timeout>
@@ -254,16 +269,25 @@
 						<co:cmd>/opt/liferay/tomcat7/bin/startup.sh &amp;&amp; tail -F /opt/liferay/tomcat7/logs/catalina.out</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
+				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="8081" container="8080"></co:ports></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>
 					<co:TomcatProperties>
 						<co:tomcat>tomcat7</co:tomcat>
 						<co:catalina_base>'/opt/liferay/tomcat7'</co:catalina_base>
+						<co:catalina_home>'/opt/liferay'</co:catalina_home>
 						<co:source_url>'http://mirrors.muzzy.it/apache/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz'</co:source_url>
 						<co:server_port>8005</co:server_port>
+						<co:install_from_source>true</co:install_from_source>
 						<co:http_port></co:http_port>
 						<co:ajp_port></co:ajp_port>
+						<co:additional_attributes_http_conn></co:additional_attributes_http_conn>
+						<co:additional_attributes_ajp_conn></co:additional_attributes_ajp_conn>
+						<co:dbhost>ClearoPostgreSQLDC</co:dbhost>
+						<co:dbuser>clearoadmin</co:dbuser>
+						<co:dbname>clearodb</co:dbname>
+						<co:dbpass>clearoDBpass</co:dbpass>
 					</co:TomcatProperties>
 				</Properties>
 				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
@@ -274,6 +298,18 @@
 						<co:catalina_base>'/opt/liferay/tomcat7'</co:catalina_base>
 						<co:war_source>8088</co:war_source>
 					</co:WarProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="WarApplication" id="ClearoLiferay">
+				<Properties>
+					<co:WarApplicationProperties>
+						<co:app_property name="catalina_home">'/opt/liferay'</co:app_property>
+						<co:app_property name="cataline_base">'/opt/liferay/tomcat7'</co:app_property>
+						<co:app_property name="dbhost">ClearoPostgreSQLDC</co:app_property>
+						<co:app_property name="dbname">clearodb</co:app_property>
+						<co:app_property name="dbuser">clearoadmin</co:app_property>
+						<co:app_property name="dbpass">clearoDBpass</co:app_property>
+					</co:WarApplicationProperties>
 				</Properties>
 			</NodeTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
@@ -290,7 +326,7 @@
 			</RelationshipTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoApache" />
-				<TargetElement ref="ClearoApacheVH2" />
+				<TargetElement ref="ClearoApacheMod1" />
 			</RelationshipTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
@@ -347,6 +383,12 @@
 			</ImplementationArtifact>
 		</ImplementationArtifacts>
 	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="ApacheModule" name="ApacheModuleImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApacheModulePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
 	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl">
 		<ImplementationArtifacts>
 			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApachePT">
@@ -383,6 +425,12 @@
 	<NodeTypeImplementation nodeType="War" name="WarImpl">
 		<ImplementationArtifacts>
 			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="WarApplication" name="WarApplicationImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarApplicationPT">
 			</ImplementationArtifact>
 		</ImplementationArtifacts>
 	</NodeTypeImplementation>

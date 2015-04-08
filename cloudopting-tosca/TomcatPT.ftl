@@ -1,35 +1,45 @@
-class { 'tomcat': }
+class { 'tomcat': 
+<#if catalina_home?has_content>catalina_home => ${catalina_home},</#if>}
 class { 'java': 
 distribution => 'jdk',}
 
 tomcat::instance { '<#if tomcat?has_content>${tomcat}</#if>':
 <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
+<#if catalina_home?has_content>catalina_home => ${catalina_home},</#if>
 <#if source_url?has_content>source_url => ${source_url},</#if>
+<#if install_from_source?has_content>install_from_source => ${install_from_source},</#if>
 }->
 tomcat::config::server { '<#if tomcat?has_content>${tomcat}</#if>':
   <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
-  port          => '8005',
-}->
+  <#if server_port?has_content>port => ${server_port},</#if>
+}<#if http_port?has_content>->
 tomcat::config::server::connector { '<#if tomcat?has_content>${tomcat}</#if>-http':
   <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
-  port                  => '8180',
+  port                  => '<#if http_port?has_content>${http_port}</#if>',
   protocol              => 'HTTP/1.1',
-  additional_attributes => {
-    'redirectPort' => '8443'
-  },
-}->
+  <#if additional_attributes_http_conn?has_content>additional_attributes => {${additional_attributes_http_conn} },</#if>
+}</#if><#if ajp_port?has_content>->
 tomcat::config::server::connector { '<#if tomcat?has_content>${tomcat}</#if>-ajp':
   <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
-  port                  => '8109',
+  port                  => '<#if ajp_port?has_content>${ajp_port}</#if>',
   protocol              => 'AJP/1.3',
-  additional_attributes => {
-    'redirectPort' => '8543'
-  },
-}->
+  <#if additional_attributes_ajp_conn?has_content>additional_attributes => {${additional_attributes_ajp_conn} },</#if>
+}</#if>->
 tomcat::service { 'default':
 <#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
+}->
+class{'liferay':
+<#if catalina_base?has_content>catalina_base => ${catalina_base},</#if>
+<#if catalina_home?has_content>catalina_home => ${catalina_home},</#if>
+<#if dbhost?has_content>dbhost => '${dbhost}',</#if>
+<#if dbname?has_content>dbname => '${dbname}',</#if>
+<#if dbuser?has_content>dbuser => '${dbuser}',</#if>
+<#if dbpass?has_content>dbpass => '${dbpass}',</#if>
+<#if wizard?has_content>wizard => ${wizard},</#if>
+<#if version?has_content>version => ${version},</#if>
 }
 
 <#foreach childTemplate in childtemplates>
 ${childTemplate}
 </#foreach>
+

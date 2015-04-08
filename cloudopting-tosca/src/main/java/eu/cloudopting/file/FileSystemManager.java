@@ -95,4 +95,37 @@ public class FileSystemManager {
 	    System.out.println(stderr);
 		
 	}
+
+	public void runDockerCompose(String customer, String service, String path){
+	    // build the system command we want to run
+	    List<String> commands = new ArrayList<String>();
+	    commands.add("/bin/sh");
+	    commands.add("-c");
+	    commands.add("cd "+path+"/"+customer+"-"+service+" && docker-compose up --no-build -d");
+	    System.out.println("cd "+path+"/"+customer+"-"+service+" && docker-compose up --no-build -d");
+	    // execute the command
+	    SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
+	    int result = 0;
+		try {
+			result = commandExecutor.executeCommand();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    // get the stdout and stderr from the command that was run
+	    StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+	    StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+	    
+	    // print the stdout and stderr
+	    System.out.println("The numeric result of the command was: " + result);
+	    System.out.println("STDOUT:");
+	    System.out.println(stdout);
+	    System.out.println("STDERR:");
+	    System.out.println(stderr);
+		
+	}
 }
