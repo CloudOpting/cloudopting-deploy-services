@@ -282,6 +282,12 @@
 						<co:install_from_source>true</co:install_from_source>
 						<co:http_port></co:http_port>
 						<co:ajp_port></co:ajp_port>
+						<co:additional_attributes_http_conn></co:additional_attributes_http_conn>
+						<co:additional_attributes_ajp_conn></co:additional_attributes_ajp_conn>
+						<co:dbhost>ClearoPostgreSQLDC</co:dbhost>
+						<co:dbuser>clearoadmin</co:dbuser>
+						<co:dbname>clearodb</co:dbname>
+						<co:dbpass>clearoDBpass</co:dbpass>
 					</co:TomcatProperties>
 				</Properties>
 				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
