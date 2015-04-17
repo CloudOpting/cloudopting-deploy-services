@@ -1,0 +1,484 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Definitions id="Clearo"
+	name=""
+	targetNamespace="http://tempuri.org"
+	xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
+	xmlns:co="http://docs.oasis-open.org/tosca/ns/2011/12/CloudOptingTypes"
+	xmlns:xml="http://www.w3.org/XML/1998/namespace"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://docs.oasis-open.org/tosca/ns/2011/12 TOSCA-v1.0.xsd http://docs.oasis-open.org/tosca/ns/2011/12/CloudOptingTypes
+		./Types/CloudOptingTypes.xsd">
+	<NodeType name="VMhost">
+		<documentation>
+			This is the VM description, we need to collect the SLA information (that is the set
+			of CPU+RAM+DISK) that the VM need to have for the service (this information is
+			just a label for the end user but translate to data for the system)
+		</documentation>
+		<PropertiesDefinition element="co:VMhostProperties" type="co:tVMhostProperties" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<documentation>
+						The parameters to ask to the end user to execute the "install" operation of this node
+					</documentation>
+					<InputParameters>
+						<InputParameter name="co:SLA.co:Chosen" type="co:SLA" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="DockerContainer">
+		<documentation>
+			This is the Docker Container (the Docker host is already installed in the VM image)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="Apache">
+		<documentation>
+			This is the Apache server (we should not ask anything to the end user about apache,
+			but we need to set the properties)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="ApacheVirtualHost">
+		<documentation>This is the Apache Virtual Host and here we have things
+			to ask to the user</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="VHostName" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="ApacheModule">
+		<documentation>This is the Apache Module and here we have things
+			to ask to the user</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="MySQL">
+		<documentation>This is the MySQL engine</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="root_password" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="MySQLDatabase">
+		<documentation>This is the MySQL DB</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="dbPassword" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="PostgreSQL">
+		<documentation>This is the PostgreSQL engine</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="postgres_password" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="PostgreSQLDatabase">
+		<documentation>This is the PostgreSQL DB</documentation>
+		<PropertiesDefinition element="" type="" />
+		<Interfaces>
+			<Interface name="http://tempuri.org">
+				<Operation name="Install">
+					<InputParameters>
+						<InputParameter name="dbPassword" type="xs:string" />
+					</InputParameters>
+				</Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="Tomcat">
+		<documentation>
+			This is the Tomcat server (we should not ask anything to the end user about tomcat,
+			but we need to set the properties)
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<NodeType name="War">
+		<documentation>
+			This is the War component that can be deployed on a tomcat server
+		</documentation>
+		<PropertiesDefinition element="" type="" />
+	</NodeType>
+	<ServiceTemplate id="Clearo" name="" substitutableNodeType="QName" targetNamespace="http://tempuri.org">
+		
+		<TopologyTemplate>
+			<documentation xml:lang="" source="http://tempuri.org" />
+			<NodeTemplate id="ClearoVM" maxInstances="1" minInstances="1" name="" type="VMhost">
+				<documentation xml:lang="" source="http://tempuri.org" />
+				<Properties>
+					<documentation xml:lang="" source="http://tempuri.org" />
+					<co:VMhostProperties>
+						<co:SLAsProperties>
+							<co:SLA Name="Big City" id="BigCity">
+								<co:NumCpus>2</co:NumCpus>
+								<co:Memory>2</co:Memory>
+								<co:Price>10000</co:Price>
+								<co:Disk>10</co:Disk>
+								<co:Chosen>false</co:Chosen>
+							</co:SLA>
+							<co:SLA Name="Small City" id="SmallCity">
+								<co:NumCpus>1</co:NumCpus>
+								<co:Memory>1</co:Memory>
+								<co:Price>5000</co:Price>
+								<co:Disk>5</co:Disk>
+								<co:Chosen>true</co:Chosen>
+							</co:SLA>
+							<co:SLA Name="Region" id="Region">
+								<co:NumCpus>4</co:NumCpus>
+								<co:Memory>4</co:Memory>
+								<co:Price>20000</co:Price>
+								<co:Disk>20</co:Disk>
+								<co:Chosen>false</co:Chosen>
+							</co:SLA>
+							<co:vmImage>
+							</co:vmImage>
+						</co:SLAsProperties>
+					</co:VMhostProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoApacheDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:entrypoint>[ "/usr/sbin/httpd" ]</co:entrypoint>
+						<co:cmd>[ "-D", "FOREGROUND" ]</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="80" container="80"></co:ports></Properties></Capability></Capabilities>
+			</NodeTemplate>
+			<NodeTemplate type="Apache" id="ClearoApache">
+				<Properties>
+					<co:ApacheProperties>
+						<co:default_mods>true</co:default_mods>
+						<co:default_vhost>false</co:default_vhost>
+						<co:servername>fqdn</co:servername>
+						<co:log_formats>{ vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }</co:log_formats>
+					</co:ApacheProperties>
+				</Properties>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
+			</NodeTemplate>
+			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
+				<Properties>
+					<co:ApacheVirtualHostProperties>
+						<co:servername>www.clearo.com</co:servername>
+						<co:vhost_name>*</co:vhost_name>
+						<co:aliases></co:aliases>
+						<co:default_vhost>false</co:default_vhost>
+						<co:docroot>'/var/www/www.clearo.com'</co:docroot>
+						<co:directories>[ { path => '/var/www/www.clearo.com', addhandlers => [{ handler => 'cgi-script', extensions
+							=> ['.cgi']}], }, ]</co:directories>
+						<co:log_level></co:log_level>
+						<co:options>['Indexes','FollowSymLinks','MultiViews']</co:options>
+						<co:port>80</co:port>
+						<co:proxy_preserve_host>true</co:proxy_preserve_host> 
+						<co:proxy_pass>[ { 'path' => '/', 'url' => 'ajp://ClearoTomcatDC:8009/' }, ]</co:proxy_pass>
+						<co:redirect_source></co:redirect_source>
+						<co:redirect_dest></co:redirect_dest>
+						<co:redirect_status></co:redirect_status>
+						<co:rewrites></co:rewrites>
+						<co:setenv></co:setenv>
+						<co:ssl>false</co:ssl>
+						<co:serveradmin></co:serveradmin>
+					</co:ApacheVirtualHostProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="ApacheModule" id="ClearoApacheMod1">
+				<Properties>
+					<co:ApacheModuleProperties>
+						<co:module>proxy_ajp</co:module>
+						<co:settings></co:settings>
+					</co:ApacheModuleProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd>/etc/init.d/postgresql-9.3 start &amp;&amp; tail -F /var/lib/pgsql/9.3/pgstartup.log</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="PostgreSQL" id="ClearoPostgreSQL">
+				<Properties>
+					<co:PostgreSQLProperties>
+						<co:postgres_password>'mypass'</co:postgres_password>
+						<co:listen_addresses>'*'</co:listen_addresses>
+						<co:datadir></co:datadir>
+						<co:version>9.3</co:version>
+						<co:ip_mask_allow_all_users>0.0.0.0/0</co:ip_mask_allow_all_users>
+						<co:log_filename>postgres.log</co:log_filename>
+					</co:PostgreSQLProperties>
+				</Properties>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
+			</NodeTemplate>
+			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
+				<Properties>
+					<co:PostgreSQLDatabaseProperties>
+						<co:dbname>clearodb</co:dbname>
+						<co:user>clearoadmin</co:user>
+						<co:password>postgresql_password('clearoadmin','clearoDBpass')</co:password>
+						<co:connectionHost>
+						</co:connectionHost>
+						<co:grant></co:grant>
+						<co:sql>
+						</co:sql>
+						<co:import_timeout>
+						</co:import_timeout>
+						<co:charset>
+						</co:charset>
+						<co:collate>
+						</co:collate>
+					</co:PostgreSQLDatabaseProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="DockerContainer" id="ClearoTomcatDC">
+				<Properties>
+					<co:DockerContainerProperties>
+						<co:image>centos:6.6</co:image>
+						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:entrypoint></co:entrypoint>
+						<co:cmd>/opt/liferay/tomcat7/bin/startup.sh &amp;&amp; tail -F /opt/liferay/tomcat7/logs/catalina.out</co:cmd>
+					</co:DockerContainerProperties>
+				</Properties>
+				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="8081" container="8080"></co:ports></Properties></Capability></Capabilities>
+			</NodeTemplate>
+			<NodeTemplate type="Tomcat" id="ClearoTomcat">
+				<Properties>
+					<co:TomcatProperties>
+						<co:tomcat>tomcat7</co:tomcat>
+						<co:catalina_base>'/opt/liferay/tomcat7'</co:catalina_base>
+						<co:catalina_home>'/opt/liferay'</co:catalina_home>
+						<co:source_url>'http://mirrors.muzzy.it/apache/tomcat/tomcat-7/v7.0.59/bin/apache-tomcat-7.0.59.tar.gz'</co:source_url>
+						<co:server_port>8005</co:server_port>
+						<co:install_from_source>true</co:install_from_source>
+						<co:http_port></co:http_port>
+						<co:ajp_port></co:ajp_port>
+						<co:additional_attributes_http_conn></co:additional_attributes_http_conn>
+						<co:additional_attributes_ajp_conn></co:additional_attributes_ajp_conn>
+						<co:dbhost>ClearoPostgreSQLDC</co:dbhost>
+						<co:dbuser>clearoadmin</co:dbuser>
+						<co:dbname>clearodb</co:dbname>
+						<co:dbpass>clearoDBpass</co:dbpass>
+					</co:TomcatProperties>
+				</Properties>
+				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
+			</NodeTemplate>
+			<NodeTemplate type="War" id="ClearoLiferay">
+				<Properties>
+					<co:WarProperties>
+						<co:catalina_base>'/opt/liferay/tomcat7'</co:catalina_base>
+						<co:war_source>8088</co:war_source>
+					</co:WarProperties>
+				</Properties>
+			</NodeTemplate>
+			<NodeTemplate type="WarApplication" id="ClearoLiferay">
+				<Properties>
+					<co:WarApplicationProperties>
+						<co:app_property name="catalina_home">'/opt/liferay'</co:app_property>
+						<co:app_property name="cataline_base">'/opt/liferay/tomcat7'</co:app_property>
+						<co:app_property name="dbhost">ClearoPostgreSQLDC</co:app_property>
+						<co:app_property name="dbname">clearodb</co:app_property>
+						<co:app_property name="dbuser">clearoadmin</co:app_property>
+						<co:app_property name="dbpass">clearoDBpass</co:app_property>
+					</co:WarApplicationProperties>
+				</Properties>
+			</NodeTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoApacheDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoApacheDC" />
+				<TargetElement ref="ClearoApache" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoApache" />
+				<TargetElement ref="ClearoApacheVH" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoApache" />
+				<TargetElement ref="ClearoApacheMod1" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoPostgreSQLDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoPostgreSQLDC" />
+				<TargetElement ref="ClearoPostgreSQL" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoPostgreSQL" />
+				<TargetElement ref="ClearoPostgreSQLDB" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoVM" />
+				<TargetElement ref="ClearoTomcatDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoTomcatDC" />
+				<TargetElement ref="ClearoTomcat" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="hostedOn" id="idvalue0">
+				<SourceElement ref="ClearoTomcat" />
+				<TargetElement ref="ClearoLiferay" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="containerLink" id="idvalue0">
+				<SourceElement ref="ClearoApacheDC" />
+				<TargetElement ref="ClearoTomcatDC" />
+			</RelationshipTemplate>
+			<RelationshipTemplate type="containerLink" id="idvalue0">
+				<SourceElement ref="ClearoTomcatDC" />
+				<TargetElement ref="ClearoPostgreSQLDC" />
+			</RelationshipTemplate>
+		</TopologyTemplate>
+		<Plans targetNamespace="http://tempuri.org">
+			<Plan id="idvalue5" name="" planLanguage="http://tempuri.org" planType="http://tempuri.org">
+				<documentation xml:lang="" source="http://tempuri.org" />
+				<Precondition expressionLanguage="http://tempuri.org" />
+				<InputParameters>
+					<InputParameter name="" required="yes" type="" />
+				</InputParameters>
+				<OutputParameters>
+					<OutputParameter name="" required="yes" type="" />
+				</OutputParameters>
+				<PlanModel>
+					<documentation xml:lang="" source="http://tempuri.org" />
+				</PlanModel>
+			</Plan>
+		</Plans>
+	</ServiceTemplate>
+	<NodeTypeImplementation nodeType="ApacheVirtualHost" name="ApacheVirtualHostImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApacheVirtualHostPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="ApacheModule" name="ApacheModuleImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApacheModulePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="Apache" name="ApacheImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="ApachePT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="PuppetModule"
+				artifactRef="ApachePM">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="PostgreSQL" name="PostgreSQLImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="PostgreSQLPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="PuppetModule"
+				artifactRef="PostgreSQLPM">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="PostgreSQLDatabase" name="PostgreSQLDatabaseImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="PostgreSQLDatabasePT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="Tomcat" name="TomcatImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="TomcatPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="PuppetModule"
+				artifactRef="TomcatPM">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="War" name="WarImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="WarApplication" name="WarApplicationImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="WarApplicationPT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<NodeTypeImplementation nodeType="DockerContainer" name="DockerContainerImpl">
+		<ImplementationArtifacts>
+			<ImplementationArtifact artifactType="PuppetTemplate" artifactRef="DockerContainerPT">
+			</ImplementationArtifact>
+			<ImplementationArtifact artifactType="DockerfileTemplate" artifactRef="DockerContainerDT">
+			</ImplementationArtifact>
+		</ImplementationArtifacts>
+	</NodeTypeImplementation>
+	<ArtifactType name="PuppetTemplate">
+	</ArtifactType>
+	<ArtifactType name="DockerfileTemplate">
+	</ArtifactType>
+	<ArtifactType name="PuppetModule">
+		<PropertiesDefinition element="PuppetModuleProperties"/>
+	</ArtifactType>
+	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT">
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ApachePT">
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="PostgreSQLPT">
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="TomcatPT">
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetModule" id="ApachePM">
+		<Properties>
+			<co:PuppetModuleProperties>
+				<co:module>apache</co:module>
+				<co:git>https://github.com/puppetlabs/puppetlabs-apache</co:git>
+			</co:PuppetModuleProperties>
+		</Properties>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetModule" id="PostgreSQLPM">
+		<Properties>
+			<co:PuppetModuleProperties>
+				<co:module>postgresql</co:module>
+				<co:git>https://github.com/puppetlabs/puppetlabs-postgresql</co:git>
+			</co:PuppetModuleProperties>
+		</Properties>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetModule" id="TomcatPM">
+		<Properties>
+			<co:PuppetModuleProperties>
+				<co:module>tomcat</co:module>
+				<co:git>https://github.com/puppetlabs/puppetlabs-tomcat</co:git>
+			</co:PuppetModuleProperties>
+		</Properties>
+	</ArtifactTemplate>
+</Definitions>
