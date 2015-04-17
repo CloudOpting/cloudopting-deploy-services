@@ -19,7 +19,7 @@
  <xs:complexType name="tExtensibleElements">
   <xs:sequence>
    <xs:element ref="documentation" minOccurs="0" maxOccurs="unbounded"/>
-   <xs:any namespace="##any" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
+   <xs:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/>
   </xs:sequence>
   <xs:anyAttribute namespace="##other" processContents="lax"/>
  </xs:complexType>
@@ -108,7 +108,7 @@
    <xs:element name="Properties" minOccurs="0">
     <xs:complexType>
      <xs:sequence>
-      <xs:any namespace="##any"/>
+      <xs:any namespace="##other"/>
       <xs:element name="PropertyMappings" minOccurs="0">
        <xs:complexType>
         <xs:sequence>
@@ -200,7 +200,7 @@
      <xs:element name="Properties" minOccurs="0">
       <xs:complexType>
        <xs:sequence>
-        <xs:any namespace="##any" processContents="lax"/>
+        <xs:any namespace="##other" processContents="lax"/>
        </xs:sequence>
       </xs:complexType>
      </xs:element>
