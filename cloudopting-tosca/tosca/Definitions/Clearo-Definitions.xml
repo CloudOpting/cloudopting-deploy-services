@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Definitions id="Clearo"
+<Definitions id="ClearoDef"
 	name=""
 	targetNamespace="http://tempuri.org"
 	xmlns="http://docs.oasis-open.org/tosca/ns/2011/12"
@@ -7,7 +7,7 @@
 	xmlns:xml="http://www.w3.org/XML/1998/namespace"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://docs.oasis-open.org/tosca/ns/2011/12 ../Types/TOSCA-v1.0.xsd http://docs.oasis-open.org/tosca/ns/2011/12/CloudOptingTypes
-		./Types/CloudOptingTypes.xsd">
+		../Types/CloudOptingTypes.xsd">
 	<NodeType name="VMhost">
 		<documentation>
 			This is the VM description, we need to collect the SLA information (that is the set
@@ -32,19 +32,19 @@
 		<documentation>
 			This is the Docker Container (the Docker host is already installed in the VM image)
 		</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 	</NodeType>
 	<NodeType name="Apache">
 		<documentation>
 			This is the Apache server (we should not ask anything to the end user about apache,
 			but we need to set the properties)
 		</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 	</NodeType>
 	<NodeType name="ApacheVirtualHost">
 		<documentation>This is the Apache Virtual Host and here we have things
 			to ask to the user</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
 			<Interface name="http://tempuri.org">
 				<Operation name="Install">
@@ -58,11 +58,11 @@
 	<NodeType name="ApacheModule">
 		<documentation>This is the Apache Module and here we have things
 			to ask to the user</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 	</NodeType>
 	<NodeType name="MySQL">
 		<documentation>This is the MySQL engine</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
 			<Interface name="http://tempuri.org">
 				<Operation name="Install">
@@ -75,7 +75,7 @@
 	</NodeType>
 	<NodeType name="MySQLDatabase">
 		<documentation>This is the MySQL DB</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
 			<Interface name="http://tempuri.org">
 				<Operation name="Install">
@@ -88,7 +88,7 @@
 	</NodeType>
 	<NodeType name="PostgreSQL">
 		<documentation>This is the PostgreSQL engine</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
 			<Interface name="http://tempuri.org">
 				<Operation name="Install">
@@ -101,7 +101,7 @@
 	</NodeType>
 	<NodeType name="PostgreSQLDatabase">
 		<documentation>This is the PostgreSQL DB</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
 			<Interface name="http://tempuri.org">
 				<Operation name="Install">
@@ -117,13 +117,13 @@
 			This is the Tomcat server (we should not ask anything to the end user about tomcat,
 			but we need to set the properties)
 		</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 	</NodeType>
 	<NodeType name="War">
 		<documentation>
 			This is the War component that can be deployed on a tomcat server
 		</documentation>
-		<PropertiesDefinition element="" type="" />
+		<PropertiesDefinition element="a" type="a" />
 	</NodeType>
 	<ServiceTemplate id="Clearo" name="" substitutableNodeType="QName" targetNamespace="http://tempuri.org">
 		
@@ -132,7 +132,6 @@
 			<NodeTemplate id="ClearoVM" maxInstances="1" minInstances="1" name="" type="VMhost">
 				<documentation xml:lang="" source="http://tempuri.org" />
 				<Properties>
-					<documentation xml:lang="" source="http://tempuri.org" />
 					<co:VMhostProperties>
 						<co:SLAsProperties>
 							<co:SLA Name="Big City" id="BigCity">
@@ -156,22 +155,21 @@
 								<co:Disk>20</co:Disk>
 								<co:Chosen>false</co:Chosen>
 							</co:SLA>
-							<co:vmImage>
-							</co:vmImage>
 						</co:SLAsProperties>
+						<co:vmImage>sd</co:vmImage>
+						<co:VMports><co:VMport></co:VMport></co:VMports>
 					</co:VMhostProperties>
 				</Properties>
 			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoApacheDC">
 				<Properties>
 					<co:DockerContainerProperties>
-						<co:image>centos:6.6</co:image>
-						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:from>centos:6.6</co:from>
 						<co:entrypoint>[ "/usr/sbin/httpd" ]</co:entrypoint>
 						<co:cmd>[ "-D", "FOREGROUND" ]</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="80" container="80"></co:ports></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p0" type="ports" name=""><Properties><co:ports host="80" container="80"></co:ports></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="Apache" id="ClearoApache">
 				<Properties>
@@ -182,7 +180,8 @@
 						<co:log_formats>{ vhost_common => '%v %h %l %u %t \"%r\" %>s %b' }</co:log_formats>
 					</co:ApacheProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
+				<Capabilities>
+					<Capability id="p01" type="portsExpose" name=""><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
 				<Properties>
@@ -220,8 +219,7 @@
 			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
 				<Properties>
 					<co:DockerContainerProperties>
-						<co:image>centos:6.6</co:image>
-						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:from>centos:6.6</co:from>
 						<co:entrypoint></co:entrypoint>
 						<co:cmd>/etc/init.d/postgresql-9.3 start &amp;&amp; tail -F /var/lib/pgsql/9.3/pgstartup.log</co:cmd>
 					</co:DockerContainerProperties>
@@ -238,7 +236,7 @@
 						<co:log_filename>postgres.log</co:log_filename>
 					</co:PostgreSQLProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p02" type="portsExpose" name=""><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
 				<Properties>
@@ -263,13 +261,12 @@
 			<NodeTemplate type="DockerContainer" id="ClearoTomcatDC">
 				<Properties>
 					<co:DockerContainerProperties>
-						<co:image>centos:6.6</co:image>
-						<co:run>puppet apply /etc/puppet/manifests/site.pp --verbose --detailed-exitcodes || [ $?-eq 2 ]</co:run>
+						<co:from>centos:6.6</co:from>
 						<co:entrypoint></co:entrypoint>
 						<co:cmd>/opt/liferay/tomcat7/bin/startup.sh &amp;&amp; tail -F /opt/liferay/tomcat7/logs/catalina.out</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="ports"><Properties><co:ports host="8081" container="8080"></co:ports></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p03" type="ports" name=""><Properties><co:ports host="8081" container="8080"></co:ports></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>
@@ -290,7 +287,7 @@
 						<co:dbpass>clearoDBpass</co:dbpass>
 					</co:TomcatProperties>
 				</Properties>
-				<Capabilities><Capability id="p0" type="portsExpose"><Properties><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
+				<Capabilities><Capability id="p04" type="portsExpose" name=""><Properties><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
 			</NodeTemplate>
 			<NodeTemplate type="War" id="ClearoLiferay">
 				<Properties>
@@ -300,7 +297,7 @@
 					</co:WarProperties>
 				</Properties>
 			</NodeTemplate>
-			<NodeTemplate type="WarApplication" id="ClearoLiferay">
+			<NodeTemplate type="WarApplication" id="ClearoLiferay1">
 				<Properties>
 					<co:WarApplicationProperties>
 						<co:app_property name="catalina_home">'/opt/liferay'</co:app_property>
@@ -316,53 +313,53 @@
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoApacheDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue1">
 				<SourceElement ref="ClearoApacheDC" />
 				<TargetElement ref="ClearoApache" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue2">
 				<SourceElement ref="ClearoApache" />
 				<TargetElement ref="ClearoApacheVH" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue3">
 				<SourceElement ref="ClearoApache" />
 				<TargetElement ref="ClearoApacheMod1" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue4">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoPostgreSQLDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue5">
 				<SourceElement ref="ClearoPostgreSQLDC" />
 				<TargetElement ref="ClearoPostgreSQL" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue6">
 				<SourceElement ref="ClearoPostgreSQL" />
 				<TargetElement ref="ClearoPostgreSQLDB" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue7">
 				<SourceElement ref="ClearoVM" />
 				<TargetElement ref="ClearoTomcatDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue8">
 				<SourceElement ref="ClearoTomcatDC" />
 				<TargetElement ref="ClearoTomcat" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="hostedOn" id="idvalue0">
+			<RelationshipTemplate type="hostedOn" id="idvalue9">
 				<SourceElement ref="ClearoTomcat" />
 				<TargetElement ref="ClearoLiferay" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="containerLink" id="idvalue0">
+			<RelationshipTemplate type="containerLink" id="idvalue10">
 				<SourceElement ref="ClearoApacheDC" />
 				<TargetElement ref="ClearoTomcatDC" />
 			</RelationshipTemplate>
-			<RelationshipTemplate type="containerLink" id="idvalue0">
+			<RelationshipTemplate type="containerLink" id="idvalue11">
 				<SourceElement ref="ClearoTomcatDC" />
 				<TargetElement ref="ClearoPostgreSQLDC" />
 			</RelationshipTemplate>
 		</TopologyTemplate>
 		<Plans targetNamespace="http://tempuri.org">
-			<Plan id="idvalue5" name="" planLanguage="http://tempuri.org" planType="http://tempuri.org">
+			<Plan id="idvalu5" name="" planLanguage="http://tempuri.org" planType="http://tempuri.org">
 				<documentation xml:lang="" source="http://tempuri.org" />
 				<Precondition expressionLanguage="http://tempuri.org" />
 				<InputParameters>
@@ -372,7 +369,6 @@
 					<OutputParameter name="" required="yes" type="" />
 				</OutputParameters>
 				<PlanModel>
-					<documentation xml:lang="" source="http://tempuri.org" />
 				</PlanModel>
 			</Plan>
 		</Plans>
