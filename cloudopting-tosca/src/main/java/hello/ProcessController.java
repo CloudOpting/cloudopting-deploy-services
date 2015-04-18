@@ -6,20 +6,23 @@ import java.util.List;
 import org.activiti.engine.task.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController
+@Controller
 public class ProcessController {
 
 	@Autowired
 	private ProcessService processService;
 
 	@RequestMapping(value="/process", method= RequestMethod.POST)
-	public void startProcessInstance() {
-		processService.startProcess();
+	public void startProcessInstance(@RequestParam(value="customerId", required=false) String customerId,@RequestParam(value="cloudId", required=false) String cloudId) {
+		System.out.println("\ncustomerId:"+customerId);
+		System.out.println("\ncloudId:"+cloudId);
+		processService.startProcess(customerId, cloudId);
 	}
 
 	@RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -21,7 +21,9 @@ public class ProcessService {
     private TaskService taskService;
 
 	@Transactional
-    public void startProcess() {
+    public void startProcess(String customerId, String cloudId) {
+		System.out.println("\ncustomerId:"+customerId);
+		System.out.println("\ncloudId:"+cloudId);
 		HashMap<String, Object> v = new HashMap<String, Object>();
 		v.put("toscaFile", new String("ClearoExampleInstance.xml"));
 		v.put("customer", new String("csi"));

@@ -1,0 +1,1032 @@
+Found a 49 line (251 tokens) duplication in the following files: 
+Starting at line 36 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 36 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 29 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+		System.out.println("I'm in the Tomcat.prepare for :" + id);
+
+		// With my ID I ask to the TFM the array of my sons
+		tfm = ToscaFileManager.getInstance();
+		ArrayList<String> mychildren = tfm.getChildrenOfNode(id);
+
+		int i;
+		ArrayList<String> templateChunks = new ArrayList<String>();
+		for (i = 0; i < mychildren.size(); i++) {
+			String childType;
+			childType = tfm.getNodeType(mychildren.get(i));
+			Class childClass = null;
+			try {
+				childClass = Class.forName("eu.cloudopting.tosca.nodes."
+						+ childType);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			CloudOptingNode childInstance = null;
+			try {
+				childInstance = (CloudOptingNode) childClass.getConstructor(
+						null).newInstance(null);
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			HashMap<String, String> hm = new HashMap<String, String>();
+			hm.put("id", mychildren.get(i));
+			templateChunks.add(childInstance.prepare(hm));
+		}
+		// I get the puppetFile template name
+		String myTemplate = tfm.getTemplateForNode(id, "PuppetTemplate");
+		System.out.println("The template for Tomcat is :" + myTemplate);
+=====================================================================
+Found a 49 line (249 tokens) duplication in the following files: 
+Starting at line 36 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 36 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 43 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 29 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+		System.out.println("I'm in the Tomcat.prepare for :" + id);
+
+		// With my ID I ask to the TFM the array of my sons
+		tfm = ToscaFileManager.getInstance();
+		ArrayList<String> mychildren = tfm.getChildrenOfNode(id);
+
+		int i;
+		ArrayList<String> templateChunks = new ArrayList<String>();
+		for (i = 0; i < mychildren.size(); i++) {
+			String childType;
+			childType = tfm.getNodeType(mychildren.get(i));
+			Class childClass = null;
+			try {
+				childClass = Class.forName("eu.cloudopting.tosca.nodes."
+						+ childType);
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			CloudOptingNode childInstance = null;
+			try {
+				childInstance = (CloudOptingNode) childClass.getConstructor(
+						null).newInstance(null);
+			} catch (InstantiationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (SecurityException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			HashMap<String, String> hm = new HashMap<String, String>();
+			hm.put("id", mychildren.get(i));
+			templateChunks.add(childInstance.prepare(hm));
+		}
+		// I get the puppetFile template name
+		String myTemplate = tfm.getTemplateForNode(id, "PuppetTemplate");
+		System.out.println("The template for Tomcat is :" + myTemplate);
+=====================================================================
+Found a 46 line (204 tokens) duplication in the following files: 
+Starting at line 19 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 19 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+
+public class ApacheVirtualHost implements CloudOptingNode{
+	@Autowired
+	ToscaFileManager tfm;
+	@Override
+	public String prepare(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		String id = data.get("id");
+		System.out.println("I'm in the ApacheVirtualHost.prepare for :" + id);
+		tfm = ToscaFileManager.getInstance();
+		String myTemplate = tfm.getTemplateForNode(id,"PuppetTemplate");
+		System.out.println("The template is :"+myTemplate);
+		Map nodeData = tfm.getPropertiesForNode(id);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+StringWriter writer = new StringWriter();
+//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+		try {
+//			tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, writer);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return writer.getBuffer().toString();
+	}
+
+}
+=====================================================================
+Found a 39 line (166 tokens) duplication in the following files: 
+Starting at line 32 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 26 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 26 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+
+		System.out.println("I'm in the War.prepare for :" + id);
+		tfm = ToscaFileManager.getInstance();
+		String myTemplate = tfm.getTemplateForNode(id,"PuppetTemplate");
+		System.out.println("The template is :"+myTemplate);
+		Map nodeData = tfm.getPropertiesForNode(id);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+StringWriter writer = new StringWriter();
+//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+		try {
+//			tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, writer);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return writer.getBuffer().toString();
+	}
+
+}
+=====================================================================
+Found a 37 line (148 tokens) duplication in the following files: 
+Starting at line 34 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 37 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 28 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 28 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+
+		String myTemplate = tfm.getTemplateForNode(id,"PuppetTemplate");
+		System.out.println("The template is :"+myTemplate);
+		Map nodeData = tfm.getPropertiesForNode(id);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+StringWriter writer = new StringWriter();
+//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+		try {
+//			tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, writer);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return writer.getBuffer().toString();
+	}
+
+}
+=====================================================================
+Found a 42 line (146 tokens) duplication in the following files: 
+Starting at line 84 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 84 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 77 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+		System.out.println("The template for Tomcat is :" + myTemplate);
+		// I merge all the template chunks from sons and all my own data and get
+		// the final template and write it
+
+//		Map nodeData = new HashMap();
+		Map nodeData = tfm.getPropertiesForNode(id);
+		// nodeData.put("hostname", id+"."+customer+".local");
+		nodeData.put("childtemplates", templateChunks);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate + ".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		StringWriter writer = new StringWriter();
+		// OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+		try {
+			// tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, writer);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return writer.getBuffer().toString();
+
+	}
+
+}
+=====================================================================
+Found a 35 line (127 tokens) duplication in the following files: 
+Starting at line 36 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 91 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 39 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 91 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 30 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 30 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+Starting at line 84 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+		Map nodeData = tfm.getPropertiesForNode(id);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+StringWriter writer = new StringWriter();
+//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+		try {
+//			tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, writer);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return writer.getBuffer().toString();
+	}
+
+}
+=====================================================================
+Found a 28 line (108 tokens) duplication in the following files: 
+Starting at line 39 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 72 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	    System.out.println("docker build -t cloudopting/"+customer+"_"+dockerfile.toLowerCase()+" -f "+path+"/"+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
+	    // execute the command
+	    SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
+	    int result = 0;
+		try {
+			result = commandExecutor.executeCommand();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    // get the stdout and stderr from the command that was run
+	    StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+	    StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+	    
+	    // print the stdout and stderr
+	    System.out.println("The numeric result of the command was: " + result);
+	    System.out.println("STDOUT:");
+	    System.out.println(stdout);
+	    System.out.println("STDERR:");
+	    System.out.println(stderr);
+		
+	}
+	
+	public void runR10K(String customer, String service, String path){
+=====================================================================
+Found a 26 line (106 tokens) duplication in the following files: 
+Starting at line 39 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 72 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 105 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	    System.out.println("docker build -t cloudopting/"+customer+"_"+dockerfile.toLowerCase()+" -f "+path+"/"+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
+	    // execute the command
+	    SystemCommandExecutor commandExecutor = new SystemCommandExecutor(commands);
+	    int result = 0;
+		try {
+			result = commandExecutor.executeCommand();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	    // get the stdout and stderr from the command that was run
+	    StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+	    StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+	    
+	    // print the stdout and stderr
+	    System.out.println("The numeric result of the command was: " + result);
+	    System.out.println("STDOUT:");
+	    System.out.println(stdout);
+	    System.out.println("STDERR:");
+	    System.out.println(stderr);
+		
+	}
+=====================================================================
+Found a 20 line (81 tokens) duplication in the following files: 
+Starting at line 89 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 89 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 100 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 82 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+		Map nodeData = tfm.getPropertiesForNode(id);
+		// nodeData.put("hostname", id+"."+customer+".local");
+		nodeData.put("childtemplates", templateChunks);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate + ".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 18 line (78 tokens) duplication in the following files: 
+Starting at line 225 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 415 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+	public String getTemplateForNode(String id,String templateType) {
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList nodes = null;
+//		System.out.println("//ns:NodeTemplate[@id='" + id + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
+					+ id + "']", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// since there is a single ID we are sure that the array is with a
+		// single element
+		// We need to get the type
+		String type = nodes.item(0).getAttributes().getNamedItem("type")
+				.getNodeValue();
+=====================================================================
+Found a 10 line (76 tokens) duplication in the following files: 
+Starting at line 302 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 362 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+		HashMap<String, String> propHash = new HashMap<String, String>();
+		NodeList props = nodes.item(0).getChildNodes();
+		for (int i = 0; i < props.getLength(); ++i) {
+			// values.add(nodes.item(i).getFirstChild().getNodeValue());
+			// System.out.println(nodes.item(i).getFirstChild().getNodeValue());
+
+//			System.out.println("property val:" + props.item(i).getTextContent());
+			String[] keys = props.item(i).getNodeName().split(":");
+			if (keys.length > 1) {
+				String key = keys[1];
+=====================================================================
+Found a 9 line (74 tokens) duplication in the following files: 
+Starting at line 516 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 543 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		System.out.println("nodes :" + nodes.getLength());
+		for (int i = 0; i < nodes.getLength(); ++i) {
+			String portInfo = nodes.item(i).getAttributes().getNamedItem("host").getNodeValue()+":"+nodes.item(i).getAttributes().getNamedItem("container").getNodeValue();
+=====================================================================
+Found a 18 line (73 tokens) duplication in the following files: 
+Starting at line 36 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 39 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 101 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 30 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 30 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+
+		Map nodeData = tfm.getPropertiesForNode(id);
+		Configuration cfg = new Configuration();
+		Template tpl = null;
+		try {
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 19 line (70 tokens) duplication in the following files: 
+Starting at line 105 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 97 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+//		FileOutputStream outFile = new FileOutputStream("the-file-name");
+		PrintWriter outFile = null;
+		String puppetFile = new String(id+".pp");
+=====================================================================
+Found a 19 line (65 tokens) duplication in the following files: 
+Starting at line 105 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 97 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 73 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
+//		FileOutputStream outFile = new FileOutputStream("the-file-name");
+		PrintWriter outFile = null;
+		String puppetFile = new String(id+".pp");
+=====================================================================
+Found a 18 line (63 tokens) duplication in the following files: 
+Starting at line 117 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 93 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			outFile = new PrintWriter(dir+"/"+puppetFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			//tpl.process(nodeData, outputTempl);
+			tpl.process(templData, outFile);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 13 line (61 tokens) duplication in the following files: 
+Starting at line 21 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 54 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 87 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	    StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+	    StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+	    
+	    // print the stdout and stderr
+	    System.out.println("The numeric result of the command was: " + result);
+	    System.out.println("STDOUT:");
+	    System.out.println(stdout);
+	    System.out.println("STDERR:");
+	    System.out.println(stderr);
+	  }
+	
+	
+	public void buildDockerImage(String customer, String service, String dockerfile,String path){
+=====================================================================
+Found a 10 line (59 tokens) duplication in the following files: 
+Starting at line 21 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 120 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	    StringBuilder stdout = commandExecutor.getStandardOutputFromCommand();
+	    StringBuilder stderr = commandExecutor.getStandardErrorFromCommand();
+	    
+	    // print the stdout and stderr
+	    System.out.println("The numeric result of the command was: " + result);
+	    System.out.println("STDOUT:");
+	    System.out.println(stdout);
+	    System.out.println("STDERR:");
+	    System.out.println(stderr);
+	  }
+=====================================================================
+Found a 14 line (52 tokens) duplication in the following files: 
+Starting at line 40 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 95 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 43 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 95 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 105 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 159 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 34 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 34 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+Starting at line 88 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 10 line (51 tokens) duplication in the following files: 
+Starting at line 14 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessR10K.java
+Starting at line 16 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerDeploy.java
+Starting at line 17 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerBuild.java
+
+		String toscaFile = (String) execution.getVariable("toscaFile");
+//		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String customer = (String) execution.getVariable("customer");
+		String service = (String) execution.getVariable("service");
+		String dockerContextPath = (String) execution.getVariable("dockerContextPath");
+		
+
+		FileSystemManager dm = new FileSystemManager();
+		dm.getDockerVersion();
+		dm.runR10K(customer, service, dockerContextPath);
+=====================================================================
+Found a 14 line (50 tokens) duplication in the following files: 
+Starting at line 40 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 95 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 43 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 95 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 159 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 34 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 34 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+Starting at line 88 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+Starting at line 97 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 73 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			tpl = cfg.getTemplate(myTemplate+".ftl");
+		} catch (TemplateNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MalformedTemplateNameException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 5 line (45 tokens) duplication in the following files: 
+Starting at line 11 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessPuppet.java
+Starting at line 31 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+		System.out.println("Sono nella classe CloudoptingProcessPuppet");
+		String toscaFile = (String) execution.getVariable("toscaFile");
+		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String dockerNode = (String) execution.getVariable("dockerNode");
+		System.out.println("I will create the Dockerfile for :"+dockerNode);
+=====================================================================
+Found a 10 line (41 tokens) duplication in the following files: 
+Starting at line 464 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 511 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+		String xPathExpr = StringUtils.join(xPathExprList, "|"); 
+//		System.out.println("xpath :" + xPathExpr);
+		DTMNodeList nodes = null;
+//		System.out.println("//NodeTemplate[@id='" + id + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate(xPathExpr, this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 6 line (40 tokens) duplication in the following files: 
+Starting at line 66 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 99 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	public void runR10K(String customer, String service, String path){
+	    // build the system command we want to run
+	    List<String> commands = new ArrayList<String>();
+	    commands.add("/bin/sh");
+	    commands.add("-c");
+	    commands.add("PUPPETFILE="+path+"/"+customer+"-"+service+"/Puppetfile PUPPETFILE_DIR="+path+"/puppet/modules r10k puppetfile install");
+=====================================================================
+Found a 11 line (38 tokens) duplication in the following files: 
+Starting at line 125 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 117 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+
+			outFile = new PrintWriter(creationPath+"/"+puppetFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			//tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, outFile);
+=====================================================================
+Found a 8 line (37 tokens) duplication in the following files: 
+Starting at line 25 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 27 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 25 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 27 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 19 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 19 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+Starting at line 21 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+public class War implements CloudOptingNode {
+	@Autowired
+	ToscaFileManager tfm;
+	@Override
+	public String prepare(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		String id = data.get("id");
+		System.out.println("I'm in the War.prepare for :" + id);
+=====================================================================
+Found a 8 line (36 tokens) duplication in the following files: 
+Starting at line 349 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 415 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+	public HashMap getPropertiesForNode(String id) {
+		if (this.xmlFile == null)
+			return null;
+		DTMNodeList nodes = null;
+//		System.out.println("//NodeTemplate[@id='" + id + "']/Properties/*");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
+					+ id + "']/ns:Properties/*", this.document,
+=====================================================================
+Found a 5 line (36 tokens) duplication in the following files: 
+Starting at line 33 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+Starting at line 31 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDocker.java
+
+		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String dockerNode = (String) execution.getVariable("dockerNode");
+		System.out.println("I will create the Dockerfile for :"+dockerNode);
+		String creationPath = (String) execution.getVariable("creationPath");
+		String customer = (String) execution.getVariable("customer");
+=====================================================================
+Found a 11 line (34 tokens) duplication in the following files: 
+Starting at line 125 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 93 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			outFile = new PrintWriter(creationPath+"/"+puppetFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+			//tpl.process(nodeData, outputTempl);
+			tpl.process(nodeData, outFile);
+=====================================================================
+Found a 6 line (34 tokens) duplication in the following files: 
+Starting at line 33 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 66 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 99 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	public void buildDockerImage(String customer, String service, String dockerfile,String path){
+	    // build the system command we want to run
+	    List<String> commands = new ArrayList<String>();
+	    commands.add("/bin/sh");
+	    commands.add("-c");
+	    commands.add("docker build -t cloudopting/"+customer+"_"+dockerfile.toLowerCase()+" -f "+path+"/"+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
+=====================================================================
+Found a 9 line (33 tokens) duplication in the following files: 
+Starting at line 225 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 349 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+	public String getTemplateForNode(String id,String templateType) {
+		if (this.xmlFile == null)
+			return null;
+		//
+		DTMNodeList nodes = null;
+//		System.out.println("//ns:NodeTemplate[@id='" + id + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
+					+ id + "']", this.document, XPathConstants.NODESET);
+=====================================================================
+Found a 1 line (33 tokens) duplication in the following files: 
+Starting at line 38 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 39 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	    commands.add("docker build -t cloudopting/"+customer+"_"+dockerfile.toLowerCase()+" -f "+path+"/"+customer+"-"+service+"/"+dockerfile+".dockerfile "+path);
+=====================================================================
+Found a 9 line (32 tokens) duplication in the following files: 
+Starting at line 135 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 189 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+
+			tpl.process(nodeData, outFile);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println("Puppet file created");
+=====================================================================
+Found a 7 line (31 tokens) duplication in the following files: 
+Starting at line 25 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 27 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 25 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 27 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 26 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 19 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 19 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+Starting at line 21 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+
+public class War implements CloudOptingNode {
+	@Autowired
+	ToscaFileManager tfm;
+	@Override
+	public String prepare(HashMap<String, String> data) {
+		// TODO Auto-generated method stub
+		String id = data.get("id");
+=====================================================================
+Found a 5 line (31 tokens) duplication in the following files: 
+Starting at line 13 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerBuild.java
+Starting at line 29 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDocker.java
+
+		System.out.println("Starting the build of Docker images");
+		String toscaFile = (String) execution.getVariable("toscaFile");
+//		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String dockerNode = (String) execution.getVariable("dockerNode");
+		System.out.println("I will create the image for : "+dockerNode);
+=====================================================================
+Found a 7 line (30 tokens) duplication in the following files: 
+Starting at line 296 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 356 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+					+ module + "']/ns:Properties/*", this.document,
+					XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		HashMap<String, String> propHash = new HashMap<String, String>();
+=====================================================================
+Found a 9 line (30 tokens) duplication in the following files: 
+Starting at line 125 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 179 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 117 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 93 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			outFile = new PrintWriter(creationPath+"/"+puppetFile, "UTF-8");
+		} catch (FileNotFoundException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		try {
+=====================================================================
+Found a 6 line (30 tokens) duplication in the following files: 
+Starting at line 9 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 33 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 66 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+Starting at line 99 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/file/FileSystemManager.java
+
+	  {
+	    // build the system command we want to run
+	    List<String> commands = new ArrayList<String>();
+	    commands.add("/bin/sh");
+	    commands.add("-c");
+	    commands.add("docker --version");
+=====================================================================
+Found a 8 line (29 tokens) duplication in the following files: 
+Starting at line 190 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 225 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 288 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 349 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 415 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 436 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+	public DTMNodeList getNodeByType(String type) {
+		if (this.xmlFile == null)
+			return null;
+		// Get the node by the type
+		DTMNodeList nodes = null;
+//		System.out.println("//ns:NodeTemplate[@type='" + type + "']");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@type='"
+=====================================================================
+Found a 8 line (28 tokens) duplication in the following files: 
+Starting at line 135 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 127 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 103 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			tpl.process(nodeData, outFile);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 3 line (28 tokens) duplication in the following files: 
+Starting at line 83 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 39 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+		ArrayList<String> modules = toscaFileManager.getPuppetModules();
+		ArrayList<HashMap<String, String>> modData = new ArrayList<HashMap<String, String>>();
+		for (String mod : modules) {
+=====================================================================
+Found a 10 line (26 tokens) duplication in the following files: 
+Starting at line 122 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 270 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 490 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+					"//ns:RelationshipTemplate[@type='hostedOn']", this.document,
+					XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		// Now we create the Graph structure so we know the correct traversal
+		// ordering
+		ArrayList<String> values = new ArrayList<String>();
+=====================================================================
+Found a 8 line (26 tokens) duplication in the following files: 
+Starting at line 58 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/War.java
+Starting at line 113 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Tomcat.java
+Starting at line 61 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQLDatabase.java
+Starting at line 113 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/PostgreSQL.java
+Starting at line 135 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 189 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/DockerContainer.java
+Starting at line 52 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheVirtualHost.java
+Starting at line 52 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/ApacheModule.java
+Starting at line 106 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/nodes/Apache.java
+Starting at line 127 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+Starting at line 103 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerComposeFile.java
+
+			tpl.process(nodeData, writer);
+		} catch (TemplateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+=====================================================================
+Found a 9 line (25 tokens) duplication in the following files: 
+Starting at line 233 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 250 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+Starting at line 423 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/tosca/transformer/ToscaFileManager.java
+
+					+ id + "']", this.document, XPathConstants.NODESET);
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// since there is a single ID we are sure that the array is with a
+		// single element
+		// We need to get the type
+		String type = nodes.item(0).getAttributes().getNamedItem("type")
+=====================================================================
+Found a 13 line (25 tokens) duplication in the following files: 
+Starting at line 18 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessVM.java
+Starting at line 27 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessSetup.java
+
+public class CloudoptingProcessVM implements JavaDelegate {
+	
+	@Autowired
+	ToscaFileManager toscaFileManager;
+
+	@Override
+	public void execute(DelegateExecution execution) throws Exception {
+		// TODO Auto-generated method stub
+//		System.out.println("Sono nella classe java");
+		
+		
+		// TODO here we need a mean to create the VM
+		System.out.println("I'm creating the VM");
+=====================================================================
+Found a 4 line (25 tokens) duplication in the following files: 
+Starting at line 11 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerCommit.java
+Starting at line 13 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDockerBuild.java
+Starting at line 29 of /home/gioppo/git/cloudopting-deploy-services/cloudopting-tosca/src/main/java/eu/cloudopting/activiti/CloudoptingProcessDocker.java
+
+		System.out.println("Committing the newly created image to the registry");
+		String toscaFile = (String) execution.getVariable("toscaFile");
+//		System.out.println("la variabile toscaFile vale:"+toscaFile);
+		String dockerNode = (String) execution.getVariable("dockerNode");
