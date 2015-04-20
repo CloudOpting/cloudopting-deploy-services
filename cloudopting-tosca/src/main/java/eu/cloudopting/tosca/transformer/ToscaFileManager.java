@@ -218,8 +218,8 @@ public class ToscaFileManager implements IToscaFileManager {
 		DTMNodeList nodes = null;
 //		System.out.println("//ns:NodeTemplate[@id='" + id + "']");
 		try {
-			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"
-					+ id + "']", this.document, XPathConstants.NODESET);
+//			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"	+ id + "']", this.document, XPathConstants.NODESET);
+			nodes = (DTMNodeList) this.xpath.evaluate("//ArtifactTemplate[@id=string(//NodeTemplate[@id='" + id + "']/DeploymentArtifacts/DeploymentArtifact[@artifactType='PuppetTemplate']/@artifactRef)]/ArtifactReferences/ArtifactReference/@reference", this.document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -227,9 +227,8 @@ public class ToscaFileManager implements IToscaFileManager {
 		// since there is a single ID we are sure that the array is with a
 		// single element
 		// We need to get the type
-		String type = nodes.item(0).getAttributes().getNamedItem("type")
-				.getNodeValue();
-		DTMNodeList nodesTI = null;
+		String template = nodes.item(0).getNodeValue();
+/*		DTMNodeList nodesTI = null;
 //		System.out.println("//ns:NodeTypeImplementation[@nodeType='" + type+ "']/ns:ImplementationArtifacts/ns:ImplementationArtifact[@artifactType='"+templateType+"']");
 		try {
 			nodesTI = (DTMNodeList) this.xpath
@@ -245,6 +244,8 @@ public class ToscaFileManager implements IToscaFileManager {
 		String template = nodesTI.item(0).getAttributes()
 				.getNamedItem("artifactRef").getNodeValue();
 //		System.out.println("The template is:" + template);
+ 
+ */
 		return template;
 
 	}
