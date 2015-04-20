@@ -214,7 +214,7 @@ public class ToscaFileManager implements IToscaFileManager {
 	public String getTemplateForNode(String id,String templateType) {
 		if (this.xmlFile == null)
 			return null;
-		//
+//  //ArtifactTemplate[@id=string(//NodeTemplate[@id='ClearoPostgreSQL']/DeploymentArtifacts/DeploymentArtifact[@artifactType='PuppetTemplate']/@artifactRef)]/ArtifactReferences/ArtifactReference/@reference
 		DTMNodeList nodes = null;
 //		System.out.println("//ns:NodeTemplate[@id='" + id + "']");
 		try {
