@@ -22,49 +22,20 @@ import freemarker.template.TemplateNotFoundException;
  * @author gioppo
  *
  */
-public class War implements CloudOptingNode {
+public class War extends CloudOptingNodeImpl implements CloudOptingNode {
 	@Autowired
 	ToscaFileManager tfm;
 	@Override
 	public String prepare(HashMap<String, String> data) {
 		// TODO Auto-generated method stub
 		String id = data.get("id");
+		String toscaPath = data.get("toscaPath");
 		System.out.println("I'm in the War.prepare for :" + id);
 		tfm = ToscaFileManager.getInstance();
 		String myTemplate = tfm.getTemplateForNode(id,"PuppetTemplate");
 		System.out.println("The template is :"+myTemplate);
 		Map nodeData = tfm.getPropertiesForNode(id);
-		Configuration cfg = new Configuration();
-		Template tpl = null;
-		try {
-			tpl = cfg.getTemplate(myTemplate+".ftl");
-		} catch (TemplateNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedTemplateNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-StringWriter writer = new StringWriter();
-//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
-		try {
-//			tpl.process(nodeData, outputTempl);
-			tpl.process(nodeData, writer);
-		} catch (TemplateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		return writer.getBuffer().toString();
+		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
 
 }

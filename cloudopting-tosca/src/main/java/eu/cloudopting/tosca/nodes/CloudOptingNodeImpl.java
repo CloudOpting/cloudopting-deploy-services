@@ -31,7 +31,7 @@ public class CloudOptingNodeImpl implements CloudOptingNode {
 		Configuration cfg = new Configuration();
 		Template tpl = null;
 		try {
-			tpl = cfg.getTemplate(template + ".ftl");
+			tpl = cfg.getTemplate(template);
 		} catch (TemplateNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

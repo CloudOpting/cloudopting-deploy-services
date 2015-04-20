@@ -33,6 +33,7 @@ public class PostgreSQL extends CloudOptingNodeImpl implements CloudOptingNode {
 	@Override
 	public String prepare(HashMap<String, String> data) {
 		String id = data.get("id");
+		String toscaPath = data.get("toscaPath");
 		System.out.println("I'm in the PostgreSQL.prepare for :" + id);
 
 		// With my ID I ask to the TFM the array of my sons
@@ -77,6 +78,7 @@ public class PostgreSQL extends CloudOptingNodeImpl implements CloudOptingNode {
 			}
 			HashMap<String, String> hm = new HashMap<String, String>();
 			hm.put("id", mychildren.get(i));
+			hm.put("toscaPath", toscaPath);
 			templateChunks.add(childInstance.prepare(hm));
 		}
 		// I get the puppetFile template name
@@ -88,7 +90,7 @@ public class PostgreSQL extends CloudOptingNodeImpl implements CloudOptingNode {
 		Map nodeData = tfm.getPropertiesForNode(id);
 		nodeData.put("childtemplates", templateChunks);
 		
-		return compilePuppetTemplate(null, null , myTemplate, nodeData);
+		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
 
 }

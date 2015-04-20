@@ -42,6 +42,7 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 		hm.put("id", dockerNode);
 		hm.put("creationPath", creationPath);
 		hm.put("servicePath", servicePath);
+		hm.put("toscaPath", "tosca/");
 		dc.prepare(hm);
 		/*
 		// Add the values in the datamodel

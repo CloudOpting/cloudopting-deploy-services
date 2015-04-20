@@ -16,6 +16,7 @@ import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.xalan.extensions.XPathFunctionResolverImpl;
 import org.apache.xerces.dom.DocumentImpl;
 import org.apache.xerces.impl.xpath.XPath;
 import org.apache.xerces.jaxp.DocumentBuilderFactoryImpl;
@@ -70,7 +71,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		this.g = new DefaultDirectedGraph<String, DefaultEdge>(
 				DefaultEdge.class);
 
-//		System.out.println(xmlFile);
+		System.out.println(xmlFile);
 
 		// Here we do the stuff to parse the XML
 		InputSource source = new InputSource(new StringReader(xmlFile));
@@ -104,6 +105,7 @@ public class ToscaFileManager implements IToscaFileManager {
 				.newInstance();
 		this.xpath = (XPathImpl) xpathFactory.newXPath();
 		this.xpath.setNamespaceContext(new coNamespaceContext());
+		this.xpath.setXPathFunctionResolver(new XPathFunctionResolverImpl());
 
 		// Get the NodeTemplates
 		DTMNodeList nodes = null;
@@ -216,10 +218,11 @@ public class ToscaFileManager implements IToscaFileManager {
 			return null;
 //  //ArtifactTemplate[@id=string(//NodeTemplate[@id='ClearoPostgreSQL']/DeploymentArtifacts/DeploymentArtifact[@artifactType='PuppetTemplate']/@artifactRef)]/ArtifactReferences/ArtifactReference/@reference
 		DTMNodeList nodes = null;
-//		System.out.println("//ns:NodeTemplate[@id='" + id + "']");
+		System.out.println("//ArtifactTemplate[@id=string(//NodeTemplate[@id='" + id + "']/DeploymentArtifacts/DeploymentArtifact[@artifactType='" + templateType + "']/@artifactRef)]/ArtifactReferences/ArtifactReference/@reference");
 		try {
 //			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeTemplate[@id='"	+ id + "']", this.document, XPathConstants.NODESET);
-			nodes = (DTMNodeList) this.xpath.evaluate("//ArtifactTemplate[@id=string(//NodeTemplate[@id='" + id + "']/DeploymentArtifacts/DeploymentArtifact[@artifactType='PuppetTemplate']/@artifactRef)]/ArtifactReferences/ArtifactReference/@reference", this.document, XPathConstants.NODESET);
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:ArtifactTemplate[@id=string(//ns:NodeTemplate[@id='" + id + "']/ns:DeploymentArtifacts/ns:DeploymentArtifact[@artifactType='" + templateType + "']/@artifactRef)]/ns:ArtifactReferences/ns:ArtifactReference/@reference", this.document, XPathConstants.NODESET);
+//			System.out.println(nodes.toString());
 		} catch (XPathExpressionException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

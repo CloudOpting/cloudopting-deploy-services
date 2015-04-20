@@ -22,7 +22,7 @@ import freemarker.template.TemplateNotFoundException;
  * @author gioppo
  *
  */
-public class PostgreSQLDatabase implements CloudOptingNode {
+public class PostgreSQLDatabase extends CloudOptingNodeImpl implements CloudOptingNode {
 	@Autowired
 	ToscaFileManager tfm;
 	/* (non-Javadoc)
@@ -31,43 +31,14 @@ public class PostgreSQLDatabase implements CloudOptingNode {
 	@Override
 	public String prepare(HashMap<String, String> data) {
 		String id = data.get("id");
+		String toscaPath = data.get("toscaPath");
 		System.out.println("Working on :"+id);
 		tfm = ToscaFileManager.getInstance();
 		// TODO the ClearoPostgreSQLDB must be passes in the hash
 		String myTemplate = tfm.getTemplateForNode("ClearoPostgreSQLDB","PuppetTemplate");
 		System.out.println("The template is :"+myTemplate);
 		Map nodeData = tfm.getPropertiesForNode(id);
-		Configuration cfg = new Configuration();
-		Template tpl = null;
-		try {
-			tpl = cfg.getTemplate(myTemplate+".ftl");
-		} catch (TemplateNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedTemplateNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-StringWriter writer = new StringWriter();
-//		OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
-		try {
-//			tpl.process(nodeData, outputTempl);
-			tpl.process(nodeData, writer);
-		} catch (TemplateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	
-		return writer.getBuffer().toString();
+		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
 
 }

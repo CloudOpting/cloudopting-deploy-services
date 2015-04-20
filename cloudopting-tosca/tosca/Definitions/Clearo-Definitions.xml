@@ -186,6 +186,10 @@
 				</Properties>
 				<Capabilities>
 					<Capability id="p01" type="portsExpose" name=""><Properties><co:port>80</co:port></Properties></Capability></Capabilities>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoApachePT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="ApacheVirtualHost" id="ClearoApacheVH">
 				<Properties>
@@ -211,6 +215,10 @@
 						<co:serveradmin></co:serveradmin>
 					</co:ApacheVirtualHostProperties>
 				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoApacheVHPT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="ApacheModule" id="ClearoApacheMod1">
 				<Properties>
@@ -219,6 +227,10 @@
 						<co:settings></co:settings>
 					</co:ApacheModuleProperties>
 				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoApacheMod1PT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoPostgreSQLDC">
 				<Properties>
@@ -228,6 +240,10 @@
 						<co:cmd>/etc/init.d/postgresql-9.3 start &amp;&amp; tail -F /var/lib/pgsql/9.3/pgstartup.log</co:cmd>
 					</co:DockerContainerProperties>
 				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name="ClearoPostgreSQLDC.dockerfile"
+						artifactType="DockerfileTemplate" artifactRef="DockerContainerDT0"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="PostgreSQL" id="ClearoPostgreSQL">
 				<Properties>
@@ -265,6 +281,10 @@
 						</co:collate>
 					</co:PostgreSQLDatabaseProperties>
 				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoPostgreSQLDBPT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="DockerContainer" id="ClearoTomcatDC">
 				<Properties>
@@ -275,6 +295,10 @@
 					</co:DockerContainerProperties>
 				</Properties>
 				<Capabilities><Capability id="p03" type="ports" name=""><Properties><co:ports host="8081" container="8080"></co:ports></Properties></Capability></Capabilities>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name="ClearoTomcatDC.dockerfile"
+						artifactType="DockerfileTemplate" artifactRef="DockerContainerDT0"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
 				<Properties>
@@ -296,6 +320,10 @@
 					</co:TomcatProperties>
 				</Properties>
 				<Capabilities><Capability id="p04" type="portsExpose" name=""><Properties><co:port>8009</co:port><co:port>8080</co:port></Properties></Capability></Capabilities>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoTomcatPT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="War" id="ClearoLiferay">
 				<Properties>
@@ -304,6 +332,10 @@
 						<co:war_source>8088</co:war_source>
 					</co:WarProperties>
 				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoLiferayPT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="WarApplication" id="ClearoLiferay1">
 				<Properties>
@@ -316,6 +348,10 @@
 						<co:app_property name="dbpass">clearoDBpass</co:app_property>
 					</co:WarApplicationProperties>
 				</Properties>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name=""
+						artifactType="PuppetTemplate" artifactRef="ClearoLiferay1PT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<RelationshipTemplate type="hostedOn" id="idvalue0">
 				<SourceElement ref="ClearoVM" />
@@ -453,14 +489,31 @@
 		<PropertiesDefinition element="PuppetModuleProperties"/>
 	</ArtifactType>
 	<ArtifactTemplate type="DockerfileTemplate" id="DockerContainerDT0" name="">
-		<ArtifactReferences>
-			<ArtifactReference reference="Templates/DockerContainerDT.ftl"></ArtifactReference>
-		</ArtifactReferences>
+		<ArtifactReferences><ArtifactReference reference="Templates/DockerContainerDT.ftl"></ArtifactReference></ArtifactReferences>
 	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetTemplate" id="ClearoPostgreSQLPT" name="">
-		<ArtifactReferences>
-			<ArtifactReference reference="Templates/PostgreSQLPT.ftl"></ArtifactReference>
-		</ArtifactReferences>
+		<ArtifactReferences><ArtifactReference reference="Templates/PostgreSQLPT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoPostgreSQLDBPT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/PostgreSQLDatabasePT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoApachePT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/ApachePT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoApacheVHPT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/ApacheVirtualHostPT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoApacheMod1PT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/ApacheModulePT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoTomcatPT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/TomcatPT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoLiferayPT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/WarPT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoLiferay1PT" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/WarApplicationPT.ftl"></ArtifactReference></ArtifactReferences>
 	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT">
 	</ArtifactTemplate>

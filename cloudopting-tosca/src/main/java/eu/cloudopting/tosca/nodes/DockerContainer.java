@@ -35,6 +35,7 @@ public class DockerContainer implements CloudOptingNode {
 	public String prepare(HashMap<String, String> data){
 		// here I'm a generic container ... I need to have my ID
 		String id = data.get("id");
+		String toscaPath = data.get("toscaPath");
 		String creationPath = data.get("creationPath");
 		String servicePath = data.get("servicePath");
 //		System.out.println("I'm in the DockerContainer.prepare for :"+id);
@@ -86,6 +87,7 @@ public class DockerContainer implements CloudOptingNode {
 			} 
 			HashMap<String, String> hm = new HashMap<String, String>();
 			hm.put("id", mychildren.get(i));
+			hm.put("toscaPath", toscaPath);
 			templateChunks.add(childInstance.prepare(hm));
 		}
 		
