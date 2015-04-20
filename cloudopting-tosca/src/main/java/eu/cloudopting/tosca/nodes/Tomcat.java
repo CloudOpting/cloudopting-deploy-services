@@ -24,7 +24,7 @@ import freemarker.template.TemplateNotFoundException;
  * @author gioppo
  *
  */
-public class Tomcat implements CloudOptingNode {
+public class Tomcat extends CloudOptingNodeImpl implements CloudOptingNode {
 	@Autowired
 	ToscaFileManager tfm;
 	/* (non-Javadoc)
@@ -33,6 +33,7 @@ public class Tomcat implements CloudOptingNode {
 	@Override
 	public String prepare(HashMap<String, String> data) {
 		String id = data.get("id");
+		String toscaPath = data.get("toscaPath");
 		System.out.println("I'm in the Tomcat.prepare for :" + id);
 
 		// With my ID I ask to the TFM the array of my sons
@@ -77,6 +78,7 @@ public class Tomcat implements CloudOptingNode {
 			}
 			HashMap<String, String> hm = new HashMap<String, String>();
 			hm.put("id", mychildren.get(i));
+			hm.put("toscaPath", toscaPath);
 			templateChunks.add(childInstance.prepare(hm));
 		}
 		// I get the puppetFile template name
@@ -89,37 +91,7 @@ public class Tomcat implements CloudOptingNode {
 		Map nodeData = tfm.getPropertiesForNode(id);
 		// nodeData.put("hostname", id+"."+customer+".local");
 		nodeData.put("childtemplates", templateChunks);
-		Configuration cfg = new Configuration();
-		Template tpl = null;
-		try {
-			tpl = cfg.getTemplate(myTemplate + ".ftl");
-		} catch (TemplateNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedTemplateNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		StringWriter writer = new StringWriter();
-		// OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
-		try {
-			// tpl.process(nodeData, outputTempl);
-			tpl.process(nodeData, writer);
-		} catch (TemplateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return writer.getBuffer().toString();
-
+		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
 
 }

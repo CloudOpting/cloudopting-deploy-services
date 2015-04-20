@@ -173,6 +173,8 @@
 				<DeploymentArtifacts>
 					<DeploymentArtifact name="ClearoApacheDC.dockerfile"
 						artifactType="DockerfileTemplate" artifactRef="DockerContainerDT0"></DeploymentArtifact>
+					<DeploymentArtifact name="ClearoApacheDC.pp"
+						artifactType="PuppetTemplate" artifactRef="DockerContainerPT0"></DeploymentArtifact>
 				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="Apache" id="ClearoApache">
@@ -243,6 +245,8 @@
 				<DeploymentArtifacts>
 					<DeploymentArtifact name="ClearoPostgreSQLDC.dockerfile"
 						artifactType="DockerfileTemplate" artifactRef="DockerContainerDT0"></DeploymentArtifact>
+					<DeploymentArtifact name="ClearoPostgreSQLDC.pp"
+						artifactType="PuppetTemplate" artifactRef="DockerContainerPT0"></DeploymentArtifact>
 				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="PostgreSQL" id="ClearoPostgreSQL">
@@ -298,6 +302,8 @@
 				<DeploymentArtifacts>
 					<DeploymentArtifact name="ClearoTomcatDC.dockerfile"
 						artifactType="DockerfileTemplate" artifactRef="DockerContainerDT0"></DeploymentArtifact>
+					<DeploymentArtifact name="ClearoTomcatDC.pp"
+						artifactType="PuppetTemplate" artifactRef="DockerContainerPT0"></DeploymentArtifact>
 				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="Tomcat" id="ClearoTomcat">
@@ -490,6 +496,9 @@
 	</ArtifactType>
 	<ArtifactTemplate type="DockerfileTemplate" id="DockerContainerDT0" name="">
 		<ArtifactReferences><ArtifactReference reference="Templates/DockerContainerDT.ftl"></ArtifactReference></ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="DockerContainerPT0" name="">
+		<ArtifactReferences><ArtifactReference reference="Templates/DockerContainerPT.ftl"></ArtifactReference></ArtifactReferences>
 	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetTemplate" id="ClearoPostgreSQLPT" name="">
 		<ArtifactReferences><ArtifactReference reference="Templates/PostgreSQLPT.ftl"></ArtifactReference></ArtifactReferences>
