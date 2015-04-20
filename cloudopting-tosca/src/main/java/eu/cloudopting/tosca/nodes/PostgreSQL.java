@@ -24,7 +24,7 @@ import freemarker.template.TemplateNotFoundException;
  * @author gioppo
  *
  */
-public class PostgreSQL implements CloudOptingNode {
+public class PostgreSQL extends CloudOptingNodeImpl implements CloudOptingNode {
 	@Autowired
 	ToscaFileManager tfm;
 	/* (non-Javadoc)
@@ -85,41 +85,10 @@ public class PostgreSQL implements CloudOptingNode {
 		// I merge all the template chunks from sons and all my own data and get
 		// the final template and write it
 
-//		Map nodeData = new HashMap();
 		Map nodeData = tfm.getPropertiesForNode(id);
-		// nodeData.put("hostname", id+"."+customer+".local");
 		nodeData.put("childtemplates", templateChunks);
-		Configuration cfg = new Configuration();
-		Template tpl = null;
-		try {
-			tpl = cfg.getTemplate(myTemplate + ".ftl");
-		} catch (TemplateNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (MalformedTemplateNameException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		StringWriter writer = new StringWriter();
-		// OutputStreamWriter outputTempl = new OutputStreamWriter(System.out);
-		try {
-			// tpl.process(nodeData, outputTempl);
-			tpl.process(nodeData, writer);
-		} catch (TemplateException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return writer.getBuffer().toString();
-
+		
+		return compilePuppetTemplate(null, null , myTemplate, nodeData);
 	}
 
 }

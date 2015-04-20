@@ -166,17 +166,6 @@ public class ToscaFileManager implements IToscaFileManager {
 			v = orderIterator.next();
 //			System.out.println(v);
 		}
-		/*
-		String filePath = new String("ClearoExample.xml");
-		String xml = null;
-		try {
-			xml = new String(Files.readAllBytes(Paths.get(filePath)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// this.g.
-*/
 	}
 
 	/*
@@ -346,7 +335,7 @@ public class ToscaFileManager implements IToscaFileManager {
 	 * (java.lang.String)
 	 */
 	@Override
-	public HashMap getPropertiesForNode(String id) {
+	public HashMap<String, String> getPropertiesForNode(String id) {
 		if (this.xmlFile == null)
 			return null;
 		DTMNodeList nodes = null;

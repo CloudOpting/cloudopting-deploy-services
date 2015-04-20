@@ -170,6 +170,10 @@
 					</co:DockerContainerProperties>
 				</Properties>
 				<Capabilities><Capability id="p0" type="ports" name=""><Properties><co:ports host="80" container="80"></co:ports></Properties></Capability></Capabilities>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name="ClearoApacheDC.dockerfile"
+						artifactType="DockerfileTemplate" artifactRef="DockerContainerDT0"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="Apache" id="ClearoApache">
 				<Properties>
@@ -237,6 +241,10 @@
 					</co:PostgreSQLProperties>
 				</Properties>
 				<Capabilities><Capability id="p02" type="portsExpose" name=""><Properties><co:port>5432</co:port></Properties></Capability></Capabilities>
+				<DeploymentArtifacts>
+					<DeploymentArtifact name="ClearoPostgreSQL.pp"
+						artifactType="PuppetTemplate" artifactRef="ClearoPostgreSQLPT"></DeploymentArtifact>
+				</DeploymentArtifacts>
 			</NodeTemplate>
 			<NodeTemplate type="PostgreSQLDatabase" id="ClearoPostgreSQLDB">
 				<Properties>
@@ -368,8 +376,7 @@
 				<OutputParameters>
 					<OutputParameter name="" required="yes" type="" />
 				</OutputParameters>
-				<PlanModel>
-				</PlanModel>
+				<PlanModelReference reference="http://tempuri.org" />
 			</Plan>
 		</Plans>
 	</ServiceTemplate>
@@ -445,6 +452,16 @@
 	<ArtifactType name="PuppetModule">
 		<PropertiesDefinition element="PuppetModuleProperties"/>
 	</ArtifactType>
+	<ArtifactTemplate type="DockerfileTemplate" id="DockerContainerDT0" name="">
+		<ArtifactReferences>
+			<ArtifactReference reference="Templates/DockerContainerDT.ftl"></ArtifactReference>
+		</ArtifactReferences>
+	</ArtifactTemplate>
+	<ArtifactTemplate type="PuppetTemplate" id="ClearoPostgreSQLPT" name="">
+		<ArtifactReferences>
+			<ArtifactReference reference="Templates/PostgreSQLPT.ftl"></ArtifactReference>
+		</ArtifactReferences>
+	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetTemplate" id="ApacheVirtualHostPT">
 	</ArtifactTemplate>
 	<ArtifactTemplate type="PuppetTemplate" id="ApachePT">

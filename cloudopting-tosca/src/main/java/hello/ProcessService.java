@@ -21,12 +21,13 @@ public class ProcessService {
     private TaskService taskService;
 
 	@Transactional
-    public void startProcess(String customerId, String cloudId) {
+    public void startProcess(String customerId, String cloudId, String toscaId) {
 		System.out.println("\ncustomerId:"+customerId);
 		System.out.println("\ncloudId:"+cloudId);
 		HashMap<String, Object> v = new HashMap<String, Object>();
-		v.put("toscaFile", new String("ClearoExampleInstance.xml"));
-		v.put("customer", new String("csi"));
+		v.put("toscaFile", toscaId);
+		v.put("customer", customerId);
+		v.put("cloud", cloudId);
         runtimeService.startProcessInstanceByKey("cloudoptingProcess",v);
     }
 

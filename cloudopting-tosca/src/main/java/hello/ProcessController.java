@@ -20,10 +20,10 @@ public class ProcessController {
 	private ProcessService processService;
 
 	@RequestMapping(value="/process", method= RequestMethod.POST,headers = "content-type=application/x-www-form-urlencoded")
-	public @ResponseBody void startProcessInstance(@RequestParam(value="customerId", required=false) String customerId,@RequestParam(value="cloudId", required=false) String cloudId) {
-		System.out.println("\ncustomerId:"+customerId);
-		System.out.println("\ncloudId:"+cloudId);
-		processService.startProcess(customerId, cloudId);
+	public @ResponseBody void startProcessInstance(@RequestParam(value="customerId", required=false) String customerId,@RequestParam(value="cloudId", required=false) String cloudId,@RequestParam(value="toscaId", required=false) String toscaId) {
+//		System.out.println("\ncustomerId:"+customerId);
+//		System.out.println("\ncloudId:"+cloudId);
+		processService.startProcess(customerId, cloudId, toscaId);
 	}
 
 	@RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
