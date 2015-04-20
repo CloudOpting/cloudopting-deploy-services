@@ -19,8 +19,9 @@ The component will answer to a REST API that requires the following information 
 
 |call|parameter|type|meaning|
 |---|---|---|---|
-|/process|toscaFile|String|The name of the toscafile to use (probably here we should use the ID in the DB so that we can ask the DB component to retrieve the correct TOSCA file|
-||customer|String|The name of the customer we are operating for. This is useful to create files that are related to it. Also in rthis case it could be wise to get the ID and ask for the name to the DB component|
+|/process|toscaId|String|The name of the toscafile to use (probably here we should use the ID in the DB so that we can ask the DB component to retrieve the correct TOSCA file|
+||customerId|String|The name of the customer we are operating for. This is useful to create files that are related to it. Also in this case it could be wise to get the ID and ask for the name to the DB component|
+||cloudId|String|The id of the cloud environment we are deploying on (in the case of CloudOpting project environment it will be either CSI's cloudstack or IMI's Azure)|
 
 ## Architecture
 This component is part of the general architecture designed in the diagram below
