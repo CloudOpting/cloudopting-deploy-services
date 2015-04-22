@@ -169,7 +169,7 @@ public class ToscaFileManager implements IToscaFileManager {
 //			System.out.println(v);
 		}
 	}
-
+// //NodeType[@name=string(//NodeTemplate[@id='ClearoApacheVH']/@type)]/Interfaces/Interface[@name='Install']/Operation/@name
 	/*
 	 * (non-Javadoc)
 	 * 
