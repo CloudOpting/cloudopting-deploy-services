@@ -1,4 +1,4 @@
-package hello;
+package eu.cloudopting.rest;
 
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +29,17 @@ public class ProcessService {
 		v.put("customer", customerId);
 		v.put("cloud", cloudId);
         runtimeService.startProcessInstanceByKey("cloudoptingProcess",v);
+    }
+
+	@Transactional
+    public void testProcess(String customerId, String cloudId, String toscaId) {
+		System.out.println("\ncustomerId:"+customerId);
+		System.out.println("\ncloudId:"+cloudId);
+		HashMap<String, Object> v = new HashMap<String, Object>();
+		v.put("toscaFile", toscaId);
+		v.put("customer", customerId);
+		v.put("cloud", cloudId);
+        runtimeService.startProcessInstanceByKey("cloudoptingTestProcess",v);
     }
 
 	@Transactional

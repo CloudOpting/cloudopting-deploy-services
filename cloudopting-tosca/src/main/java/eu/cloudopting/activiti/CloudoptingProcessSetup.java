@@ -16,6 +16,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.xml.dtm.ref.DTMNodeList;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import eu.cloudopting.file.FileSystemManager;
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
 import freemarker.core.ParseException;
 import freemarker.template.Configuration;
@@ -32,34 +33,18 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 	public void execute(DelegateExecution execution) throws Exception {
 		// TODO Auto-generated method stub
 		System.out.println("Setting up the process information and preparing the environment");
-		String toscaFile = (String) execution.getVariable("toscaFile");
-		System.out.println("toscaFile :" + toscaFile);
+		String serviceName = (String) execution.getVariable("toscaFile");
+//		System.out.println("toscaFile :" + toscaFile);
 		String customer = (String) execution.getVariable("customer");
 		System.out.println("customer :" + customer);
 		String cloud = (String) execution.getVariable("cloud");
 		System.out.println("cloud :" + cloud);
 		
-		
+		FileSystemManager dm = new FileSystemManager();
 
-		String xml = null;
-		try {
-			xml = new String(Files.readAllBytes(Paths.get(toscaFile)));
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		// With the retrieved XML we instantiate the ToscaFileManager that is
-		// the only one that know how to read it
-		toscaFileManager = ToscaFileManager.getInstance();
-		toscaFileManager.setToscaFile(xml);
-		// preparing the Puppet env
-		String serviceName = toscaFileManager.getServiceName();
 		String dockerContextPath = new String("/cloudOptingData");
 		String dir = new String(dockerContextPath + "/" + customer + "-"
 				+ serviceName);
-
-		// Creating new directory in Java, if it doesn't exists
 		System.out.println("Preparing the folders for the service and customer");
 		boolean success = false;
 		File directory = new File(dir);
@@ -77,6 +62,28 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 				System.out.printf("Failed to create new directory: %s%n", dir);
 			}
 		}
+
+		dm.unzip(serviceName+".czar", dir+"/tosca");
+		
+		toscaFileManager = ToscaFileManager.getInstance();
+		
+		toscaFileManager.getDefinitionFile(dir+"/tosca");
+/*
+		String xml = null;
+		try {
+			xml = new String(Files.readAllBytes(Paths.get(toscaFile)));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+*/
+		// With the retrieved XML we instantiate the ToscaFileManager that is
+		// the only one that know how to read it
+		
+	//	toscaFileManager.setToscaFile(xml);
+		// preparing the Puppet env
+
+		// Creating new directory in Java, if it doesn't exists
 
 		// getting the list of puppet modules that this service needs
 		System.out.printf("Preparing the Puppetfile");

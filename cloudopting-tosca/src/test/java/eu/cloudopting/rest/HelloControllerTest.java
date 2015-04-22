@@ -1,4 +1,4 @@
-package hello;
+package eu.cloudopting.rest;
 
 import static org.hamcrest.Matchers.is;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;

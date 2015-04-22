@@ -1,4 +1,4 @@
-package hello;
+package eu.cloudopting.rest;
 
 import java.util.Arrays;
 
@@ -21,7 +21,7 @@ import org.springframework.test.context.ContextConfiguration;
 
 @Configuration
 @EnableAutoConfiguration
-@ComponentScan({"eu.cloudopting.tosca","hello"})
+@ComponentScan({"eu.cloudopting.tosca","eu.cloudopting.rest"})
 public class Application {
     
     public static void main(String[] args) {

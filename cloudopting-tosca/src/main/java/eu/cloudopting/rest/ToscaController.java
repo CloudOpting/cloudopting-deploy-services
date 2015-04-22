@@ -1,4 +1,4 @@
-package hello;
+package eu.cloudopting.rest;
 
 import java.io.IOException;
 import java.net.URI;

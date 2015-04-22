@@ -1,12 +1,17 @@
 package eu.cloudopting.tosca.transformer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Properties;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -596,5 +601,32 @@ public class ToscaFileManager implements IToscaFileManager {
 		}
 		return ports;
 		
+	}
+	
+	public void getDefinitionFile(String path){
+		try {
+			File file = new File(path+"/TOSCA-Metadata/TOSCA.meta");
+			FileInputStream fileInput = new FileInputStream(file);
+			Properties properties = new Properties();
+			properties.load(fileInput);
+			fileInput.close();
+
+			Enumeration enuKeys = properties.keys();
+			while (enuKeys.hasMoreElements()) {
+				String key = (String) enuKeys.nextElement();
+				String value = properties.getProperty(key);
+				System.out.println(key + ": " + value);
+			}
+			
+			String toscaLocation = properties.getProperty("Entry-Definitions");
+			String xml = new String(Files.readAllBytes(Paths.get(path+"/"+toscaLocation)));
+			setToscaFile(xml);
+			
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return;
 	}
 }
