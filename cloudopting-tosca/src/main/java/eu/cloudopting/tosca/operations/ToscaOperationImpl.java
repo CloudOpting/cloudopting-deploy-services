@@ -6,12 +6,10 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.io.Writer;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-import eu.cloudopting.tosca.nodes.CloudOptingNode;
 import eu.cloudopting.tosca.nodes.CloudOptingNodeImpl;
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
 import freemarker.core.ParseException;
@@ -25,13 +23,11 @@ public class ToscaOperationImpl {
 	ToscaFileManager tfm = ToscaFileManager.getInstance();
 	
 	public String compilePuppetTemplateHierarchy(HashMap<String, String> data){
-		System.out.println("I'm in the compilePuppetTemplateHierarchy for :");
 		String id = data.get("id");
 		String toscaPath = data.get("toscaPath");
 		System.out.println("I'm in the compilePuppetTemplateHierarchy for :" + id);
 
 		// With my ID I ask to the TFM the array of my sons
-
 		ArrayList<String> mychildren = tfm.getChildrenOfNode(id);
 
 		int i;
@@ -49,7 +45,6 @@ public class ToscaOperationImpl {
 		// I merge all the template chunks from sons and all my own data and get
 		// the final template and write it
 
-//		Map nodeData = new HashMap();
 		Map nodeData = tfm.getPropertiesForNode(id);
 		// nodeData.put("hostname", id+"."+customer+".local");
 		nodeData.put("childtemplates", templateChunks);
@@ -58,16 +53,12 @@ public class ToscaOperationImpl {
 	}
 	
 	public String writePuppetDockerTemplateHierarchy(HashMap<String, String> data){
-		System.out.println("I'm in the writePuppetDockerTemplateHierarchy for :");
 		String id = data.get("id");
 		String toscaPath = data.get("toscaPath");
 		String creationPath = data.get("creationPath");
 		String servicePath = data.get("servicePath");
-//		System.out.println("I'm in the DockerContainer.prepare for :"+id);
-		
-		//String customer = (String) execution.getVariable("customer");
-		String customer = new String("csi");
-//		System.out.println("result from shell execution:"+customer);
+		String customer = data.get("customer");
+		System.out.println("I'm in the writePuppetDockerTemplateHierarchy for :" + id);
 		
 		// With my ID I ask to the TFM the array of my sons
 		ArrayList<String> mychildren = this.tfm.getChildrenOfNode(id);
