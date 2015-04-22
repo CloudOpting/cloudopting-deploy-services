@@ -124,4 +124,10 @@ public class DockerContainer extends CloudOptingNodeImpl implements CloudOptingN
 		System.out.println("Dockerfile created");
 		return id;
 	}
+
+	private void compilePuppetTemplate(String dockerFile, String creationPath,
+			String string, Map nodeDataDC) {
+		// TODO Auto-generated method stub
+		
+	}
 }

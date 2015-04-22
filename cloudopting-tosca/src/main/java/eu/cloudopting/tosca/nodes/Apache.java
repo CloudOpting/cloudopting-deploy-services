@@ -87,4 +87,10 @@ public class Apache extends CloudOptingNodeImpl implements CloudOptingNode {
 		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
 
+	private String compilePuppetTemplate(Object object, Object object2,
+			String string, Map nodeData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

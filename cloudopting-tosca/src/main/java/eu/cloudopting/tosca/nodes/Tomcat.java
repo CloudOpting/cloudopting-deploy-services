@@ -93,5 +93,10 @@ public class Tomcat extends CloudOptingNodeImpl implements CloudOptingNode {
 		nodeData.put("childtemplates", templateChunks);
 		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
+	private String compilePuppetTemplate(Object object, Object object2,
+			String string, Map nodeData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

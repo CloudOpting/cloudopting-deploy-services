@@ -33,6 +33,11 @@
 			This is the Docker Container (the Docker host is already installed in the VM image)
 		</documentation>
 		<PropertiesDefinition element="a" type="a" />
+		<Interfaces>
+			<Interface name="Install">
+				<Operation name="writePuppetDockerTemplateHierarchy"></Operation>
+			</Interface>
+		</Interfaces>
 	</NodeType>
 	<NodeType name="Apache">
 		<documentation>
@@ -40,13 +45,21 @@
 			but we need to set the properties)
 		</documentation>
 		<PropertiesDefinition element="a" type="a" />
+		<Interfaces>
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+		</Interfaces>
 	</NodeType>
 	<NodeType name="ApacheVirtualHost">
 		<documentation>This is the Apache Virtual Host and here we have things
 			to ask to the user</documentation>
 		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
-			<Interface name="http://tempuri.org">
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+			<Interface name="Config">
 				<Operation name="Install">
 					<InputParameters>
 						<InputParameter name="VHostName" type="xs:string" />
@@ -59,12 +72,20 @@
 		<documentation>This is the Apache Module and here we have things
 			to ask to the user</documentation>
 		<PropertiesDefinition element="a" type="a" />
+		<Interfaces>
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+		</Interfaces>
 	</NodeType>
 	<NodeType name="MySQL">
 		<documentation>This is the MySQL engine</documentation>
 		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
-			<Interface name="http://tempuri.org">
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+			<Interface name="Config">
 				<Operation name="Install">
 					<InputParameters>
 						<InputParameter name="root_password" type="xs:string" />
@@ -77,7 +98,10 @@
 		<documentation>This is the MySQL DB</documentation>
 		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
-			<Interface name="http://tempuri.org">
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+			<Interface name="Config">
 				<Operation name="Install">
 					<InputParameters>
 						<InputParameter name="dbPassword" type="xs:string" />
@@ -90,7 +114,10 @@
 		<documentation>This is the PostgreSQL engine</documentation>
 		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
-			<Interface name="http://tempuri.org">
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+			<Interface name="Config">
 				<Operation name="Install">
 					<InputParameters>
 						<InputParameter name="postgres_password" type="xs:string" />
@@ -103,7 +130,10 @@
 		<documentation>This is the PostgreSQL DB</documentation>
 		<PropertiesDefinition element="a" type="a" />
 		<Interfaces>
-			<Interface name="http://tempuri.org">
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+			<Interface name="Config">
 				<Operation name="Install">
 					<InputParameters>
 						<InputParameter name="dbPassword" type="xs:string" />
@@ -118,12 +148,33 @@
 			but we need to set the properties)
 		</documentation>
 		<PropertiesDefinition element="a" type="a" />
+		<Interfaces>
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+		</Interfaces>
 	</NodeType>
 	<NodeType name="War">
 		<documentation>
 			This is the War component that can be deployed on a tomcat server
 		</documentation>
 		<PropertiesDefinition element="a" type="a" />
+		<Interfaces>
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+		</Interfaces>
+	</NodeType>
+	<NodeType name="WarApplication">
+		<documentation>
+			This is the WarApplication component that can be deployed on a tomcat server
+		</documentation>
+		<PropertiesDefinition element="a" type="a" />
+		<Interfaces>
+			<Interface name="Install">
+				<Operation name="compilePuppetTemplateHierarchy"></Operation>
+			</Interface>
+		</Interfaces>
 	</NodeType>
 	<ServiceTemplate id="Clearo" name="" substitutableNodeType="QName" targetNamespace="http://tempuri.org">
 		

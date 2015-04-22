@@ -31,5 +31,10 @@ public class ApacheModule extends CloudOptingNodeImpl implements CloudOptingNode
 		Map nodeData = tfm.getPropertiesForNode(id);
 		return compilePuppetTemplate(null, null , toscaPath+myTemplate, nodeData);
 	}
+	private String compilePuppetTemplate(Object object, Object object2,
+			String string, Map nodeData) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

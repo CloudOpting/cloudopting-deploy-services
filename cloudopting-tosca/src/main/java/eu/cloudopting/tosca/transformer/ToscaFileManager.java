@@ -71,7 +71,7 @@ public class ToscaFileManager implements IToscaFileManager {
 		this.g = new DefaultDirectedGraph<String, DefaultEdge>(
 				DefaultEdge.class);
 
-		System.out.println(xmlFile);
+//		System.out.println(xmlFile);
 
 		// Here we do the stuff to parse the XML
 		InputSource source = new InputSource(new StringReader(xmlFile));
@@ -170,6 +170,26 @@ public class ToscaFileManager implements IToscaFileManager {
 		}
 	}
 // //NodeType[@name=string(//NodeTemplate[@id='ClearoApacheVH']/@type)]/Interfaces/Interface[@name='Install']/Operation/@name
+	public String getOperationForNode(String id,String interfaceType) {
+		if (this.xmlFile == null)
+			return null;
+
+		DTMNodeList nodes = null;
+		System.out.println("//ns:NodeType[@name=string(//ns:NodeTemplate[@id='" + id + "']/@type)]/ns:Interfaces/ns:Interface[@name='" + interfaceType + "']/ns:Operation/@name");
+		try {
+			nodes = (DTMNodeList) this.xpath.evaluate("//ns:NodeType[@name=string(//ns:NodeTemplate[@id='" + id + "']/@type)]/ns:Interfaces/ns:Interface[@name='" + interfaceType + "']/ns:Operation/@name", this.document, XPathConstants.NODESET);
+//			System.out.println(nodes.toString());
+		} catch (XPathExpressionException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		// since there is a single ID we are sure that the array is with a
+		// single element
+		// We need to get the type
+		String template = nodes.item(0).getNodeValue();
+		return template;
+
+	}
 	/*
 	 * (non-Javadoc)
 	 * 

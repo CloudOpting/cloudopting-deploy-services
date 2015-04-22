@@ -12,6 +12,7 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.cloudopting.tosca.nodes.CloudOptingNode;
+import eu.cloudopting.tosca.nodes.CloudOptingNodeImpl;
 import eu.cloudopting.tosca.nodes.DockerContainer;
 import eu.cloudopting.tosca.transformer.ToscaFileManager;
 import freemarker.template.Configuration;
@@ -37,13 +38,14 @@ public class CloudoptingProcessDocker implements JavaDelegate {
 		String servicePath = (String) execution.getVariable("servicePath");
 //		System.out.println("servicePath :"+servicePath);
 		
-		CloudOptingNode dc = new DockerContainer();
+		//CloudOptingNode dc = new DockerContainer();
+		CloudOptingNodeImpl dc = new CloudOptingNodeImpl();
 		HashMap<String, String> hm = new HashMap<String, String>();
 		hm.put("id", dockerNode);
 		hm.put("creationPath", creationPath);
 		hm.put("servicePath", servicePath);
 		hm.put("toscaPath", "tosca/");
-		dc.prepare(hm);
+		dc.execute(hm);
 		/*
 		// Add the values in the datamodel
 
