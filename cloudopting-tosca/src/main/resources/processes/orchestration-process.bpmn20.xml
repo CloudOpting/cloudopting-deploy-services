@@ -63,7 +63,7 @@ This task will probably be transformed into a subprocess, but at the moment we n
     </subProcess>
     <sequenceFlow id="flow4" sourceRef="subDockerPuppetPrepare" targetRef="r10kTask"></sequenceFlow>
     <serviceTask id="servicetask1" name="Add new VM to docker swarm" activiti:class="eu.cloudopting.activiti.CloudoptingProcessDockerSwarm"></serviceTask>
-    <serviceTask id="setupTask" name="setup Process" activiti:class="eu.cloudopting.activiti.CloudoptingProcessSetup"></serviceTask>
+    <serviceTask id="setupTask" name="setup Process" activiti:async="true" activiti:class="eu.cloudopting.activiti.CloudoptingProcessSetup"></serviceTask>
     <sequenceFlow id="flow17" sourceRef="setupTask" targetRef="vmTask"></sequenceFlow>
     <subProcess id="subDockerBuild" name="Build Docker Containers">
       <multiInstanceLoopCharacteristics isSequential="true" activiti:collection="dockerNodesList" activiti:elementVariable="dockerNode"></multiInstanceLoopCharacteristics>

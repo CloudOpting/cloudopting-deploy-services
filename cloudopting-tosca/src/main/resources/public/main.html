@@ -39,7 +39,7 @@
 
 <body>
 
-	<div ng-app="myApp" ng-controller="formCtrl" id='dv1'>
+	<div ng-app="myApp" ng-controller="formCtrl" id='dv1' ng-init="image_reloader(timer=20)">
 		<form novalidate>
 			<ul>
 				<li class="err" ng-repeat="error in errors">{{ error}}</li>
@@ -56,6 +56,8 @@
 		</form>
 		<p>form = {{user}}</p>
 		<p>master = {{master}}</p>
+		<p>master = {{pid}}</p>
+		<img ng-src="{{imageSource}}">
 	</div>
 
 	<script>
@@ -75,8 +77,18 @@
 					cloud : "cloudstack",
 					customer : "csi"
 				};
+				$scope.image_reloader = function(timer) {
+					  $scope.timer = timer || 10000;
+					  $scope.updater = function() {
+					    $scope.imageSource = "http://localhost:8080/processImage/" + $scope.pid + '?' + new Date().getTime();
+					    $timeout($scope.updater, $scope.timer);
+					  };
+					  $scope.updater();
+					};
 				$scope.reset = function() {
 					$scope.user = angular.copy($scope.master);
+					$scope.imageSource= "http://localhost:8080/processImage/" + $scope.pid+ '?' + new Date().getTime();
+					$scope.$apply;
 				};
 				$scope.process = function() {
 					$scope.msgs.push("In process function");
@@ -126,7 +138,9 @@
 											config) {
 										if (data.msg != '') {
 											$scope.msgs
-													.push(data.msg);
+													.push(data);
+											$scope.pid = data;
+											$scope.imageSource= "http://localhost:8080/processImage/" + $scope.pid;
 										} else {
 											$scope.errors
 													.push(data.error);
