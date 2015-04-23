@@ -30,45 +30,57 @@ public class ProcessController {
 	@Autowired
 	private ProcessService processService;
 
-	@RequestMapping(value="/process", method= RequestMethod.POST,headers = "content-type=application/x-www-form-urlencoded")
-	public @ResponseBody String startProcessInstance(@RequestParam(value="customerId", required=false) String customerId,@RequestParam(value="cloudId", required=false) String cloudId,@RequestParam(value="toscaId", required=false) String toscaId) {
+	@RequestMapping(value = "/process", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
+	public @ResponseBody String startProcessInstance(
+			@RequestParam(value = "customerId", required = false) String customerId,
+			@RequestParam(value = "cloudId", required = false) String cloudId,
+			@RequestParam(value = "toscaId", required = false) String toscaId) {
 		String pid = processService.startProcess(customerId, cloudId, toscaId);
-		System.out.println("returning pid: "+pid);
+		System.out.println("returning pid: " + pid);
 		return pid;
 	}
 
-	@RequestMapping(value="/testProcess", method= RequestMethod.POST,headers = "content-type=application/x-www-form-urlencoded")
-	public @ResponseBody void testProcessInstance(@RequestParam(value="customerId", required=false) String customerId,@RequestParam(value="cloudId", required=false) String cloudId,@RequestParam(value="toscaId", required=false) String toscaId) {
-		processService.testProcess(customerId, cloudId, toscaId);
+	@RequestMapping(value = "/testProcess", method = RequestMethod.POST, headers = "content-type=application/x-www-form-urlencoded")
+	public @ResponseBody String testProcessInstance(
+			@RequestParam(value = "customerId", required = false) String customerId,
+			@RequestParam(value = "cloudId", required = false) String cloudId,
+			@RequestParam(value = "toscaId", required = false) String toscaId) {
+		String pid = processService.testProcess(customerId, cloudId, toscaId);
+		System.out.println("returning pid: " + pid);
+		return pid;
 	}
 
 	@RequestMapping(value = "/processImage/{id}", method = RequestMethod.GET, produces = MediaType.IMAGE_PNG_VALUE)
-	public @ResponseBody byte[] getProcessStatusImage(@PathVariable String id, final HttpServletResponse response){
-		if (id == null){
+	public @ResponseBody byte[] getProcessStatusImage(@PathVariable String id,
+			final HttpServletResponse response) {
+		if (id == null) {
 			return null;
 		}
 		response.setHeader("Cache-Control", "no-cache");
 		InputStream is = processService.getProcessImage(id);
 
+		if (is == null) {
+			return null;
+		}
 		// Prepare buffered image.
-        BufferedImage img;
+		BufferedImage img;
 		try {
 			img = ImageIO.read(is);
-	        // Create a byte array output stream.
-	        ByteArrayOutputStream bao = new ByteArrayOutputStream();
+			// Create a byte array output stream.
+			ByteArrayOutputStream bao = new ByteArrayOutputStream();
 
-	        // Write to output stream
-	        ImageIO.write(img, "png", bao);
+			// Write to output stream
+			ImageIO.write(img, "png", bao);
 
-	        return bao.toByteArray();
+			return bao.toByteArray();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 
-        }
-	
+	}
+
 	@RequestMapping(value = "/tasks", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public List<TaskRepresentation> getTasks(@RequestParam String assignee) {
 		List<Task> tasks = processService.getTasks(assignee);
