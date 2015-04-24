@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class HelloController {
     
-    @RequestMapping("/")
+    @RequestMapping("/view")
     public String index() {
     	return "main.html";
     }
