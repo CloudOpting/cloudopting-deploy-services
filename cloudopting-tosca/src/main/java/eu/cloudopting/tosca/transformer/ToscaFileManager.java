@@ -3,6 +3,7 @@ package eu.cloudopting.tosca.transformer;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
@@ -30,6 +31,9 @@ import org.apache.xml.dtm.ref.DTMNodeList;
 import org.apache.xpath.XPathFactory;
 import org.apache.xpath.jaxp.XPathFactoryImpl;
 import org.apache.xpath.jaxp.XPathImpl;
+import org.jgrapht.ext.DOTExporter;
+import org.jgrapht.ext.IntegerNameProvider;
+import org.jgrapht.ext.StringNameProvider;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -174,7 +178,25 @@ public class ToscaFileManager implements IToscaFileManager {
 //			System.out.println(v);
 		}
 	}
-// //NodeType[@name=string(//NodeTemplate[@id='ClearoApacheVH']/@type)]/Interfaces/Interface[@name='Install']/Operation/@name
+
+	public void saveToscaGraph(String targetDirectory) {
+		if (this.xmlFile == null)
+			return;
+		IntegerNameProvider p1=new IntegerNameProvider();
+	    StringNameProvider p2=new StringNameProvider();
+		DOTExporter exporter = new DOTExporter(p1,p2,null,null, null);
+//		String targetDirectory = "testresults/graph/";
+		new File(targetDirectory).mkdirs();
+		try {
+			exporter.export(new FileWriter(targetDirectory + "/tosca-graph.dot"), this.g);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+	
+	// //NodeType[@name=string(//NodeTemplate[@id='ClearoApacheVH']/@type)]/Interfaces/Interface[@name='Install']/Operation/@name
 	public String getOperationForNode(String id,String interfaceType) {
 		if (this.xmlFile == null)
 			return null;

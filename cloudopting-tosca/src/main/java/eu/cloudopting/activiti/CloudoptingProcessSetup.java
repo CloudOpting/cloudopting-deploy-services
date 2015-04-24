@@ -86,6 +86,7 @@ public class CloudoptingProcessSetup implements JavaDelegate {
 		// Creating new directory in Java, if it doesn't exists
 
 		// getting the list of puppet modules that this service needs
+		toscaFileManager.saveToscaGraph(dir);
 		System.out.printf("Preparing the Puppetfile");
 		ArrayList<String> modules = toscaFileManager.getPuppetModules();
 		ArrayList<HashMap<String, String>> modData = new ArrayList<HashMap<String, String>>();
