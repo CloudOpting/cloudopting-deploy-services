@@ -5,5 +5,5 @@ This is a Spring Boot application subdivided into different modules
 
 The following tables explains the modules and the subdivision
 
-|----|
-|dfdf|
+| component | scope | 
+| --- | --- |
