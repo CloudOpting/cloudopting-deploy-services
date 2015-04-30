@@ -1,2 +1,9 @@
 # cloudopting-deploy-services
-The deploy rest services for provisioning cloudstack and azure infrastructure
+This is the master repository for the CloudOpting platform orchestrator
+
+This is a Spring Boot application subdivided into different modules
+
+The following tables explains the modules and the subdivision
+
+|----|
+|dfdf|
